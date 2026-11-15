@@ -75,10 +75,10 @@ export const products = [
     badge: 'Sale',
     price: 699,
     mrp: 999,
-    image: `${IMG}/lavender.jpg`,
+    image: `${IMG}/lavender-crystal.jpg`, // client's crystal + water photo
     video: null,
     poster: null,
-    bg: '#ECE6FA',
+    bg: '#D9ECFA',
     accent: '#5B3FA8',
     ingredient: 'Lavender',
     ingredientNote: 'A calming herbal note for a relaxed start to the day.',
