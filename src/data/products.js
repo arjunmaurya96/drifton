@@ -88,53 +88,42 @@ export const products = [
   },
 ];
 
-// ===== Home hero banner (model left, product + 4 ingredients right) =====
-// model: 'girl' | 'girl2' | 'boy' | 'couple' (dummy illustrations). Add modelPhoto: '/assets/images/models/x.jpg' to use a real photo.
-// Ingredients are DUMMY — confirm the real 4 key ingredients for each variant with the client.
+// ===== Home hero banner (full-width image slides, phitku style) =====
+// image: DUMMY banners made from the product photos. Replace with real model photos
+// (e.g. '/assets/images/banner/model-1.jpg', 1920x1080 or wider, subject on the right half).
+// Ingredients are DUMMY — confirm the real key ingredients for each variant with the client.
 // icon: 'gem' | 'flower' | 'leaf' | 'drop' | 'hex' | 'sprig'
 export const bannerSlides = [
   {
-    productId: 'palash', model: 'girl', modelPhoto: null, dark: false,
-    bgFrom: '#FFF6E8', bgTo: '#FFD9A8', glow: '#FFB35C', tone: 'rgba(255,255,255,.55)', top: '#E8742A', stick: '#FFD45C',
-    headline: 'Fresh like a', highlight: 'Palash bloom.',
+    productId: 'palash', image: '/assets/images/banner/banner-palash.jpg',
+    serif: 'Crystal deo', line: 'that keeps you fresh 24/7', accent: '#FFD2A8',
     ingredients: [
-      { name: 'Natural Alum', icon: 'gem', color: '#1C2E6B', bg: '#FFFFFF' },
-      { name: 'Palash Flower', icon: 'flower', color: '#E8742A', bg: '#FFF1E0' },
-      { name: 'Aloe Vera', icon: 'leaf', color: '#1F8A4C', bg: '#E5F5EC' },
-      { name: 'Vitamin E', icon: 'drop', color: '#C99A1B', bg: '#FFF7D6' },
+      { name: 'Natural Alum', icon: 'gem' }, { name: 'Palash Flower', icon: 'flower' },
+      { name: 'Aloe Vera', icon: 'leaf' }, { name: 'Vitamin E', icon: 'drop' },
     ],
   },
   {
-    productId: 'charcoal', model: 'boy', modelPhoto: null, dark: true,
-    bgFrom: '#3A4152', bgTo: '#12151D', glow: '#6E7891', tone: 'rgba(255,255,255,.10)', top: '#0F1A3C', stick: '#EEF1F8',
-    headline: 'Deep clean.', highlight: 'All-day fresh.',
+    productId: 'charcoal', image: '/assets/images/banner/banner-charcoal.jpg',
+    serif: 'Deep clean', line: 'for your busiest days', accent: '#CFD6E6',
     ingredients: [
-      { name: 'Natural Alum', icon: 'gem', color: '#1C2E6B', bg: '#FFFFFF' },
-      { name: 'Activated Charcoal', icon: 'hex', color: '#FFFFFF', bg: '#2B2F3A' },
-      { name: 'Tea Tree', icon: 'leaf', color: '#1F8A4C', bg: '#E5F5EC' },
-      { name: 'Mint', icon: 'sprig', color: '#0F8C7A', bg: '#DDF5F0' },
+      { name: 'Natural Alum', icon: 'gem' }, { name: 'Activated Charcoal', icon: 'hex' },
+      { name: 'Tea Tree', icon: 'leaf' }, { name: 'Mint', icon: 'sprig' },
     ],
   },
   {
-    productId: 'rose', model: 'girl2', modelPhoto: null, dark: false,
-    bgFrom: '#FFF1F5', bgTo: '#F9C3D3', glow: '#F28DAE', tone: 'rgba(255,255,255,.55)', top: '#C2406C', stick: '#F7A8C4',
-    headline: 'Soft as a', highlight: 'rose petal.',
+    productId: 'rose', image: '/assets/images/banner/banner-rose.jpg',
+    serif: 'Soft & fresh', line: 'with a touch of rose', accent: '#FFC9DA',
     ingredients: [
-      { name: 'Natural Alum', icon: 'gem', color: '#1C2E6B', bg: '#FFFFFF' },
-      { name: 'Rose Petals', icon: 'flower', color: '#C2406C', bg: '#FDE4EC' },
-      { name: 'Glycerin', icon: 'drop', color: '#3B7BD9', bg: '#E5EFFD' },
-      { name: 'Aloe Vera', icon: 'leaf', color: '#1F8A4C', bg: '#E5F5EC' },
+      { name: 'Natural Alum', icon: 'gem' }, { name: 'Rose Petals', icon: 'flower' },
+      { name: 'Glycerin', icon: 'drop' }, { name: 'Aloe Vera', icon: 'leaf' },
     ],
   },
   {
-    productId: 'lavender', model: 'couple', modelPhoto: null, dark: false,
-    bgFrom: '#F6F2FF', bgTo: '#D6C8F7', glow: '#A88BEB', tone: 'rgba(255,255,255,.5)', top: '#6A4BC4', stick: '#D9C8FF',
-    headline: 'Calm & fresh,', highlight: 'for both of you.',
+    productId: 'lavender', image: '/assets/images/banner/banner-lavender.jpg',
+    serif: 'Calm & fresh', line: 'for him and for her', accent: '#DCCBFF',
     ingredients: [
-      { name: 'Natural Alum', icon: 'gem', color: '#1C2E6B', bg: '#FFFFFF' },
-      { name: 'Lavender', icon: 'sprig', color: '#6A4BC4', bg: '#EEE8FD' },
-      { name: 'Chamomile', icon: 'flower', color: '#C99A1B', bg: '#FFF7D6' },
-      { name: 'Vitamin E', icon: 'drop', color: '#C99A1B', bg: '#FFF7D6' },
+      { name: 'Natural Alum', icon: 'gem' }, { name: 'Lavender', icon: 'sprig' },
+      { name: 'Chamomile', icon: 'flower' }, { name: 'Vitamin E', icon: 'drop' },
     ],
   },
 ];

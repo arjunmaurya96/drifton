@@ -303,7 +303,7 @@ export default function ProductDetail() {
             <button className="btn-line" onClick={() => navigate('/#shop')}>View all</button>
           </div>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((p) => <ProductCard key={p.id} product={p} height="h-[520px] sm:h-[560px]" />)}
+            {related.map((p) => <ProductCard key={p.id} product={p} />)}
           </div>
         </div>
       </section>

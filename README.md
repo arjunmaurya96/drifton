@@ -42,22 +42,24 @@ src/components/StepIllustrations.jsx  animated "How to use" illustrations
 src/pages/                  Home, ProductDetail, NotFound
 ```
 
-## Hero banner (model + product + ingredients)
+## Hero banner (full-width image slider)
 
-`src/components/ModelBanner.jsx` – full-width banner with 4 slides (one per product):
-- **Left:** the model slides in from the left (girl, boy, girl, then a couple on the last slide).
-- **Right:** the product slides in from the right, with its **4 key ingredients** sliding in one by one below it.
-- Everything holds for **3 seconds**, slides out, and the next slide comes in. Background colours cross-fade to match each product.
-- Slide content (headline, colours, model, ingredients) is in `bannerSlides` in `src/data/products.js`.
-- The models are **dummy illustrations** (`src/components/ModelIllustrations.jsx`). To use real photos,
-  put them in `public/assets/images/models/` and set `modelPhoto: '/assets/images/models/girl.jpg'` on the slide.
-- Ingredients are **dummy** – confirm the real 4 key ingredients per variant with the client.
+`src/components/HeroBanner.jsx` – phitku-style banner:
+- The photo fills the full width. Big serif headline + bold line, the product's **4 key ingredients**,
+  and a **SHOP NOW** button sit on the left.
+- Each slide slides in from the right, stays for **3 seconds**, then the next one comes. Arrows and progress bars included.
+- Clicking the photo opens that product's page.
+- Slide content is in `bannerSlides` in `src/data/products.js`.
+- **The banner images are DUMMY** (`public/assets/images/banner/banner-*.jpg`, made from product photos).
+  Replace them with real model photos (1920×1080 or wider, models on the right half so the text on the left stays clear).
+  Keep the same file names, or change `image:` in `bannerSlides`.
+- Ingredients are **dummy** – confirm the real key ingredients per variant with the client.
 
-## Products section
+## Products section ("Pick your crystal.")
 
-`src/components/ProductShowcase.jsx` – the 4 products are shown big and free (no cards/boxes) on one continuous
-colour strip; each product sits on its own colour (peach, charcoal, rose, lavender) that blends smoothly into the
-next and into the page background. Product photos are edge-faded so they melt into their colour.
+`src/components/ProductGrid.jsx` + `src/components/ProductCard.jsx` – same layout as phitku's "Pick your rock":
+4 big full-image cards in a row, Sale/Bestseller pill, name and price in white over the photo, and a white
+ADD TO CART pill button. Clicking a card opens the product page.
 
 ## Product videos
 

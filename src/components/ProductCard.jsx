@@ -1,38 +1,44 @@
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
-import { formatINR, discount } from '../data/products.js';
+import { formatINR } from '../data/products.js';
 import { Heart } from './Icons.jsx';
 
-export default function ProductCard({ product, height = 'h-[540px] sm:h-[640px]' }) {
+/** Big full-image product card (phitku "Pick your rock" style). */
+export default function ProductCard({ product, className = 'h-[540px] sm:h-[600px] 2xl:h-[680px]' }) {
   const { addToCart, toggleWish, wishlist, cart } = useStore();
   const url = `/product/${product.slug}`;
   const inWish = wishlist.includes(product.id);
   const inCart = cart.some((l) => l.id === product.id);
 
   return (
-    <article className={`group relative overflow-hidden rounded-[30px] transition duration-300 hover:-translate-y-2 hover:shadow-[0_40px_70px_-30px_rgba(15,26,60,.5)] ${height}`} style={{ background: product.bg }}>
+    <article className={`group relative overflow-hidden rounded-[28px] ${className}`} style={{ background: product.bg }}>
       <Link to={url} aria-label={`View ${product.name}`} className="absolute inset-0">
-        <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.07]" />
+        <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.06]" />
       </Link>
-      <span className="absolute left-5 top-5 rounded-full bg-white px-4 py-2 text-[13px] font-semibold text-navy-900 shadow">{product.badge}</span>
+
+      {/* bottom shade so the white text is always readable */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-black/60 via-black/25 to-transparent" />
+
+      <span className="absolute right-5 top-5 rounded-full bg-white px-6 py-2.5 font-jost text-[15px] font-medium text-navy-900 shadow-sm">{product.badge === 'Bestseller' ? 'Bestseller' : 'Sale'}</span>
       <button onClick={() => toggleWish(product.id)} aria-pressed={inWish} aria-label={`${inWish ? 'Remove' : 'Add'} ${product.name} ${inWish ? 'from' : 'to'} wishlist`}
-        className="absolute right-4 top-4 flex size-[46px] items-center justify-center rounded-full bg-white/95 text-navy-900 shadow">
+        className="absolute left-5 top-5 flex size-11 items-center justify-center rounded-full bg-white/90 text-navy-900 opacity-0 shadow-sm transition group-hover:opacity-100 focus-visible:opacity-100 aria-pressed:opacity-100">
         <Heart filled={inWish} />
       </button>
-      <div className="absolute inset-x-3.5 bottom-3.5 flex flex-col gap-3 rounded-[22px] bg-navy-900/85 p-5 text-white backdrop-blur-md">
-        <div className="flex flex-col gap-1">
-          <span className="text-xs font-bold uppercase tracking-widest text-mint">{product.tag}</span>
-          <Link to={url} className="font-head text-[23px] font-semibold leading-tight text-white hover:text-mint">{product.name}</Link>
-        </div>
-        <div className="flex items-center justify-between gap-3">
-          <span className="flex items-baseline gap-2.5">
-            <span className="font-head text-2xl font-bold">{formatINR(product.price)}</span>
-            <s className="text-[15px] text-[#AEB8D8]">{formatINR(product.mrp)}</s>
-          </span>
-          <span className="rounded-full bg-mint px-2.5 py-1 text-[12.5px] font-bold text-navy-900">{discount(product)}% OFF</span>
-        </div>
-        <button className="btn-white w-full" onClick={() => addToCart(product)}>{inCart ? 'Added · Add another' : 'Add to cart'}</button>
+
+      <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-2 px-6 pb-7 text-center text-white">
+        <Link to={url} className="font-jost text-[23px] font-medium leading-tight text-white 2xl:text-[27px] [text-shadow:0_2px_12px_rgba(0,0,0,.35)] hover:text-white">
+          {product.name}
+        </Link>
+        <span className="flex items-baseline gap-3 font-jost text-[17px] font-medium [text-shadow:0_2px_10px_rgba(0,0,0,.35)]">
+          <s className="text-white/80">Rs. {product.mrp.toFixed(2)}</s>
+          <span>Rs. {product.price.toFixed(2)}</span>
+        </span>
+        <button onClick={() => addToCart(product)}
+          className="mt-3 min-h-[52px] rounded-full bg-white px-10 font-jost text-[15px] font-medium uppercase tracking-wide text-navy-900 shadow-lg transition hover:bg-mint">
+          {inCart ? 'Add another' : 'Add to cart'}
+        </button>
       </div>
+      <span className="sr-only">{formatINR(product.price)}</span>
     </article>
   );
 }

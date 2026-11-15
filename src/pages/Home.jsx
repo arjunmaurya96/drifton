@@ -1,5 +1,5 @@
-import ModelBanner from '../components/ModelBanner.jsx';
-import ProductShowcase from '../components/ProductShowcase.jsx';
+import HeroBanner from '../components/HeroBanner.jsx';
+import ProductGrid from '../components/ProductGrid.jsx';
 import ProductMarquee from '../components/ProductMarquee.jsx';
 import ServiceCards from '../components/ServiceCards.jsx';
 import WhyDrifton from '../components/WhyDrifton.jsx';
@@ -13,8 +13,8 @@ import ReferEarn from '../components/ReferEarn.jsx';
 export default function Home() {
   return (
     <>
-      <ModelBanner />
-      <ProductShowcase />
+      <HeroBanner />
+      <ProductGrid />
       <ProductMarquee />
       <ServiceCards />
       <div className="h-24" />

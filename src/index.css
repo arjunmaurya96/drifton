@@ -19,6 +19,9 @@
 
   --font-head: "Outfit", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
+  --font-serif: "DM Serif Display", Georgia, serif;
+  --font-jost: "Jost", "Outfit", system-ui, sans-serif;
+  --animate-ken: ken 9s ease-out both;
 
   --animate-marquee: marquee 38s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
@@ -34,6 +37,7 @@
 
   @keyframes from-left { from { transform: translateX(-140px); opacity: 0; } to { transform: none; opacity: 1; } }
   @keyframes from-right { from { transform: translateX(140px); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes ken { from { transform: scale(1.12); } to { transform: scale(1); } }
   @keyframes bar-fill { from { width: 0%; } to { width: 100%; } }
   @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
