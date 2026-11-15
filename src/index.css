@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+/* ===== Drifton design tokens (used as Tailwind classes, e.g. bg-navy-900, text-brand, font-head) ===== */
+@theme {
+  --color-navy-900: #0F1A3C;
+  --color-navy-700: #1C2E6B;
+  --color-navy-500: #2B3558;
+  --color-brand: #1F8A4C;
+  --color-brand-dark: #17703D;
+  --color-mint: #7BE0A6;
+  --color-mint-soft: #E5F5EC;
+  --color-blue-soft: #EAF0FF;
+  --color-page: #F6F7FB;
+  --color-line: #E6E9F2;
+  --color-line-strong: #D5DCEE;
+  --color-muted: #4A5578;
+  --color-muted-2: #5A6382;
+  --color-ondark: #C9D1EA;
+
+  --font-head: "Outfit", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-fade-up: fade-up .6s ease both;
+  --animate-fade-in: fade-in .2s ease both;
+  --animate-slide-in: slide-in .3s ease both;
+  --animate-drip: drip 1.6s ease-in infinite;
+  --animate-glide: glide 2.4s ease-in-out infinite;
+
+  --animate-from-left: from-left 1s cubic-bezier(.2,.8,.2,1) both;
+  --animate-from-right: from-right 1s cubic-bezier(.2,.8,.2,1) both;
+  --animate-bar: bar-fill linear both;
+
+  @keyframes from-left { from { transform: translateX(-140px); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes from-right { from { transform: translateX(140px); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes bar-fill { from { width: 0%; } to { width: 100%; } }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slide-in { from { transform: translateX(100%); } to { transform: none; } }
+  @keyframes drip { 0% { transform: translateY(-10px); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(60px); opacity: 0; } }
+  @keyframes glide { 0%, 100% { transform: translate(0, 0) rotate(-18deg); } 50% { transform: translate(-14px, 22px) rotate(-18deg); } }
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-page text-navy-900 font-body antialiased overflow-x-hidden; }
+  h1, h2, h3, h4 { @apply font-head; }
+  a { @apply text-navy-700 no-underline; }
+  button { cursor: pointer; }
+}
+
+/* ===== Reusable utilities (use like any Tailwind class) ===== */
+@utility container-x { @apply w-full max-w-[1320px] mx-auto px-[18px] sm:px-8; }
+@utility container-wide { @apply w-full max-w-[1680px] mx-auto px-[18px] sm:px-8; }
+@utility eyebrow { @apply text-[13px] font-bold tracking-[1.4px] uppercase text-brand; }
+@utility h2 { @apply font-head text-4xl md:text-5xl font-bold tracking-tight leading-[1.08] text-navy-900; }
+@utility btn { @apply inline-flex items-center justify-center gap-2.5 rounded-full font-semibold text-[15px] px-6 min-h-12 whitespace-nowrap transition-colors duration-200 border-0; }
+@utility btn-primary { @apply btn bg-brand text-white hover:bg-brand-dark hover:text-white; }
+@utility btn-navy { @apply btn bg-navy-700 text-white hover:bg-navy-900 hover:text-white; }
+@utility btn-line { @apply btn bg-white text-navy-700 border-[1.5px] border-solid border-line-strong hover:border-navy-700; }
+@utility btn-white { @apply btn bg-white text-navy-900 font-bold text-sm tracking-wide uppercase hover:bg-mint; }
+@utility icon-btn { @apply relative inline-flex size-11 shrink-0 items-center justify-center rounded-full text-navy-900 hover:bg-[#EEF1F8] transition-colors; }
+@utility icon-btn-outline { @apply icon-btn border-[1.5px] border-solid border-line-strong; }
+@utility lift { @apply transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_44px_-26px_rgba(15,26,60,.3)]; }
+@utility card { @apply bg-white border border-solid border-line rounded-3xl; }
