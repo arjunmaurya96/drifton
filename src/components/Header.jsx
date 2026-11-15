@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
 import { Search, Heart, Bag, Menu, Close } from './Icons.jsx';
@@ -16,12 +16,39 @@ const Badge = ({ n }) => (
   <span className="absolute right-0.5 top-1 flex h-[19px] min-w-[19px] items-center justify-center rounded-full bg-brand px-1.5 text-[11px] font-bold text-white">{n}</span>
 );
 
+/**
+ * Hides when you scroll down, slides back in as soon as you scroll up a little.
+ */
+function useHideOnScroll() {
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    let lastY = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (y < 120) setHidden(false); // always show near the top
+        else if (y > lastY + 6) setHidden(true); // scrolling down
+        else if (y < lastY - 6) setHidden(false); // scrolling up a little
+        lastY = y;
+        ticking = false;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  return hidden;
+}
+
 export default function Header() {
   const { count, openAuth, openCart, wishlist } = useStore();
   const [open, setOpen] = useState(false);
+  const hidden = useHideOnScroll() && !open;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur">
+    <header className={`sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur transition-transform duration-300 ease-out ${hidden ? '-translate-y-full' : 'translate-y-0 shadow-[0_8px_24px_-18px_rgba(15,26,60,.35)]'}`}>
       <div className="container-x flex h-[78px] items-center justify-between gap-5">
         <Link to="/" aria-label="Drifton home" className="shrink-0">
           <img src="/assets/images/logo.png" alt="Drifton by AI Enterprises" className="h-9 w-auto sm:h-11" />

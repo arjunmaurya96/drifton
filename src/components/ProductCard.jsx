@@ -12,7 +12,7 @@ export default function ProductCard({ product, className = 'h-[520px] sm:h-[560p
   const inCart = cart.some((l) => l.id === product.id);
 
   return (
-    <article className={`relative overflow-hidden rounded-[24px] bg-page ${className}`}>
+    <article className={`relative overflow-hidden rounded-xl bg-page ${className}`}>
       <Link to={url} aria-label={`View ${product.name}`} className="absolute inset-0">
         {/* photo keeps its colours, toned just slightly so it sits well on the page background */}
         <img src={product.image} alt={product.name} loading="lazy" className="h-full w-full object-cover [filter:saturate(.92)_brightness(.97)]" />
