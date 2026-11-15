@@ -2,13 +2,13 @@ import { Link } from 'react-router-dom';
 import { products } from '../data/products.js';
 import { Sparkle } from './Icons.jsx';
 
-const [palash, charcoal, rose, lavender] = products;
+const [palash, charcoal, rose, lavender, natural] = products;
 const items = [
   { name: 'Palash Flower', product: palash },
   { name: 'Activated Charcoal', product: charcoal },
   { name: 'Rose', product: rose },
   { name: 'Lavender', product: lavender },
-  { name: 'Natural Crystal Alum', product: palash },
+  { name: 'Natural Crystal Alum', product: natural },
   { name: 'No White Marks', product: charcoal },
   { name: 'Long Lasting Stick', product: lavender },
 ];

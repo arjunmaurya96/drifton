@@ -86,6 +86,26 @@ export const products = [
     description:
       'Natural alum crystal with calming lavender. A light, herbal way to start your morning and stay fresh all day.',
   },
+  {
+    id: 'natural',
+    slug: 'natural-alum-stick',
+    name: 'Natural Alum Stick',
+    short: 'Natural',
+    tag: 'Pure · Unscented',
+    badge: 'New',
+    price: 699,
+    mrp: 999,
+    image: `${IMG}/natural.jpg`,
+    video: null,
+    poster: null,
+    bg: '#D9ECFA',
+    accent: '#1C6FB8',
+    ingredient: 'Pure mineral alum',
+    ingredientNote: 'Just the natural mineral crystal, for a clean and simple everyday routine.',
+    tagline: 'Pure mineral, nothing extra',
+    description:
+      'A natural mineral deodorant alum stick in its purest form. Clear, simple and gentle, it glides on with a little water and keeps you feeling fresh.',
+  },
 ];
 
 // ===== Home hero banner (full-width image slides, phitku style) =====
