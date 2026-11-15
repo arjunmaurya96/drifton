@@ -89,13 +89,16 @@ export const products = [
 ];
 
 // ===== Home hero banner (full-width image slides, phitku style) =====
+// modelPhoto: photo of a model shown behind the text on the LEFT (fades into the product image).
+//   Put files in public/assets/images/models/ and set e.g. modelPhoto: '/assets/images/models/model-1.jpg'.
+//   Best: portrait or landscape photo, model looking at camera, at least 1200px tall.
 // image: DUMMY banners made from the product photos. Replace with real model photos
 // (e.g. '/assets/images/banner/model-1.jpg', 1920x1080 or wider, subject on the right half).
 // Ingredients are DUMMY — confirm the real key ingredients for each variant with the client.
 // icon: 'gem' | 'flower' | 'leaf' | 'drop' | 'hex' | 'sprig'
 export const bannerSlides = [
   {
-    productId: 'palash', image: '/assets/images/banner/banner-palash.jpg',
+    productId: 'palash', image: '/assets/images/banner/banner-palash.jpg', modelPhoto: null,
     serif: 'Crystal deo', line: 'that keeps you fresh 24/7', accent: '#FFD2A8',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Palash Flower', icon: 'flower' },
@@ -103,7 +106,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'charcoal', image: '/assets/images/banner/banner-charcoal.jpg',
+    productId: 'charcoal', image: '/assets/images/banner/banner-charcoal.jpg', modelPhoto: null,
     serif: 'Deep clean', line: 'for your busiest days', accent: '#CFD6E6',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Activated Charcoal', icon: 'hex' },
@@ -111,7 +114,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'rose', image: '/assets/images/banner/banner-rose.jpg',
+    productId: 'rose', image: '/assets/images/banner/banner-rose.jpg', modelPhoto: null,
     serif: 'Soft & fresh', line: 'with a touch of rose', accent: '#FFC9DA',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Rose Petals', icon: 'flower' },
@@ -119,7 +122,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'lavender', image: '/assets/images/banner/banner-lavender.jpg',
+    productId: 'lavender', image: '/assets/images/banner/banner-lavender.jpg', modelPhoto: null,
     serif: 'Calm & fresh', line: 'for him and for her', accent: '#DCCBFF',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Lavender', icon: 'sprig' },

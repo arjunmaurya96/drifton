@@ -44,6 +44,11 @@ export default function HeroBanner() {
         return (
           <div key={k} aria-hidden={k !== i} className={`absolute inset-0 overflow-hidden transition-[transform,opacity] duration-[1100ms] ease-[cubic-bezier(.7,0,.2,1)] ${state}`}>
             <img key={k === i ? `on-${i}` : 'off'} src={s.image} alt="" className={`h-full w-full object-cover object-[70%_center] ${k === i ? 'animate-ken' : ''}`} />
+            {/* Model photo behind the text (left side). It fades out to the right into the product image. */}
+            {s.modelPhoto && (
+              <img src={s.modelPhoto} alt="" className={`absolute inset-y-0 left-0 h-full w-full object-cover object-top md:w-[58%] ${k === i ? 'animate-from-left' : ''}`}
+                style={{ WebkitMaskImage: 'linear-gradient(to right, #000 55%, transparent 100%)', maskImage: 'linear-gradient(to right, #000 55%, transparent 100%)' }} />
+            )}
           </div>
         );
       })}
