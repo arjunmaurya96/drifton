@@ -16,7 +16,7 @@ export default function ProductGrid() {
             Shop deodorants &amp; more
           </Link>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:min-h-0 xl:flex-1 xl:grid-cols-5">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:min-h-0 xl:flex-1 xl:grid-cols-4">
           {products.map((p) => (
             <ProductCard key={p.id} product={p} className="h-[520px] sm:h-[560px] xl:h-full" />
           ))}
