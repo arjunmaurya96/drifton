@@ -24,20 +24,36 @@ export default function HowToUse() {
         <h2 id="how-title" className="font-serif text-[48px] leading-none text-navy-900 sm:text-[68px]">How to <span className="text-brand">use</span></h2>
         <p className="max-w-[460px] text-[16px] text-muted sm:text-[17px]">Just like it says on the pack — fresh all day in under 10 seconds.</p>
       </div>
-      <ol className="container-wide grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4 xl:gap-5">
-        {steps.map((s, k) => s.photo ? (
-          <li key={s.title} className="overflow-hidden rounded-[28px] bg-[#EEF1F5] shadow-[0_20px_50px_-25px_rgba(15,26,60,.45)]">
-            <img src={s.photo} alt={`Step ${k + 1} — ${s.title}`} loading="lazy" decoding="async" className="aspect-[1199/1312] w-full object-cover" />
-          </li>
-        ) : (
-          <li key={s.title} className="group relative overflow-hidden rounded-[28px] bg-[#EEF1F5] shadow-[0_20px_50px_-25px_rgba(15,26,60,.45)]">
-            <img src={s.img} alt="" loading="lazy" decoding="async" className="aspect-[1199/1312] w-full object-cover" style={{ objectPosition: s.pos }} />
-            <div className="absolute inset-0 bg-gradient-to-r from-white/85 via-white/20 to-transparent" />
-            <div className="absolute left-[4%] top-[9%] flex w-[26%] flex-col items-center gap-2 text-center">
-              <span className="whitespace-nowrap rounded-full bg-[#123A7A] px-3 py-1 font-head text-[16px] font-bold text-white sm:text-[20px] xl:text-[14px]">Step {k + 1}</span>
-              <span className="flex aspect-square w-[78%] items-center justify-center rounded-full border-[2.5px] border-[#123A7A] bg-white text-[#123A7A] [&_svg]:h-1/2 [&_svg]:w-1/2">{icons[s.icon]}</span>
-              <h3 className="font-head text-[15px] font-bold leading-tight text-[#123A7A] sm:text-[19px] xl:text-[13px]">{s.title}</h3>
-              <span className="h-1 w-[80%] rounded-full bg-[#F07FA0]" />
+      <ol className="container-wide grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4 xl:gap-6">
+        {steps.map((s, k) => (
+          <li key={s.title} className="relative flex flex-col">
+            {/* step marker + connector line (timeline) */}
+            <div className="mb-4 flex items-center gap-3">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#123A7A] font-head text-[17px] font-bold text-white ring-4 ring-[#E3ECF8]">{k + 1}</span>
+              <span className="text-[12px] font-bold uppercase tracking-[2px] text-[#123A7A]">Step {k + 1}</span>
+              {k < steps.length - 1 && <span aria-hidden="true" className="ml-1 hidden h-0.5 flex-1 bg-[repeating-linear-gradient(90deg,#9DB6DA_0_8px,transparent_8px_14px)] xl:block" />}
+            </div>
+
+            {/* image — every card the same size */}
+            <div className="relative overflow-hidden rounded-[24px] bg-[#EEF1F5] shadow-[0_22px_50px_-26px_rgba(15,26,60,.5)] ring-1 ring-line">
+              {s.photo ? (
+                <img src={s.photo} alt={`Step ${k + 1} — ${s.title}`} loading="lazy" decoding="async" className="block aspect-[1199/1312] w-full object-cover" />
+              ) : (
+                <>
+                  <img src={s.img} alt="" loading="lazy" decoding="async" className="block aspect-[1199/1312] w-full object-cover" style={{ objectPosition: s.pos }} />
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/85 via-white/20 to-transparent" />
+                  <div className="absolute left-[4%] top-[9%] flex w-[28%] flex-col items-center gap-2 text-center">
+                    <span className="whitespace-nowrap rounded-full bg-[#123A7A] px-3 py-1 font-head text-[16px] font-bold text-white sm:text-[18px] xl:text-[14px]">Step {k + 1}</span>
+                    <span className="flex aspect-square w-[80%] items-center justify-center rounded-full border-[2.5px] border-[#123A7A] bg-white text-[#123A7A] [&_svg]:h-1/2 [&_svg]:w-1/2">{icons[s.icon]}</span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* caption — same for all four */}
+            <div className="mt-4 flex flex-col gap-1 px-1">
+              <h3 className="font-head text-[20px] font-bold leading-tight text-navy-900">{s.title}</h3>
+              <p className="text-[14.5px] leading-relaxed text-muted">{s.text}</p>
             </div>
           </li>
         ))}
