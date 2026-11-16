@@ -1,6 +1,7 @@
 import HeroBanner from '../components/HeroBanner.jsx';
 import ProductGrid from '../components/ProductGrid.jsx';
 import ProductMarquee from '../components/ProductMarquee.jsx';
+import VariantSpotlight from '../components/VariantSpotlight.jsx';
 import ServiceCards from '../components/ServiceCards.jsx';
 import WhyDrifton from '../components/WhyDrifton.jsx';
 import HowToUse from '../components/HowToUse.jsx';
@@ -15,6 +16,7 @@ export default function Home() {
     <>
       <HeroBanner />
       <ProductGrid />
+      <VariantSpotlight />
       <ProductMarquee />
       <ServiceCards />
       <div className="h-24" />
