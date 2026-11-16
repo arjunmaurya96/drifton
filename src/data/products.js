@@ -100,7 +100,7 @@ export const products = [
 // icon: 'gem' | 'flower' | 'leaf' | 'drop' | 'hex' | 'sprig'
 export const bannerSlides = [
   {
-    productId: 'palash', modelPhoto: '/assets/images/models/model-girl.jpg', modelPos: '58% center', cutout: '/assets/images/cutouts/palash.png', rightImage: '/assets/images/hero-products/range-crystal.jpg',
+    productId: 'palash', modelPhoto: '/assets/images/models/model-girl.jpg', modelPos: '58% center', cutout: '/assets/images/cutouts/palash.png', rightImage: '/assets/images/hero-products/range-crystal.png',
     bgFrom: '#FFF3E2', bgTo: '#FFC98A', glow: '#FFB45E', dark: false, accent: '#C2571A',
     serif: 'Crystal deo', line: 'that keeps you fresh 24/7',
     ingredients: [
@@ -109,7 +109,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'charcoal', modelPhoto: '/assets/images/models/model-boy.jpg', modelPos: '55% center', cutout: '/assets/images/cutouts/charcoal.png', rightImage: '/assets/images/hero-products/range-crystal.jpg',
+    productId: 'charcoal', modelPhoto: '/assets/images/models/model-boy.jpg', modelPos: '55% center', cutout: '/assets/images/cutouts/charcoal.png', rightImage: '/assets/images/hero-products/range-crystal.png',
     bgFrom: '#4A5163', bgTo: '#161A23', glow: '#8C97B3', dark: true, accent: '#7BE0A6',
     serif: 'Deep clean', line: 'for your busiest days',
     ingredients: [
@@ -118,7 +118,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'rose', modelPhoto: '/assets/images/models/model-girls.jpg', modelPos: 'center 30%', cutout: '/assets/images/cutouts/rose.png', rightImage: '/assets/images/hero-products/range-crystal.jpg',
+    productId: 'rose', modelPhoto: '/assets/images/models/model-girls.jpg', modelPos: 'center 30%', cutout: '/assets/images/cutouts/rose.png', rightImage: '/assets/images/hero-products/range-crystal.png',
     bgFrom: '#FFF0F4', bgTo: '#F7B5CA', glow: '#F08AAE', dark: false, accent: '#B0305D',
     serif: 'Soft & fresh', line: 'with a touch of rose',
     ingredients: [
@@ -127,7 +127,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'lavender', modelPhoto: '/assets/images/models/model-couple.jpg', modelPos: '62% center', cutout: '/assets/images/cutouts/crystal.png', rightImage: '/assets/images/hero-products/range-crystal.jpg',
+    productId: 'lavender', modelPhoto: '/assets/images/models/model-couple.jpg', modelPos: '62% center', cutout: '/assets/images/cutouts/crystal.png', rightImage: '/assets/images/hero-products/range-crystal.png',
     bgFrom: '#EEF7FF', bgTo: '#A9D3F5', glow: '#7FBDF0', dark: false, accent: '#1C6FB8',
     serif: 'Pure & clear', line: 'natural mineral freshness',
     ingredients: [

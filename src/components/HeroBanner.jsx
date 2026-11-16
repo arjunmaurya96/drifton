@@ -76,8 +76,7 @@ export default function HeroBanner() {
         {/* Right: the product only */}
         <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="hidden h-full items-center justify-center md:flex">
           {slide.rightImage ? (
-            <img src={slide.rightImage} alt={product.name} className="h-[min(80svh,820px)] w-auto animate-from-right object-cover"
-              style={{ animationDelay: '150ms', WebkitMaskImage: 'radial-gradient(ellipse closest-side at 50% 50%, #000 72%, transparent 100%)', maskImage: 'radial-gradient(ellipse closest-side at 50% 50%, #000 72%, transparent 100%)' }} />
+            <img src={slide.rightImage} alt={product.name} className="h-[min(78svh,800px)] w-auto animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
           ) : (
             <img src={slide.cutout} alt={product.name} className="h-[min(76svh,800px)] w-auto animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
           )}
