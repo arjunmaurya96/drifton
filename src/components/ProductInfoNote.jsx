@@ -16,55 +16,50 @@ const icons = [
   <svg key="d" {...I}><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20a6.5 6.5 0 0 1 13 0" /><path d="M17 11a3 3 0 1 0 0-6M21.5 20a5.5 5.5 0 0 0-4-5.3" /></svg>,
 ];
 
+function Point({ p, k, align }) {
+  return (
+    <li className={`flex items-start gap-4 ${align === 'right' ? 'lg:flex-row-reverse lg:text-right' : ''}`}>
+      <span className="relative flex size-14 shrink-0 items-center justify-center rounded-2xl bg-white text-navy-900 shadow-[0_12px_30px_-12px_rgba(15,26,60,.35)] ring-1 ring-line">
+        {icons[k]}
+        <span className="absolute -top-2 left-1/2 flex h-5 -translate-x-1/2 items-center rounded-full bg-brand px-2 text-[10.5px] font-bold text-white">0{k + 1}</span>
+      </span>
+      <span className="pt-0.5">
+        <b className="block font-head text-[17px] font-semibold text-navy-900">{p.t}</b>
+        <span className="mt-1 block text-[14px] leading-relaxed text-muted">{p.d}</span>
+      </span>
+    </li>
+  );
+}
+
+// Layout: heading on top, the 4 roll ons in the middle, 2 points on each side (like an infographic).
 export default function ProductInfoNote({ className = '' }) {
   return (
-    <div className={`relative overflow-hidden rounded-[32px] bg-[radial-gradient(120%_120%_at_0%_0%,#24408F_0%,#0F1A3C_55%,#0B1430_100%)] text-white ${className}`}>
-      {/* soft glows */}
-      <span aria-hidden="true" className="absolute -left-24 top-1/3 size-[420px] rounded-full bg-[#2E7FA8]/30 blur-[90px]" />
-      <span aria-hidden="true" className="absolute -right-20 -top-20 size-[300px] rounded-full bg-mint/15 blur-[80px]" />
+    <div className={`relative overflow-hidden rounded-[32px] bg-[linear-gradient(180deg,#FFF8EE_0%,#FFFFFF_45%,#F1F8FC_100%)] px-5 py-10 ring-1 ring-line sm:px-10 sm:py-14 ${className}`}>
+      <div className="mx-auto flex max-w-[720px] flex-col items-center gap-3 text-center">
+        <span className="eyebrow flex items-center gap-2.5 before:h-0.5 before:w-6 before:bg-brand after:h-0.5 after:w-6 after:bg-brand">Product information</span>
+        <h2 className="font-serif text-[36px] leading-[1.05] text-navy-900 sm:text-[52px]">Honest about every <span className="italic text-brand">roll on</span></h2>
+        <p className="text-[15px] leading-relaxed text-muted sm:text-[16px]">We make reasonable efforts to ensure that product descriptions, images, ingredients, prices and other information on our website are accurate. However:</p>
+      </div>
 
-      <div className="relative grid grid-cols-1 items-center gap-8 p-6 sm:p-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-12 lg:p-14">
-        {/* products on a glowing stage */}
-        <div className="relative order-2 flex items-end justify-center pt-6 lg:order-1">
-          <span aria-hidden="true" className="absolute bottom-[6%] left-1/2 h-[46%] w-[88%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgba(123,224,166,.35),transparent)]" />
-          <span aria-hidden="true" className="absolute bottom-[3%] left-1/2 h-6 w-[78%] -translate-x-1/2 rounded-[50%] bg-black/45 blur-md" />
+      <div className="mt-10 grid grid-cols-1 items-center gap-8 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-10">
+        <ol className="order-2 flex flex-col gap-8 lg:order-1">
+          {points.slice(0, 2).map((p, k) => <Point key={p.t} p={p} k={k} align="right" />)}
+        </ol>
+        <div className="relative order-1 flex items-end justify-center lg:order-2">
+          <span aria-hidden="true" className="absolute left-1/2 top-1/2 aspect-square w-[92%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,#FFE7C7_0%,#FDEFF4_55%,transparent_100%)]" />
+          <span aria-hidden="true" className="absolute bottom-0 left-1/2 h-5 w-[80%] -translate-x-1/2 rounded-[50%] bg-navy-900/20 blur-md" />
           <img src="/assets/images/hero-products/all-four.webp" alt="DriftOn Natural, Palash, Charcoal and Rose Alum Roll On" loading="lazy" decoding="async"
-            className="relative w-full max-w-[520px] object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,.45)]" />
+            className="relative w-full max-w-[460px] object-contain" />
         </div>
+        <ol className="order-3 flex flex-col gap-8">
+          {points.slice(2).map((p, k) => <Point key={p.t} p={p} k={k + 2} align="left" />)}
+        </ol>
+      </div>
 
-        {/* content */}
-        <div className="order-1 flex flex-col gap-6 lg:order-2">
-          <div className="flex flex-col gap-3">
-            <span className="inline-flex items-center gap-2 self-start rounded-full bg-white/10 px-3.5 py-1.5 text-[11.5px] font-bold uppercase tracking-[2px] text-mint ring-1 ring-white/15">
-              <span className="size-1.5 rounded-full bg-mint" /> Product information
-            </span>
-            <h2 className="font-head text-[30px] font-bold leading-[1.08] tracking-tight sm:text-[42px]">
-              Honest about every <span className="bg-gradient-to-r from-mint to-[#7FD3F7] bg-clip-text text-transparent">roll on.</span>
-            </h2>
-            <p className="max-w-[560px] text-[15px] leading-relaxed text-ondark sm:text-[16px]">
-              We make reasonable efforts to ensure that product descriptions, images, ingredients, prices and other information on our website are accurate. However:
-            </p>
-          </div>
-
-          <ol className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {points.map((p, k) => (
-              <li key={p.t} className="group flex gap-3.5 rounded-2xl bg-white/[.06] p-4 ring-1 ring-white/10 backdrop-blur transition hover:bg-white/[.1] hover:ring-mint/40">
-                <span className="relative flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-mint to-[#3FB27F] text-navy-900">
-                  {icons[k]}
-                  <span className="absolute -right-1.5 -top-1.5 flex size-5 items-center justify-center rounded-full bg-white text-[10.5px] font-bold text-navy-900">{k + 1}</span>
-                </span>
-                <span>
-                  <b className="block text-[15px] font-semibold text-white">{p.t}</b>
-                  <span className="text-[13.5px] leading-relaxed text-[#B7C1DF]">{p.d}</span>
-                </span>
-              </li>
-            ))}
-          </ol>
-
-          <Link to="/terms" className="inline-flex items-center gap-2 self-start text-[14px] font-semibold text-mint hover:text-white">
-            Read our full Terms &amp; Conditions <span aria-hidden="true">→</span>
-          </Link>
-        </div>
+      <div className="mt-10 flex justify-center">
+        <Link to="/terms" className="inline-flex min-h-11 items-center gap-2 rounded-full border-[1.5px] border-navy-900 px-5 text-[14px] font-semibold text-navy-900 hover:bg-navy-900 hover:text-white">
+          Read our full Terms &amp; Conditions <span aria-hidden="true">→</span>
+        </Link>
       </div>
     </div>
   );
