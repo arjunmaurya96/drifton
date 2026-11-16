@@ -10,6 +10,7 @@ import CertificateSection from '../components/CertificateSection.jsx';
 import Reviews from '../components/Reviews.jsx';
 import Stats from '../components/Stats.jsx';
 import ReferEarn from '../components/ReferEarn.jsx';
+import GoogleBusiness from '../components/GoogleBusiness.jsx';
 
 export default function Home() {
   return (
@@ -24,9 +25,10 @@ export default function Home() {
       <HowToUse />
       <AlumSection />
       <CertificateSection />
-      <Reviews />
       <Stats />
       <ReferEarn />
+      <GoogleBusiness />
+      <Reviews />
     </>
   );
 }

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
+import { socials } from '../data/site.js';
+import SocialIcon from './SocialIcon.jsx';
 
 const Col = ({ title, children }) => (
   <div className="flex flex-col gap-3 text-[15px]">
@@ -51,9 +53,18 @@ export default function Footer() {
             </div>
           </form>
         </div>
-        <div className="flex flex-wrap justify-between gap-3 border-t border-[#26366E] pt-6 text-[13.5px] text-[#9AA5C8]">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#26366E] pt-6 text-[13.5px] text-[#9AA5C8]">
           <span>© {new Date().getFullYear()} Drifton · AI Enterprises. All rights reserved.</span>
-          <span>Instagram · YouTube · Facebook</span>
+          <ul className="flex flex-wrap gap-2" aria-label="Follow Drifton">
+            {socials.filter((x) => x.url).map((x) => (
+              <li key={x.id}>
+                <a href={x.url} target="_blank" rel="noreferrer" aria-label={x.label}
+                  className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-mint hover:text-navy-900">
+                  <SocialIcon id={x.id} size={18} />
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>
