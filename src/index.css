@@ -50,6 +50,8 @@
 
 @layer base {
   html { scroll-behavior: smooth; }
+  /* gentle snap: only kicks in when you stop scrolling near a snap section (the product wall) */
+  @media (min-width: 1280px) { html { scroll-snap-type: y proximity; } }
   body { @apply bg-page text-navy-900 font-body antialiased overflow-x-hidden; }
   h1, h2, h3, h4 { @apply font-head; }
   a { @apply text-navy-700 no-underline; }
