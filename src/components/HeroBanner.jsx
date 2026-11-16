@@ -42,7 +42,7 @@ export default function HeroBanner() {
       {/* Left: model photo, fading into the background colour */}
       <div key={`m-${i}`} aria-hidden="true" className="absolute inset-y-0 left-0 w-full animate-from-left max-md:opacity-35 md:w-[50%] lg:w-[46%]"
         style={{ WebkitMaskImage: 'linear-gradient(to right, #000 62%, transparent 100%)', maskImage: 'linear-gradient(to right, #000 62%, transparent 100%)' }}>
-        <img src={slide.modelPhoto} alt="" className="h-full w-full object-cover object-[58%_center]"
+        <img src={slide.modelPhoto} alt="" className="h-full w-full object-cover" style={{ objectPosition: slide.modelPos || '58% center' }}
           // if a photo is missing (e.g. model-boy.jpg not added yet), fall back to the girl photo
           onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
       </div>
