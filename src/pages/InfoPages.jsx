@@ -80,9 +80,10 @@ export function Ingredients() {
       <div className="container-wide flex flex-col gap-5 py-10 sm:gap-6 sm:py-14">
         {ingredientOrder.map(byId).map((p, k) => (
           // zig-zag: image left on 1st & 3rd, image right on 2nd & 4th
-          <section key={p.id} className={`grid grid-cols-1 overflow-hidden rounded-2xl border border-line bg-white ${k % 2 ? 'md:grid-cols-[minmax(0,1fr)_280px] lg:grid-cols-[minmax(0,1fr)_320px]' : 'md:grid-cols-[280px_minmax(0,1fr)] lg:grid-cols-[320px_minmax(0,1fr)]'}`}>
-            <div className={`relative h-[300px] sm:h-[340px] md:h-auto md:min-h-[360px] ${k % 2 ? 'md:order-2' : ''}`} style={{ background: p.bg }}>
-              <img src={p.scene} alt={p.name} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-[50%_48%]" />
+          <section key={p.id} className={`grid grid-cols-1 overflow-hidden rounded-2xl border border-line bg-white ${k % 2 ? 'md:grid-cols-[minmax(0,1fr)_340px] lg:grid-cols-[minmax(0,1fr)_400px]' : 'md:grid-cols-[340px_minmax(0,1fr)] lg:grid-cols-[400px_minmax(0,1fr)]'}`}>
+            <div className={`flex items-center justify-center ${k % 2 ? 'md:order-2' : ''}`} style={{ background: p.bg }}>
+              {/* ingredient image — all four are the same size (1194 × 1280) */}
+              <img src={`/assets/images/ingredients/${p.id}.webp`} alt={`${p.name} ingredients`} loading="lazy" decoding="async" className="aspect-[1194/1280] w-full object-cover" />
             </div>
             <div className="flex flex-col justify-center gap-4 p-5 sm:p-8">
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: p.accent }}>{p.tag}</span>
