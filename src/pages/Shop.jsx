@@ -114,7 +114,7 @@ export default function Shop() {
           const inCart = cart.some((l) => l.id === p.id);
           return (
             <article key={p.id} className="flex flex-col overflow-hidden rounded-xl border border-line bg-white">
-              <div className="relative h-[64svh] min-h-[440px] overflow-hidden xl:h-[calc(100svh-260px)] xl:min-h-[520px]" style={{ background: p.bg }}>
+              <div className="relative h-[calc(100svh-180px)] min-h-[520px] overflow-hidden xl:h-[calc(100svh-170px)] xl:min-h-[600px]" style={{ background: p.bg }}>
                 <Link to={url} aria-label={`View ${p.name}`} className="block h-full"><img src={p.image} alt={p.name} loading="lazy" className="h-full w-full object-cover" /></Link>
                 <span className="absolute left-4 top-4 rounded-full bg-white px-3.5 py-1.5 font-jost text-[13px] font-medium text-navy-900">{p.badge}</span>
                 <span className="absolute bottom-4 left-4 rounded-full bg-brand px-3 py-1 text-xs font-bold text-white">{discount(p)}% OFF</span>
