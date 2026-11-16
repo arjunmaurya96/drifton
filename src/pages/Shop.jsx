@@ -1,43 +1,29 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { products, formatINR, discount, makeLine } from '../data/products.js';
+import { products, bannerSlides, formatINR, discount, makeLine } from '../data/products.js';
 import { useStore } from '../context/StoreContext.jsx';
-import { Heart } from '../components/Icons.jsx';
-import { bannerSlides } from '../data/products.js';
+import { Heart, Truck, Shield, Return, Cash } from '../components/Icons.jsx';
 
-// Top banner. Put the generated image at public/assets/images/shop-banner.jpg (wide, about 1920x800).
-// Until that file exists, a designed banner with the product cutouts is shown instead.
-const SHOP_BANNER = '/assets/images/shop-banner.jpg';
+const cutout = (id) => bannerSlides.find((b) => b.productId === id)?.cutout;
 
-function ShopBanner() {
-  const [hasImg, setHasImg] = useState(true);
-  if (hasImg) {
-    return (
-      <section aria-label="Shop Drifton" className="relative h-[46svh] min-h-[340px] w-full overflow-hidden bg-[#dfe9f2] md:h-[62svh]">
-        <img src={SHOP_BANNER} alt="Drifton natural crystal deodorant range" onError={() => setHasImg(false)} className="h-full w-full object-cover" />
-      </section>
-    );
-  }
-  const cuts = bannerSlides.map((b) => b.cutout);
-  return (
-    <section aria-label="Shop Drifton" className="relative h-[46svh] min-h-[340px] w-full overflow-hidden md:h-[62svh]"
-      style={{ background: 'radial-gradient(50% 70% at 75% 60%, #FFFFFFAA, transparent 70%), linear-gradient(110deg, #FFE7C7 0%, #F9D3E0 38%, #DCD3F7 68%, #CFE6FA 100%)' }}>
-      <div className="container-wide relative flex h-full items-center">
-        <div className="relative z-[2] flex max-w-[560px] flex-col gap-4">
-          <span className="eyebrow">The full range</span>
-          <h1 className="font-serif text-[52px] leading-[0.95] text-navy-900 sm:text-[72px] xl:text-[88px]">Four crystals.<br /><span className="text-brand">One fresh you.</span></h1>
-          <p className="max-w-[440px] text-lg text-navy-500">Natural alum deodorant sticks in Palash, Charcoal, Rose and Pure Crystal.</p>
-        </div>
-        <div aria-hidden="true" className="absolute bottom-0 right-[2%] hidden h-[88%] items-end gap-2 md:flex lg:right-[5%]">
-          {cuts.map((c, k) => (
-            <img key={c} src={c} alt="" className="w-auto animate-fade-up object-contain drop-shadow-xl" style={{ height: `${[78, 92, 100, 84][k]}%`, animationDelay: `${k * 120}ms` }} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+// Offer banners (DUMMY offers — confirm with the client)
+const offers = [
+  {
+    eyebrow: 'First order offer', title: 'Flat ₹100 off', text: 'Use code', code: 'DRIFTON100',
+    bg: 'linear-gradient(110deg, #FFF1DE 0%, #FFC98A 100%)', ink: '#0F1A3C', accent: '#C2571A', products: ['palash', 'rose'],
+  },
+  {
+    eyebrow: 'Combo deal', title: 'Buy 2, get 1 free', text: 'Mix any 3 crystals. Applied at checkout.', code: null,
+    bg: 'linear-gradient(110deg, #1C2E6B 0%, #0F1A3C 100%)', ink: '#FFFFFF', accent: '#7BE0A6', products: ['charcoal', 'lavender'],
+  },
+];
 
+const filters = [
+  { id: 'all', label: 'All', match: () => true },
+  { id: 'floral', label: 'Floral', match: (p) => /floral/i.test(p.tag) },
+  { id: 'fresh', label: 'Detox & fresh', match: (p) => /detox|fresh/i.test(p.tag) },
+  { id: 'calm', label: 'Calm & pure', match: (p) => /calm|herbal/i.test(p.tag) },
+];
 
 const sorts = {
   featured: { label: 'Featured', fn: () => 0 },
@@ -46,64 +32,111 @@ const sorts = {
   name: { label: 'Name A–Z', fn: (a, b) => a.name.localeCompare(b.name) },
 };
 
-/** Shop page: every product, with Add to cart and Buy now right on the card. */
+function OfferBanner({ o }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(o.code); } catch {}
+    setCopied(true); setTimeout(() => setCopied(false), 1800);
+  };
+  return (
+    <div className="relative flex h-[190px] items-center overflow-hidden rounded-2xl px-7 sm:h-[210px] sm:px-9" style={{ background: o.bg, color: o.ink }}>
+      <div className="relative z-[2] flex max-w-[58%] flex-col gap-2">
+        <span className="text-xs font-bold uppercase tracking-[2px]" style={{ color: o.accent }}>{o.eyebrow}</span>
+        <b className="font-serif text-[34px] font-normal leading-none sm:text-[44px]">{o.title}</b>
+        {o.code ? (
+          <span className="flex flex-wrap items-center gap-2 text-sm">
+            {o.text}
+            <button onClick={copy} className="rounded-full border-[1.5px] border-dashed px-3 py-1 font-bold tracking-wider" style={{ borderColor: o.accent, color: o.accent }}>
+              {copied ? 'Copied!' : o.code}
+            </button>
+          </span>
+        ) : (
+          <span className="text-sm opacity-85">{o.text}</span>
+        )}
+      </div>
+      <div aria-hidden="true" className="absolute bottom-0 right-[-44px] flex h-[78%] items-end gap-1 sm:right-8 sm:h-[115%]">
+        {o.products.map((id, k) => (
+          <img key={id} src={cutout(id)} alt="" className="w-auto object-contain drop-shadow-xl" style={{ height: k ? '78%' : '92%', transform: `rotate(${k ? 8 : -6}deg) translateY(${k ? 6 : 14}%)` }} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Shop page: 2 slim offer banners, a compact toolbar (filters + sort), then tall product cards. */
 export default function Shop() {
   const { addToCart, toggleWish, wishlist, cart, openBuy } = useStore();
   const [sort, setSort] = useState('featured');
-  const list = [...products].sort(sorts[sort].fn);
-
-  const buyNow = (p) => openBuy([makeLine(p)]);
+  const [filter, setFilter] = useState('all');
+  const f = filters.find((x) => x.id === filter);
+  const list = products.filter(f.match).sort(sorts[sort].fn);
 
   return (
-    <>
-    <ShopBanner />
-    <div className="container-wide pb-24">
-      <nav aria-label="Breadcrumb" className="flex items-center gap-2 py-6 text-sm text-muted-2">
-        <Link to="/" className="text-muted-2 hover:text-brand">Home</Link><span>/</span><b className="font-semibold text-navy-900">Shop</b>
-      </nav>
+    <div className="container-wide pb-20 pt-6">
+      {/* 1. Offers */}
+      <section aria-label="Offers" className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        {offers.map((o) => <OfferBanner key={o.title} o={o} />)}
+      </section>
 
-      <div className="mb-10 flex flex-wrap items-end justify-between gap-5">
-        <div className="flex flex-col gap-2">
-          <h2 className="font-jost text-[44px] font-medium leading-tight tracking-tight sm:text-[56px]">Shop all</h2>
-          <p className="text-muted">{products.length} natural crystal deodorants</p>
+      {/* 2. Toolbar */}
+      <div className="mt-8 flex flex-col gap-5 border-b border-line pb-5 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex flex-col gap-1">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-muted-2">
+            <Link to="/" className="text-muted-2 hover:text-brand">Home</Link><span>/</span><span className="text-navy-900">Shop</span>
+          </nav>
+          <h1 className="font-jost text-[38px] font-medium leading-tight tracking-tight">
+            Shop all <span className="align-middle text-base font-normal text-muted-2">({list.length} products)</span>
+          </h1>
         </div>
-        <label className="flex items-center gap-3 text-sm font-semibold">
-          Sort by
-          <select value={sort} onChange={(e) => setSort(e.target.value)}
-            className="min-h-11 rounded-full border-[1.5px] border-line-strong bg-white px-4 text-[15px] font-medium outline-none focus:border-navy-700">
-            {Object.entries(sorts).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-          </select>
-        </label>
+        <div className="flex flex-wrap items-center gap-2.5">
+          {filters.map((x) => (
+            <button key={x.id} onClick={() => setFilter(x.id)} aria-pressed={filter === x.id}
+              className={`min-h-10 rounded-full px-4 text-sm font-semibold transition ${filter === x.id ? 'bg-navy-900 text-white' : 'border-[1.5px] border-line-strong bg-white text-navy-900 hover:border-navy-700'}`}>
+              {x.label}
+            </button>
+          ))}
+          <span className="mx-1 hidden h-6 w-px bg-line-strong sm:block" />
+          <label className="flex items-center gap-2 text-sm font-semibold">
+            <span className="sr-only sm:not-sr-only">Sort</span>
+            <select value={sort} onChange={(e) => setSort(e.target.value)}
+              className="min-h-10 rounded-full border-[1.5px] border-line-strong bg-white px-3.5 text-sm font-medium outline-none focus:border-navy-700">
+              {Object.entries(sorts).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+            </select>
+          </label>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      {/* 3. Products */}
+      <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         {list.map((p) => {
           const url = `/product/${p.slug}`;
           const inWish = wishlist.includes(p.id);
           const inCart = cart.some((l) => l.id === p.id);
           return (
             <article key={p.id} className="flex flex-col overflow-hidden rounded-xl border border-line bg-white">
-              <div className="relative h-[68svh] min-h-[460px] overflow-hidden sm:h-[72svh] xl:h-[calc(100svh-230px)] xl:min-h-[560px]" style={{ background: p.bg }}>
+              <div className="relative h-[64svh] min-h-[440px] overflow-hidden xl:h-[calc(100svh-260px)] xl:min-h-[520px]" style={{ background: p.bg }}>
                 <Link to={url} aria-label={`View ${p.name}`} className="block h-full"><img src={p.image} alt={p.name} loading="lazy" className="h-full w-full object-cover" /></Link>
                 <span className="absolute left-4 top-4 rounded-full bg-white px-3.5 py-1.5 font-jost text-[13px] font-medium text-navy-900">{p.badge}</span>
+                <span className="absolute bottom-4 left-4 rounded-full bg-brand px-3 py-1 text-xs font-bold text-white">{discount(p)}% OFF</span>
                 <button onClick={() => toggleWish(p.id)} aria-pressed={inWish} aria-label={`${inWish ? 'Remove' : 'Add'} ${p.name} ${inWish ? 'from' : 'to'} wishlist`}
                   className="absolute right-3 top-3 flex size-10 items-center justify-center rounded-full bg-white/90 text-navy-900"><Heart filled={inWish} /></button>
               </div>
-              <div className="flex flex-1 flex-col gap-3 p-5">
-                <div className="flex flex-col gap-1">
-                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: p.accent }}>{p.tag}</span>
-                  <Link to={url} className="font-jost text-[20px] font-medium leading-tight text-navy-900 hover:text-brand">{p.name}</Link>
+              <div className="flex flex-col gap-3 p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex min-w-0 flex-col gap-1">
+                    <span className="text-xs font-bold uppercase tracking-widest" style={{ color: p.accent }}>{p.tag}</span>
+                    <Link to={url} className="font-jost text-[20px] font-medium leading-tight text-navy-900 hover:text-brand">{p.name}</Link>
+                  </div>
+                  <span className="shrink-0 text-right">
+                    <b className="block font-head text-xl">{formatINR(p.price)}</b>
+                    <s className="text-sm text-muted-2">{formatINR(p.mrp)}</s>
+                  </span>
                 </div>
-                <div className="flex items-baseline gap-2.5">
-                  <b className="font-head text-xl">{formatINR(p.price)}</b>
-                  <s className="text-sm text-muted-2">{formatINR(p.mrp)}</s>
-                  <span className="rounded-full bg-mint-soft px-2 py-0.5 text-xs font-bold text-brand-dark">{discount(p)}% OFF</span>
-                </div>
-                <div className="mt-auto grid grid-cols-2 gap-2.5 pt-1">
+                <div className="grid grid-cols-2 gap-2.5">
                   <button onClick={() => addToCart(p)} className="min-h-11 rounded-full border-[1.5px] border-navy-900 font-jost text-[13px] font-semibold uppercase tracking-wide text-navy-900 hover:bg-navy-900 hover:text-white">
                     {inCart ? 'Add more' : 'Add to cart'}
                   </button>
-                  <button onClick={() => buyNow(p)} className="min-h-11 rounded-full bg-brand font-jost text-[13px] font-semibold uppercase tracking-wide text-white hover:bg-brand-dark">
+                  <button onClick={() => openBuy([makeLine(p)])} className="min-h-11 rounded-full bg-brand font-jost text-[13px] font-semibold uppercase tracking-wide text-white hover:bg-brand-dark">
                     Buy now
                   </button>
                 </div>
@@ -112,7 +145,16 @@ export default function Shop() {
           );
         })}
       </div>
+
+      {/* 4. Trust strip */}
+      <ul className="mt-12 grid grid-cols-2 gap-4 rounded-2xl bg-navy-900 p-6 text-white lg:grid-cols-4">
+        {[[Truck, 'Free shipping', 'On prepaid orders'], [Cash, 'Cash on delivery', 'Pay when it arrives'], [Shield, 'Secure payments', 'UPI, cards, net banking'], [Return, 'Easy returns', 'Hassle-free policy']].map(([I, t, s]) => (
+          <li key={t} className="flex items-center gap-3">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-mint"><I size={22} /></span>
+            <span><b className="block font-head text-[15px] font-semibold">{t}</b><small className="text-ondark">{s}</small></span>
+          </li>
+        ))}
+      </ul>
     </div>
-    </>
   );
 }
