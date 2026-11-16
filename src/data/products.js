@@ -17,7 +17,7 @@ export const COMBO_SAVING = UNIT_PRICE * 2 - COMBO_PRICE; // ₹150 per pair
 export const priceFor = (n) => Math.floor(n / 2) * COMBO_PRICE + (n % 2) * UNIT_PRICE;
 
 // Coupons — DUMMY codes, confirm with the client
-export const coupons = { DRIFTON100: { off: 100, note: '₹100 off your first order' } };
+export const coupons = { DRIFTON100: { off: 100, note: '₹100 off (single-stick orders, not with combos)' } };
 
 // The real combos from the client (each = 2 sticks for ₹800)
 export const combos = [
@@ -258,6 +258,8 @@ export const summarize = (lines, couponCode = '') => {
   const comboSaving = full - items;
   const delivery = sticks === 0 || sticks >= 2 ? 0 : DELIVERY_FEE;
   const coupon = coupons[couponCode.trim().toUpperCase()];
-  const couponOff = coupon ? Math.min(coupon.off, items) : 0;
-  return { sticks, full, items, comboSaving, delivery, coupon: coupon ? couponCode.trim().toUpperCase() : '', couponOff, total: items + delivery - couponOff };
+  // Client: a combo gets ONE benefit — free delivery OR ₹100 off. Combos get free delivery, so the coupon is not added on top.
+  const couponBlocked = Boolean(coupon) && comboSaving > 0;
+  const couponOff = coupon && !couponBlocked ? Math.min(coupon.off, items) : 0;
+  return { sticks, full, items, comboSaving, delivery, couponBlocked, coupon: coupon && !couponBlocked ? couponCode.trim().toUpperCase() : '', couponOff, total: items + delivery - couponOff };
 };

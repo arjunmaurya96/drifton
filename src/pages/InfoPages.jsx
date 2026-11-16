@@ -79,6 +79,35 @@ const glossary = {
   Fragrance: 'A light scent that matches the variant.',
 };
 
+// "Gyan" about the ingredients — shown at the bottom of the Know More Ingredients page.
+// Photos: placeholders from our product shots until the client sends the real ingredient pictures.
+const gyan = [
+  { title: 'What is potassium alum?', img: '/assets/images/alum-crystal-scene.jpg', text: 'Potassium alum is a naturally occurring mineral salt that forms clear crystals. It has been used in personal care across India for generations — many households know it as "phitkari".' },
+  { title: 'How does an alum stick work?', img: '/assets/images/scenes/natural.jpg', text: 'Wet the crystal, glide it on clean, dry underarms and let it dry. It leaves a thin, invisible mineral layer — no white marks on clothes and no sticky feel.' },
+  { title: 'Why glycerine?', img: '/assets/images/scenes/rose.jpg', text: 'Glycerine helps the crystal glide smoothly on the skin, so applying it feels easy and comfortable every day.' },
+  { title: 'Palash, rose & charcoal', img: '/assets/images/scenes/palash.jpg', text: 'Palash extract (from the bright orange flame-of-the-forest flower), rose extract and activated charcoal give each variant its own character. The Natural stick keeps it simple with just alum and glycerine.' },
+];
+
+function IngredientGyan() {
+  return (
+    <section aria-labelledby="gyan" className="mt-6 rounded-2xl bg-navy-900 p-5 text-white sm:p-10">
+      <span className="text-xs font-bold uppercase tracking-[2px] text-mint">Ingredient gyan</span>
+      <h2 id="gyan" className="mt-2 font-serif text-[32px] font-normal leading-tight sm:text-[44px]">Good to <span className="text-mint">know</span></h2>
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {gyan.map((g) => (
+          <article key={g.title} className="overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10">
+            <img src={g.img} alt="" loading="lazy" className="h-44 w-full object-cover object-center" />
+            <div className="p-4">
+              <h3 className="font-head text-[17px] font-semibold">{g.title}</h3>
+              <p className="mt-1.5 text-[14px] leading-relaxed text-ondark">{g.text}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function Ingredients() {
   return (
     <>
@@ -105,6 +134,7 @@ export function Ingredients() {
             </div>
           </section>
         ))}
+        <IngredientGyan />
         <p className="text-sm text-muted-2">Always read the ingredient list printed on the pack before use.</p>
       </div>
     </>
@@ -168,38 +198,44 @@ const withEmailLinks = (text) =>
     /@/.test(part) ? <a key={i} href={`mailto:${part}`} className="font-semibold text-navy-700 underline underline-offset-2 hover:text-brand">{part}</a> : part);
 
 export function Terms() {
+  const m = business.manufacturer;
+  const rows = [
+    ['Legal business name', business.legalName], ['Brand', 'DriftOn™'], ['Registered address', business.address],
+    ['Customer care', <a key="e" href={`mailto:${business.email}`} className="font-semibold text-navy-700 underline">{business.email}</a>],
+    ['Manufactured by', m.name], ['Manufacturer address', m.address], ['Licence / registration', m.licence],
+  ];
   return (
-    <>
-      <PageHead eyebrow="Legal" title="Terms &" accent="conditions" text={`Effective date: ${termsEffective}. Welcome to DriftOn™! ${termsIntro}`} />
-      <div className="container-x grid grid-cols-1 gap-8 py-10 sm:py-14 lg:grid-cols-[280px_1fr] lg:gap-10">
-        <nav aria-label="Sections" className="hidden h-fit flex-col gap-0.5 rounded-2xl border border-line bg-white p-3 lg:sticky lg:top-6 lg:flex">
-          {termsSections.map((sec, k) => (
-            <a key={sec.title} href={`#${slugify(sec.title)}`} className="rounded-xl px-3 py-2 text-[14px] font-medium text-navy-500 hover:bg-page hover:text-brand">{k + 1}. {sec.title}</a>
+    <div className="container-x py-8 sm:py-10">
+      {/* header: business + manufacturer info (small font, as asked by the client) */}
+      <header className="rounded-2xl border border-line bg-white p-4 sm:p-5">
+        <h1 className="font-head text-[20px] font-semibold sm:text-[22px]">Terms &amp; Conditions</h1>
+        <p className="mt-0.5 text-[12px] text-muted-2">Effective date: {termsEffective}</p>
+        <dl className="mt-3 grid grid-cols-1 gap-x-6 gap-y-1.5 border-t border-line pt-3 text-[12px] leading-snug sm:grid-cols-2 lg:grid-cols-3">
+          {rows.map(([k, v]) => (
+            <div key={k} className="flex gap-1.5"><dt className="shrink-0 font-semibold text-navy-900">{k}:</dt><dd className="min-w-0 break-words text-muted">{v}</dd></div>
           ))}
-        </nav>
-        <ol className="flex min-w-0 flex-col gap-4">
-          {termsSections.map((sec, k) => (
-            <li key={sec.title} id={slugify(sec.title)} className="scroll-mt-28 rounded-2xl border border-line bg-white p-5 sm:p-7">
-              <h2 className="mb-3 flex items-start gap-3 font-head text-[19px] font-semibold sm:text-[21px]">
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-navy-900 text-sm font-bold text-mint">{k + 1}</span>
-                <span className="pt-0.5">{sec.title}</span>
-              </h2>
-              <div className="flex flex-col gap-3 text-[15px] leading-relaxed text-muted">
-                {sec.blocks.map((b, i) =>
-                  b.h ? <h3 key={i} className="mt-2 font-head text-[16.5px] font-semibold text-navy-900">{b.h}</h3>
-                  : b.ul ? <ul key={i} className="flex flex-col gap-1.5 pl-1">{b.ul.map((x) => <li key={x} className="flex gap-2.5"><span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-brand" /><span>{withEmailLinks(x)}</span></li>)}</ul>
-                  : <p key={i} className="break-words">{withEmailLinks(b.p)}</p>
-                )}
-              </div>
-            </li>
-          ))}
-          <li className="rounded-2xl bg-navy-900 p-6 text-white sm:p-7">
-            <b className="font-head text-lg">Thank you for choosing DriftOn™.</b>
-            <p className="mt-1 text-ondark">We appreciate your trust and support. We are committed to providing a reliable and satisfying shopping experience.</p>
+        </dl>
+      </header>
+
+      <p className="mt-5 text-[13px] leading-relaxed text-muted">Welcome to DriftOn™! {termsIntro}</p>
+
+      {/* the terms, in small font */}
+      <ol className="mt-4 flex flex-col gap-4">
+        {termsSections.map((sec, k) => (
+          <li key={sec.title} id={slugify(sec.title)} className="scroll-mt-28">
+            <h2 className="mb-1.5 font-head text-[14px] font-semibold text-navy-900">{k + 1}. {sec.title}</h2>
+            <div className="flex flex-col gap-1.5 text-[12.5px] leading-relaxed text-muted">
+              {sec.blocks.map((b, i) =>
+                b.h ? <h3 key={i} className="mt-1 text-[13px] font-semibold text-navy-900">{b.h}</h3>
+                : b.ul ? <ul key={i} className="flex list-disc flex-col gap-0.5 pl-5">{b.ul.map((x) => <li key={x}>{withEmailLinks(x)}</li>)}</ul>
+                : <p key={i} className="break-words">{withEmailLinks(b.p)}</p>
+              )}
+            </div>
           </li>
-        </ol>
-      </div>
-    </>
+        ))}
+      </ol>
+      <p className="mt-6 border-t border-line pt-4 text-[12.5px] text-muted">Thank you for choosing DriftOn™. We appreciate your trust and support. We are committed to providing a reliable and satisfying shopping experience.</p>
+    </div>
   );
 }
 
@@ -366,9 +402,10 @@ export function Contact() {
           <div className="rounded-2xl bg-navy-900 p-6 text-white">
             <b className="font-head text-lg">Quick help</b>
             <ul className="mt-3 flex flex-col divide-y divide-white/10">
-              {[['/track', 'Track your order'], ['/terms', 'Returns & refund policy'], ['/combo', 'Combo offers'], ['/check-ingredient', 'Check your ingredient']].map(([to, t]) => (
+              {[['/terms', 'Returns & refund policy'], ['/combo', 'Combo offers'], ['/check-ingredient', 'Check your ingredient']].map(([to, t]) => (
                 <li key={to}><Link to={to} className="flex items-center justify-between py-3 text-[15px] font-semibold text-white hover:text-mint">{t}<Arrow size={16} /></Link></li>
               ))}
+              <li><a href={business.trackUrl} target="_blank" rel="noreferrer" className="flex items-center justify-between py-3 text-[15px] font-semibold text-white hover:text-mint">Track your order (Ekart)<Arrow size={16} /></a></li>
             </ul>
           </div>
         </aside>

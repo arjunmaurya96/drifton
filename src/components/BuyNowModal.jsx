@@ -45,7 +45,8 @@ export default function BuyNowModal() {
   const total = sum.total + fee;
   const apply = () => {
     const c = code.trim().toUpperCase();
-    if (coupons[c]) { setApplied(c); setCodeMsg(`${c} applied — ${coupons[c].note}`); }
+    if (coupons[c] && sum.comboSaving > 0) { setApplied(''); setCodeMsg('Your combo already has free delivery. Coupons can be used on single-stick orders.'); }
+    else if (coupons[c]) { setApplied(c); setCodeMsg(`${c} applied — ${coupons[c].note}`); }
     else { setApplied(''); setCodeMsg('This coupon code is not valid.'); }
   };
   const setQty = (k, q) => setLines((ls) => ls.map((l, i) => (i === k ? { ...l, qty: Math.max(1, q) } : l)));
@@ -78,7 +79,7 @@ export default function BuyNowModal() {
             <span className="flex size-16 items-center justify-center rounded-full bg-mint-soft text-brand"><CheckCircle size={36} /></span>
             <p className="text-[17px] text-muted">Thank you, {d.name}! Order <b className="text-navy-900">#{order.orderId}</b> of {formatINR(order.amount)} is confirmed.</p>
             <span className="rounded-full bg-page px-4 py-1.5 text-sm text-muted-2">Demo order — no real payment was taken</span>
-            <Link to="/shop" onClick={closeBuy} className="btn-navy">Continue shopping</Link>
+            <Link to="/#shop" onClick={closeBuy} className="btn-navy">Continue shopping</Link>
           </div>
         ) : (
           <form onSubmit={pay} className="flex min-h-0 flex-1 flex-col">
@@ -104,7 +105,7 @@ export default function BuyNowModal() {
                   <input className={`${field} uppercase`} placeholder="Enter code" aria-label="Coupon code" value={code} onChange={(e) => setCode(e.target.value)} />
                   <button type="button" onClick={apply} className="min-h-11 shrink-0 rounded-xl bg-navy-900 px-5 text-sm font-semibold text-white hover:bg-navy-700">Apply</button>
                 </div>
-                {codeMsg && <p className={`mt-1.5 text-[13px] font-semibold ${applied ? 'text-brand-dark' : 'text-[#C0392B]'}`}>{codeMsg}</p>}
+                {(sum.couponBlocked ? 'Your combo already has free delivery. Coupons can be used on single-stick orders.' : codeMsg) && <p className={`mt-1.5 text-[13px] font-semibold ${applied && !sum.couponBlocked ? 'text-brand-dark' : 'text-[#C0392B]'}`}>{sum.couponBlocked ? 'Your combo already has free delivery. Coupons can be used on single-stick orders.' : codeMsg}</p>}
               </div>
 
               {/* Payment */}

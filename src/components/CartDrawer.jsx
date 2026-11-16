@@ -85,7 +85,7 @@ export default function CartDrawer() {
             <div className="flex flex-col items-center gap-4 py-16 text-center text-muted-2">
               <Bag size={40} />
               <span>Your cart is empty.</span>
-              <Link to="/shop" className="btn-navy" onClick={closeCart}>Shop products</Link>
+              <Link to="/#shop" className="btn-navy" onClick={closeCart}>Shop products</Link>
             </div>
           ) : (
             cart.map((l) => (

@@ -17,6 +17,10 @@ export const business = {
   reviewUrl: '#', // the profile's "write a review" link (g.page/r/...)
   // Google Maps embed: business name + city or the exact address
   mapQuery: 'Balraj Khanna Marg, West Patel Nagar, New Delhi 110008',
+  // Orders ship with Ekart — "Track" takes the customer to the Ekart tracking site
+  trackUrl: 'https://www.ekartlogistics.com/',
+  // Manufacturer details for the Terms page header — PLACEHOLDER, get the real details from the client
+  manufacturer: { name: '[Manufacturer name]', address: '[Manufacturer address]', licence: '[Licence / registration no.]' },
 };
 
 // Footer social links ('#' = dummy). Set url to '' to hide an icon.

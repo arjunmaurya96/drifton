@@ -51,13 +51,13 @@ export default function Footer() {
             <span className="text-[14.5px] leading-relaxed">Customer care: <a href={`mailto:${business.email}`} className="font-semibold text-white underline-offset-4 hover:text-mint hover:underline">{business.email}</a></span>
           </div>
           <Col title="Shop">
-            <Link to="/shop" className={fl}>All products</Link>
+            <Link to="/#shop" className={fl}>All products</Link>
             <Link to="/#why" className={fl}>Why Drifton</Link>
             <Link to="/#how" className={fl}>How to use</Link>
             <Link to="/#refer" className={fl}>Refer &amp; Earn</Link>
           </Col>
           <Col title="Help">
-            <Link to="/track" className={fl}>Track order</Link>
+            <a href={business.trackUrl} target="_blank" rel="noreferrer" className={fl}>Track order</a>
             <Link to="/combo" className={fl}>Combo offers</Link>
             <Link to="/terms" className={fl}>Terms &amp; conditions</Link>
             <Link to="/contact" className={fl}>Contact us</Link>

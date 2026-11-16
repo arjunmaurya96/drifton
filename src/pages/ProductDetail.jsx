@@ -89,7 +89,7 @@ export default function ProductDetail() {
       <div className="container-x">
         <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 py-6 text-sm text-muted-2">
           <Link to="/" className="text-muted-2 hover:text-brand">Home</Link><span>/</span>
-          <Link to="/shop" className="text-muted-2 hover:text-brand">Shop</Link><span>/</span>
+          <Link to="/#shop" className="text-muted-2 hover:text-brand">Shop</Link><span>/</span>
           <b className="font-semibold text-navy-900">{product.name}</b>
         </nav>
 
@@ -271,7 +271,7 @@ export default function ProductDetail() {
               <span className="eyebrow">You may also like</span>
               <h2 className="h2">More from <span className="text-brand">Drifton</span></h2>
             </div>
-            <button className="btn-line" onClick={() => navigate('/shop')}>View all</button>
+            <button className="btn-line" onClick={() => navigate('/#shop')}>View all</button>
           </div>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((p) => <ProductCard key={p.id} product={p} />)}

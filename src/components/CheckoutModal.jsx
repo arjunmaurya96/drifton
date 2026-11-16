@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
 import { products, formatINR, summarize, coupons, UNIT_PRICE, COMBO_PRICE } from '../data/products.js';
 import { createPayment } from '../lib/payment.js';
+import { business } from '../data/site.js';
 import { QtyStepper, PriceRows, CartOffers } from './CartDrawer.jsx';
 import { Close, Lock, CheckCircle, Shield, Truck, Plus, Trash, ChevronLeft } from './Icons.jsx';
 
@@ -18,7 +19,7 @@ const DEMO_OTP = '123456';
 const RESEND_AFTER = 30; // seconds
 const COD_FEE = 49; // DUMMY
 
-const steps = ['Order', 'Mobile', 'Address & pay'];
+const steps = ['Mobile', 'Address & pay'];
 const methods = [
   { id: 'upi', label: 'UPI', note: 'GPay, PhonePe, Paytm' },
   { id: 'card', label: 'Card', note: 'Credit / Debit' },
@@ -67,7 +68,7 @@ function OtpBoxes({ value, onChange }) {
 
 export default function CheckoutModal() {
   const { checkoutOpen, closeCheckout, cart, updateQty, addToCart, clearCart } = useStore();
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(1); // opens straight on the mobile-number box (client request)
   const [code, setCode] = useState('');
   const [applied, setApplied] = useState('');
   const [codeMsg, setCodeMsg] = useState('');
@@ -87,7 +88,7 @@ export default function CheckoutModal() {
   // reset only when the popup opens (not when the cart changes), lock page scroll, Esc to close
   useEffect(() => {
     if (!checkoutOpen) return;
-    setStep(0); setErr(''); setOrder(null); setOtpSent(false); setOtp(''); setVerified(false); setMethod('upi');
+    setStep(1); setErr(''); setOrder(null); setOtpSent(false); setOtp(''); setVerified(false); setMethod('upi');
     const onKey = (e) => e.key === 'Escape' && closeRef.current();
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
@@ -109,7 +110,8 @@ export default function CheckoutModal() {
 
   const apply = () => {
     const c = code.trim().toUpperCase();
-    if (coupons[c]) { setApplied(c); setCodeMsg(`${c} applied — ${coupons[c].note}`); }
+    if (coupons[c] && sum.comboSaving > 0) { setApplied(''); setCodeMsg('Your combo already has free delivery. Coupons can be used on single-stick orders.'); }
+    else if (coupons[c]) { setApplied(c); setCodeMsg(`${c} applied — ${coupons[c].note}`); }
     else { setApplied(''); setCodeMsg('This coupon code is not valid.'); }
   };
 
@@ -140,15 +142,15 @@ export default function CheckoutModal() {
         {/* header */}
         <div className="flex items-center justify-between gap-3 px-5 pb-3 pt-4 sm:px-7 sm:pt-5">
           <div className="flex items-center gap-2">
-            {step > 0 && !order && (
-              <button className="icon-btn size-10" onClick={() => { setErr(''); setStep(step === 2 ? 1 : 0); }} aria-label="Back"><ChevronLeft /></button>
+            {step === 2 && !order && (
+              <button className="icon-btn size-10" onClick={() => { setErr(''); setStep(1); }} aria-label="Back"><ChevronLeft /></button>
             )}
             <h2 className="text-xl font-semibold sm:text-[22px]">{order ? 'Order placed' : 'Checkout'}</h2>
           </div>
           <button className="icon-btn" onClick={closeCheckout} aria-label="Close"><Close /></button>
         </div>
         {!order && <div className="bg-navy-900 px-4 py-2 text-center text-[12.5px] font-bold uppercase tracking-wide text-mint sm:text-[13px]">Any 2 roll-ons for {formatINR(COMBO_PRICE)} · Free delivery</div>}
-        {!order && <div className="pt-4"><Stepper step={step} /></div>}
+        {!order && <div className="pt-4"><Stepper step={step - 1} /></div>}
 
         {order ? (
           <div className="flex flex-col items-center gap-4 border-t border-line px-6 py-12 text-center">
@@ -156,20 +158,21 @@ export default function CheckoutModal() {
             <p className="text-[17px] text-muted">Thank you, {d.name}! Order <b className="text-navy-900">#{order.orderId}</b> of {formatINR(order.amount)} ({order.sticks} {order.sticks === 1 ? 'stick' : 'sticks'}) is confirmed.</p>
             <span className="rounded-full bg-page px-4 py-1.5 text-sm text-muted-2">Demo order — no real payment was taken</span>
             <div className="flex flex-wrap justify-center gap-2.5">
-              <Link to="/track" onClick={closeCheckout} className="btn-line">Track order</Link>
+              <a href={business.trackUrl} target="_blank" rel="noreferrer" className="btn-line">Track on Ekart</a>
               <button onClick={closeCheckout} className="btn-navy">Continue shopping</button>
             </div>
           </div>
         ) : (
           <>
             <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto border-t border-line px-5 py-5 sm:px-7">
-              {/* ---------- STEP 1: order ---------- */}
-              {step === 0 && (
-                <>
-                  <div className="flex items-baseline justify-between gap-3">
-                    <b className="font-head text-[17px]">Order summary <span className="font-normal text-muted-2">({sum.sticks} {sum.sticks === 1 ? 'item' : 'items'})</span></b>
-                    {sum.comboSaving > 0 && <span className="rounded-full bg-mint-soft px-3 py-1 text-[12.5px] font-bold text-brand-dark">You save {formatINR(sum.comboSaving + sum.couponOff)}</span>}
-                  </div>
+              {/* ---------- order summary (under the mobile box, collapsible) ---------- */}
+              {step === 1 && (
+                <details open={!otpSent} className="order-2 group rounded-2xl border border-line [&_summary::-webkit-details-marker]:hidden">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+                    <b className="font-head text-[16px]">Order summary <span className="font-normal text-muted-2">({sum.sticks} {sum.sticks === 1 ? 'item' : 'items'})</span></b>
+                    <span className="flex items-center gap-2 text-[15px] font-semibold">{formatINR(sum.total)}<span className="text-muted-2 transition group-open:rotate-180">⌄</span></span>
+                  </summary>
+                  <div className="flex flex-col gap-5 border-t border-line p-4">
                   {cart.length === 0 ? (
                     <p className="rounded-2xl bg-page p-5 text-center text-muted">Your bag is empty. Add a stick below.</p>
                   ) : (
@@ -218,14 +221,15 @@ export default function CheckoutModal() {
                       <input className={`${field} uppercase`} placeholder="Enter code" aria-label="Coupon code" value={code} onChange={(e) => setCode(e.target.value)} />
                       <button type="button" onClick={apply} className="min-h-12 shrink-0 rounded-xl bg-navy-900 px-5 text-sm font-semibold text-white hover:bg-navy-700">Apply</button>
                     </div>
-                    {codeMsg && <p className={`mt-1.5 text-[13px] font-semibold ${applied ? 'text-brand-dark' : 'text-[#C0392B]'}`}>{codeMsg}</p>}
+                    {(sum.couponBlocked ? 'Your combo already has free delivery. Coupons can be used on single-stick orders.' : codeMsg) && <p className={`mt-1.5 text-[13px] font-semibold ${applied && !sum.couponBlocked ? 'text-brand-dark' : 'text-[#C0392B]'}`}>{sum.couponBlocked ? 'Your combo already has free delivery. Coupons can be used on single-stick orders.' : codeMsg}</p>}
                   </div>
-                </>
+                  </div>
+                </details>
               )}
 
               {/* ---------- STEP 2: mobile number + OTP ---------- */}
               {step === 1 && (
-                <div className="flex flex-col gap-4 py-2">
+                <div className="order-1 flex flex-col gap-4 pb-1">
                   <div className="text-center">
                     <h3 className="text-[20px] font-semibold">{otpSent ? 'Verify your number' : 'Enter mobile number'}</h3>
                     <p className="text-[14px] text-muted-2">{otpSent ? `Enter the 6-digit OTP sent to +91 ${d.phone}` : 'Provide your mobile number to continue'}</p>
@@ -279,7 +283,7 @@ export default function CheckoutModal() {
                 </>
               )}
 
-              {err && <p role="alert" className="text-sm font-semibold text-[#C0392B]">{err}</p>}
+              {err && <p role="alert" className="order-3 text-sm font-semibold text-[#C0392B]">{err}</p>}
             </div>
 
             {/* footer: totals + main action */}
@@ -293,11 +297,8 @@ export default function CheckoutModal() {
                 {fee > 0 && <div className="mt-1.5 flex justify-between text-[14.5px] text-muted"><span>COD fee</span><span>{formatINR(fee)}</span></div>}
               </details>
 
-              {step === 0 && (
-                <button disabled={!cart.length} onClick={() => setStep(1)} className="btn-primary min-h-[52px] w-full text-base disabled:opacity-50">Continue</button>
-              )}
               {step === 1 && (!otpSent
-                ? <button onClick={sendOtp} className="btn-primary min-h-[52px] w-full text-base">Send OTP</button>
+                ? <button onClick={sendOtp} disabled={!cart.length} className="btn-primary min-h-[52px] w-full text-base">Send OTP</button>
                 : <button onClick={verifyOtp} disabled={otp.length < 6} className="btn-primary min-h-[52px] w-full text-base disabled:opacity-50">Verify & continue</button>)}
               {step === 2 && (
                 <button onClick={pay} disabled={busy} className="btn-primary min-h-[52px] w-full text-base disabled:opacity-60">

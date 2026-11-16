@@ -1,19 +1,31 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { business } from '../data/site.js';
 import { useStore } from '../context/StoreContext.jsx';
 import { Search, Heart, Bag, Menu, Close } from './Icons.jsx';
 import SearchOverlay from './SearchOverlay.jsx';
 import AnnouncementBar from './AnnouncementBar.jsx';
 
 const links = [
-  { to: '/shop', label: 'Shop' },
+  { to: '/#shop', label: 'Shop' }, // the 4 products on the home page
   { to: '/combo', label: 'Combo' },
   { to: '/ingredients', label: 'Know More Ingredients' },
   { to: '/terms', label: 'Terms & Conditions' },
-  { to: '/track', label: 'Track' },
+  { href: business.trackUrl, label: 'Track' }, // Ekart tracking site
   { to: '/check-ingredient', label: 'Check Your Ingredient' },
   { to: '/contact', label: 'Contact Us' },
 ];
+
+// One menu link: outside sites open in a new tab; "/#shop" also scrolls when you are already on the home page
+function NavLink({ l, className, onClick }) {
+  const { pathname } = useLocation();
+  if (l.href) return <a href={l.href} target="_blank" rel="noreferrer" onClick={onClick} className={className}>{l.label}</a>;
+  const go = () => {
+    onClick?.();
+    if (l.to.startsWith('/#') && pathname === '/') document.getElementById(l.to.slice(2))?.scrollIntoView({ behavior: 'smooth' });
+  };
+  return <Link to={l.to} onClick={go} className={className}>{l.label}</Link>;
+}
 
 const Badge = ({ n }) => (
   <span className="absolute right-0.5 top-1 flex h-[19px] min-w-[19px] items-center justify-center rounded-full bg-brand px-1.5 text-[11px] font-bold text-white">{n}</span>
@@ -60,9 +72,7 @@ export default function Header() {
         </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-4 xl:flex 2xl:gap-6">
-          {links.map((l) => (
-            <Link key={l.to} to={l.to} className="whitespace-nowrap text-[14px] font-medium text-navy-500 transition-colors hover:text-brand 2xl:text-[15px]">{l.label}</Link>
-          ))}
+          {links.map((l) => <NavLink key={l.label} l={l} className="whitespace-nowrap text-[14px] font-medium text-navy-500 transition-colors hover:text-brand 2xl:text-[15px]" />)}
         </nav>
 
         <div className="flex items-center gap-0 sm:gap-1">
@@ -85,9 +95,7 @@ export default function Header() {
       </div>
       {open && (
         <nav aria-label="Mobile" className="flex flex-col border-t border-line bg-white px-8 pb-5 pt-2 xl:hidden">
-          {links.map((l) => (
-            <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="py-3 font-semibold text-navy-900">{l.label}</Link>
-          ))}
+          {links.map((l) => <NavLink key={l.label} l={l} onClick={() => setOpen(false)} className="py-3 font-semibold text-navy-900" />)}
         </nav>
       )}
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
