@@ -89,6 +89,7 @@ export const products = [
 ];
 
 // ===== Home hero banner (full-width image slides, phitku style) =====
+// model: DUMMY illustrated model shown behind the text ('girl' | 'girl2' | 'boy' | 'couple') until modelPhoto is set.
 // modelPhoto: photo of a model shown behind the text on the LEFT (fades into the product image).
 //   Put files in public/assets/images/models/ and set e.g. modelPhoto: '/assets/images/models/model-1.jpg'.
 //   Best: portrait or landscape photo, model looking at camera, at least 1200px tall.
@@ -98,7 +99,7 @@ export const products = [
 // icon: 'gem' | 'flower' | 'leaf' | 'drop' | 'hex' | 'sprig'
 export const bannerSlides = [
   {
-    productId: 'palash', image: '/assets/images/banner/banner-palash.jpg', modelPhoto: null,
+    productId: 'palash', image: '/assets/images/banner/banner-palash.jpg', modelPhoto: null, model: 'girl', modelTop: '#E8742A', stick: '#FFD45C',
     serif: 'Crystal deo', line: 'that keeps you fresh 24/7', accent: '#FFD2A8',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Palash Flower', icon: 'flower' },
@@ -106,7 +107,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'charcoal', image: '/assets/images/banner/banner-charcoal.jpg', modelPhoto: null,
+    productId: 'charcoal', image: '/assets/images/banner/banner-charcoal.jpg', modelPhoto: null, model: 'boy', modelTop: '#2B3558', stick: '#EEF1F8',
     serif: 'Deep clean', line: 'for your busiest days', accent: '#CFD6E6',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Activated Charcoal', icon: 'hex' },
@@ -114,7 +115,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'rose', image: '/assets/images/banner/banner-rose.jpg', modelPhoto: null,
+    productId: 'rose', image: '/assets/images/banner/banner-rose.jpg', modelPhoto: null, model: 'girl2', modelTop: '#C2406C', stick: '#F7A8C4',
     serif: 'Soft & fresh', line: 'with a touch of rose', accent: '#FFC9DA',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Rose Petals', icon: 'flower' },
@@ -122,7 +123,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'lavender', image: '/assets/images/banner/banner-lavender.jpg', modelPhoto: null,
+    productId: 'lavender', image: '/assets/images/banner/banner-lavender.jpg', modelPhoto: null, model: 'couple', modelTop: '#6A4BC4', stick: '#D9C8FF',
     serif: 'Calm & fresh', line: 'for him and for her', accent: '#DCCBFF',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Lavender', icon: 'sprig' },

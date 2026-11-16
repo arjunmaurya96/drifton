@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { bannerSlides, getProductById } from '../data/products.js';
 import IngredientIcon from './IngredientIcon.jsx';
+import { ModelFigure } from './ModelIllustrations.jsx';
 import { ChevronLeft, ChevronRight } from './Icons.jsx';
 
 // Timing (ms): slide comes in, then stays still for 3 seconds, then the next one slides in.
@@ -45,10 +46,16 @@ export default function HeroBanner() {
           <div key={k} aria-hidden={k !== i} className={`absolute inset-0 overflow-hidden transition-[transform,opacity] duration-[1100ms] ease-[cubic-bezier(.7,0,.2,1)] ${state}`}>
             <img key={k === i ? `on-${i}` : 'off'} src={s.image} alt="" className={`h-full w-full object-cover object-[70%_center] ${k === i ? 'animate-ken' : ''}`} />
             {/* Model photo behind the text (left side). It fades out to the right into the product image. */}
-            {s.modelPhoto && (
+            {s.modelPhoto ? (
               <img src={s.modelPhoto} alt="" className={`absolute inset-y-0 left-0 h-full w-full object-cover object-top md:w-[58%] ${k === i ? 'animate-from-left' : ''}`}
                 style={{ WebkitMaskImage: 'linear-gradient(to right, #000 55%, transparent 100%)', maskImage: 'linear-gradient(to right, #000 55%, transparent 100%)' }} />
-            )}
+            ) : s.model ? (
+              /* DUMMY illustrated model until a real photo is added */
+              <div className={`absolute bottom-0 left-0 h-[92%] w-full md:left-[4%] md:w-[44%] ${k === i ? 'animate-from-left' : ''}`}
+                style={{ WebkitMaskImage: 'linear-gradient(to right, #000 70%, transparent 100%)', maskImage: 'linear-gradient(to right, #000 70%, transparent 100%)' }}>
+                <ModelFigure type={s.model} top={s.modelTop} stickTint={s.stick} />
+              </div>
+            ) : null}
           </div>
         );
       })}
