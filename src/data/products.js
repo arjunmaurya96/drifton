@@ -91,7 +91,8 @@ export const products = [
 // ===== Home hero banner =====
 // Left: model photo. Middle: headline, key ingredients, SHOP NOW. Right: the product on its own (no box, no shadow).
 // Background: a gradient in the product's own colours.
-// modelPhoto: the client's model photo (currently the same sample photo on every slide — add more and set one per slide).
+// modelPhoto: photo on the left. Slides alternate girl / boy:
+//   public/assets/images/models/model-girl.jpg and model-boy.jpg (until model-boy.jpg is added, the girl photo is shown).
 // cutout: transparent PNG of just the product (public/assets/images/cutouts/).
 // Ingredients are DUMMY — confirm the real key ingredients for each variant with the client.
 // icon: 'gem' | 'flower' | 'leaf' | 'drop' | 'hex' | 'sprig'
@@ -106,7 +107,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'charcoal', modelPhoto: '/assets/images/models/model-girl.jpg', cutout: '/assets/images/cutouts/charcoal.png',
+    productId: 'charcoal', modelPhoto: '/assets/images/models/model-boy.jpg', cutout: '/assets/images/cutouts/charcoal.png',
     bgFrom: '#4A5163', bgTo: '#161A23', glow: '#8C97B3', dark: true, accent: '#7BE0A6',
     serif: 'Deep clean', line: 'for your busiest days',
     ingredients: [
@@ -124,7 +125,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'lavender', modelPhoto: '/assets/images/models/model-girl.jpg', cutout: '/assets/images/cutouts/crystal.png',
+    productId: 'lavender', modelPhoto: '/assets/images/models/model-boy.jpg', cutout: '/assets/images/cutouts/crystal.png',
     bgFrom: '#EEF7FF', bgTo: '#A9D3F5', glow: '#7FBDF0', dark: false, accent: '#1C6FB8',
     serif: 'Pure & clear', line: 'natural mineral freshness',
     ingredients: [
