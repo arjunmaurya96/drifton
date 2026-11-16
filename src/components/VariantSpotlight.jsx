@@ -23,6 +23,7 @@ export default function VariantSpotlight() {
   const center = products[i];
   const left = products[(i + n - 1) % n];
   const right = products[(i + 1) % n];
+  const opposite = products[(i + 2) % n]; // the 4th product
   const look = looks[center.id];
   // long words get a smaller size so they never run off the screen
   const big = (w) => (w.length > 5 ? 'text-[60px] md:text-[80px] xl:text-[120px]' : 'text-[78px] md:text-[110px] xl:text-[170px]');
@@ -78,6 +79,13 @@ export default function VariantSpotlight() {
           <img src={cutoutOf(p.id)} alt="" className="h-full w-auto object-contain [filter:brightness(.82)_saturate(.9)]" />
         </button>
       ))}
+
+      {/* 4th product: smaller, next to the left one, so all 4 products are on screen */}
+      <button key={`${opposite.id}-o-${i}`} onClick={() => setI((i + 2) % n)} aria-label={`Show ${opposite.name}`}
+        className="absolute bottom-[3%] left-[15%] z-[4] hidden h-[32%] animate-fade-up opacity-80 transition hover:opacity-100 md:block xl:left-[16%]"
+        style={{ animationDelay: '120ms' }}>
+        <img src={cutoutOf(opposite.id)} alt="" className="h-full w-auto object-contain [filter:brightness(.7)_saturate(.85)]" />
+      </button>
 
       {/* centre product */}
       <Link key={`c-${i}`} to={`/product/${center.slug}`} aria-label={`View ${center.name}`}
