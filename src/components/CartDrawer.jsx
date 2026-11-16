@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
+import { TaxNote } from './InfoNote.jsx';
 import { formatINR, products, UNIT_PRICE, COMBO_PRICE, COMBO_SAVING } from '../data/products.js';
 import { Close, Minus, Plus, Bag } from './Icons.jsx';
 
@@ -106,7 +107,7 @@ export default function CartDrawer() {
           <div className="flex flex-col gap-3 border-t border-line px-5 py-4 sm:px-6">
             <PriceRows s={summary} />
             <div className="flex justify-between border-t border-line pt-3 text-[17px] font-semibold"><span>Total</span><span>{formatINR(summary.total)}</span></div>
-            <small className="text-muted-2">Have a coupon? Apply it at checkout.</small>
+            <TaxNote className="text-[13px]" />
             <button className="btn-primary w-full" onClick={() => { closeCart(); openBuy(cart, true); }}>Checkout</button>
           </div>
         )}

@@ -4,6 +4,7 @@ import { products, packs, offer, productInfo, sampleReviews, getProductBySlug, f
 import { useStore } from '../context/StoreContext.jsx';
 import ProductCard from '../components/ProductCard.jsx';
 import ProductMarquee from '../components/ProductMarquee.jsx';
+import { ImagesNote, TaxNote } from '../components/InfoNote.jsx';
 import ProductGallery from '../components/product/ProductGallery.jsx';
 import ReviewsBlock from '../components/product/ReviewsBlock.jsx';
 import Faq from '../components/product/Faq.jsx';
@@ -94,7 +95,10 @@ export default function ProductDetail() {
         </nav>
 
         <div className="grid grid-cols-1 items-start gap-10 pb-16 lg:grid-cols-[1.05fr_.95fr] lg:gap-14">
-          <ProductGallery key={product.id} media={media} name={product.name} badge={product.badge} bg={product.bg} />
+          <div className="flex flex-col gap-4">
+            <ProductGallery key={product.id} media={media} name={product.name} badge={product.badge} bg={product.bg} />
+            <ImagesNote />
+          </div>
 
           {/* ---------- Buy box ---------- */}
           <div className="flex flex-col gap-6">
@@ -109,7 +113,8 @@ export default function ProductDetail() {
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <b className="font-head text-4xl font-bold">{formatINR(unit)}</b>
               {pack.multiplier > 1 ? <s className="text-lg text-[#6B7493]">{formatINR(UNIT_PRICE * pack.multiplier)}</s> : <span className="text-[15px] font-semibold text-muted">+ delivery</span>}
-              <span className="w-full text-[13.5px] text-muted-2">Inclusive of all taxes · {pack.multiplier > 1 ? 'free delivery on combos' : `delivery ${formatINR(DELIVERY_FEE)}, free on any 2 sticks`}</span>
+              <span className="w-full text-[13.5px] text-muted-2">{pack.multiplier > 1 ? 'Free delivery on combos' : `Delivery ${formatINR(DELIVERY_FEE)}, free on any 2 sticks`}</span>
+              <TaxNote className="mt-2 w-full" />
             </div>
 
             <div className="flex items-center gap-3.5 rounded-2xl border border-dashed border-brand bg-mint-soft px-4 py-3.5">

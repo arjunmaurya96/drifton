@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { products } from '../data/products.js';
 import ProductCard from './ProductCard.jsx';
+import { ImagesNote } from './InfoNote.jsx';
 import { ChevronLeft, ChevronRight } from './Icons.jsx';
 
 /**
@@ -47,6 +48,7 @@ export default function ProductGrid() {
           <button onClick={() => slide(1)} aria-label="Next products"
             className="absolute right-3 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-navy-900 shadow-lg sm:hidden"><ChevronRight /></button>
         </div>
+        <ImagesNote className="mt-6" />
       </div>
     </section>
   );
