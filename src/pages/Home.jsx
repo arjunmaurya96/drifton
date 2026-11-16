@@ -5,7 +5,6 @@ import VariantSpotlight from '../components/VariantSpotlight.jsx';
 import ServiceCards from '../components/ServiceCards.jsx';
 import WhyDrifton from '../components/WhyDrifton.jsx';
 import HowToUse from '../components/HowToUse.jsx';
-import AlumSection from '../components/AlumSection.jsx';
 import Reviews from '../components/Reviews.jsx';
 import Stats from '../components/Stats.jsx';
 import ReferEarn from '../components/ReferEarn.jsx';
@@ -15,14 +14,12 @@ export default function Home() {
   return (
     <>
       <HeroBanner />
-      <ProductGrid />
       <VariantSpotlight />
+      <ProductGrid />
+      <HowToUse />
+      <WhyDrifton />
       <ProductMarquee />
       <ServiceCards />
-      <div className="h-24" />
-      <WhyDrifton />
-      <HowToUse />
-      <AlumSection />
       <Stats />
       <ReferEarn />
       <GoogleBusiness />

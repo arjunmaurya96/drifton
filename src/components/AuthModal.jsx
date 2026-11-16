@@ -34,7 +34,7 @@ export default function AuthModal() {
         className="relative flex w-full max-w-[440px] flex-col gap-4 rounded-[28px] bg-white px-8 py-8 shadow-2xl"
       >
         <button type="button" className="icon-btn absolute right-3.5 top-3.5" onClick={closeAuth} aria-label="Close"><Close /></button>
-        <img src="/assets/images/logo.png" alt="Drifton" className="h-9 w-auto self-start" />
+        <img src="/assets/images/logo.webp" alt="Drifton" className="h-9 w-auto self-start" />
         <div className="flex flex-col gap-1.5">
           <h2 className="text-[28px] font-bold">{signup ? 'Create your account' : 'Welcome back'}</h2>
           <p className="text-[15px] text-muted-2">{signup ? 'Sign up to track orders, save favourites and earn referral rewards.' : 'Log in to see your orders, wishlist and rewards.'}</p>

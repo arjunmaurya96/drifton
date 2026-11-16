@@ -29,14 +29,14 @@ export const combos = [
 export const products = [
   {
     id: 'palash',
-    scene: `${IMG}/scenes/palash.jpg`, // product photo with its natural ingredient (phitku style)
+    scene: `${IMG}/scenes/palash.webp`, // product photo with its natural ingredient (phitku style)
     slug: 'palash-alum-stick',
-    name: 'Palash Alum Stick',
+    name: 'Palash Alum Roll On',
     short: 'Palash',
     tag: 'Floral · Bestseller',
     badge: 'Bestseller',
     price: UNIT_PRICE,
-    image: `${IMG}/cutouts/palash.png`, // product only, no background
+    image: `${IMG}/cutouts/palash.webp`, // product only, no background
     photo: `${IMG}/palash.jpg`,
     video: null,
     poster: `${IMG}/poster-palash.jpg`,
@@ -51,14 +51,14 @@ export const products = [
   },
   {
     id: 'charcoal',
-    scene: `${IMG}/scenes/charcoal.jpg`, // product photo with its natural ingredient (phitku style)
+    scene: `${IMG}/scenes/charcoal.webp`, // product photo with its natural ingredient (phitku style)
     slug: 'charcoal-alum-stick',
-    name: 'Charcoal Alum Stick',
+    name: 'Charcoal Alum Roll On',
     short: 'Charcoal',
     tag: 'Detox · Fresh',
     badge: 'New',
     price: UNIT_PRICE,
-    image: `${IMG}/cutouts/charcoal.png`, // product only, no background
+    image: `${IMG}/cutouts/charcoal.webp`, // product only, no background
     photo: `${IMG}/charcoal.jpg`,
     video: null,
     poster: `${IMG}/poster-charcoal.jpg`,
@@ -73,14 +73,14 @@ export const products = [
   },
   {
     id: 'rose',
-    scene: `${IMG}/scenes/rose.jpg`, // product photo with its natural ingredient (phitku style)
+    scene: `${IMG}/scenes/rose.webp`, // product photo with its natural ingredient (phitku style)
     slug: 'rose-alum-stick',
-    name: 'Rose Alum Stick',
+    name: 'Rose Alum Roll On',
     short: 'Rose',
     tag: 'Floral · Gentle',
     badge: 'Popular',
     price: UNIT_PRICE,
-    image: `${IMG}/cutouts/rose.png`, // product only, no background
+    image: `${IMG}/cutouts/rose.webp`, // product only, no background
     photo: `${IMG}/rose.jpg`,
     video: null,
     poster: `${IMG}/poster-rose.jpg`,
@@ -95,14 +95,14 @@ export const products = [
   },
   {
     id: 'natural',
-    scene: `${IMG}/scenes/natural.jpg`, // product photo with its natural ingredient (phitku style)
+    scene: `${IMG}/scenes/natural.webp`, // product photo with its natural ingredient (phitku style)
     slug: 'natural-alum-stick',
-    name: 'Natural Alum Stick',
+    name: 'Natural Alum Roll On',
     short: 'Natural',
     tag: 'Pure · Fragrance free',
     badge: 'Pure',
     price: UNIT_PRICE,
-    image: `${IMG}/cutouts/crystal.png`, // product only, no background
+    image: `${IMG}/cutouts/crystal.webp`, // product only, no background
     photo: `${IMG}/lavender-crystal.jpg`,
     video: null,
     poster: null,
@@ -121,7 +121,7 @@ export const products = [
 // Left: model photo. Middle: headline, key ingredients, SHOP NOW. Right: the product on its own (no box, no shadow).
 // Background: a gradient in the product's own colours.
 // modelPhoto: photo on the left. Slides alternate girl / boy:
-//   public/assets/images/models/model-girl.jpg and model-boy.jpg (until model-boy.jpg is added, the girl photo is shown).
+//   public/assets/images/models/model-girl.webp and model-boy.jpg (until model-boy.jpg is added, the girl photo is shown).
 // cutout: transparent PNG of just the product (public/assets/images/cutouts/).
 // rightImage: product photo shown on the right (soft-faded edges). Put one per slide in
 //   public/assets/images/hero-products/ (e.g. range-palash.jpg). If empty, the cutout is shown.
@@ -129,7 +129,7 @@ export const products = [
 // icon: 'gem' | 'flower' | 'leaf' | 'drop' | 'hex' | 'sprig'
 export const bannerSlides = [
   {
-    productId: 'palash', modelPhoto: '/assets/images/models/model-girl.jpg', modelPos: '58% center', cutout: '/assets/images/cutouts/palash.png', rightImage: '/assets/images/hero-products/range-palash.png',
+    productId: 'palash', modelPhoto: '/assets/images/models/model-girl.webp', modelPos: '58% center', cutout: '/assets/images/cutouts/palash.webp', rightImage: '/assets/images/hero-products/range-palash.webp',
     bgFrom: '#FFF3E2', bgTo: '#FFC98A', glow: '#FFB45E', dark: false, accent: '#C2571A',
     serif: 'Crystal deo', line: 'that keeps you fresh 24/7',
     ingredients: [
@@ -138,7 +138,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'charcoal', modelPhoto: '/assets/images/models/model-boy.jpg', modelPos: '55% center', cutout: '/assets/images/cutouts/charcoal.png', rightImage: '/assets/images/hero-products/range-charcoal.png',
+    productId: 'charcoal', modelPhoto: '/assets/images/models/model-boy.webp', modelPos: '55% center', cutout: '/assets/images/cutouts/charcoal.webp', rightImage: '/assets/images/hero-products/range-charcoal.webp',
     bgFrom: '#4A5163', bgTo: '#161A23', glow: '#8C97B3', dark: true, accent: '#7BE0A6',
     serif: 'Deep clean', line: 'for your busiest days',
     ingredients: [
@@ -147,7 +147,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'rose', modelPhoto: '/assets/images/models/model-girls.jpg', modelPos: 'center 30%', cutout: '/assets/images/cutouts/rose.png', rightImage: '/assets/images/hero-products/range-rose.png',
+    productId: 'rose', modelPhoto: '/assets/images/models/model-girls.webp', modelPos: 'center 30%', cutout: '/assets/images/cutouts/rose.webp', rightImage: '/assets/images/hero-products/range-rose.webp',
     bgFrom: '#FFF0F4', bgTo: '#F7B5CA', glow: '#F08AAE', dark: false, accent: '#B0305D',
     serif: 'Soft & fresh', line: 'with a touch of rose',
     ingredients: [
@@ -156,7 +156,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'natural', modelPhoto: '/assets/images/models/model-couple.jpg', modelPos: '62% center', cutout: '/assets/images/cutouts/crystal.png', rightImage: '/assets/images/hero-products/range-natural.png',
+    productId: 'natural', modelPhoto: '/assets/images/models/model-couple.webp', modelPos: '62% center', cutout: '/assets/images/cutouts/crystal.webp', rightImage: '/assets/images/hero-products/range-natural.webp',
     bgFrom: '#EEF7FF', bgTo: '#A9D3F5', glow: '#7FBDF0', dark: false, accent: '#1C6FB8',
     serif: 'Pure & clear', line: 'natural mineral freshness',
     ingredients: [

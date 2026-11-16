@@ -63,7 +63,7 @@ export default function ReviewsBlock({ reviews }) {
                     <p className="leading-relaxed text-navy-500">{r.text}</p>
                     <span className="text-[13px] text-muted-2">Variant: {p.short}</span>
                   </div>
-                  <img src={p.image} alt="" className="size-20 rounded-2xl bg-page object-contain p-1.5" />
+                  <img loading="lazy" decoding="async" src={p.image} alt="" className="size-20 rounded-2xl bg-page object-contain p-1.5" />
                 </article>
               );
             })}

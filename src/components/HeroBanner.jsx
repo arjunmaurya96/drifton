@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from './Icons.jsx';
 // Timing (ms): slide comes in, then stays still for 3 seconds, then the next one slides in.
 const ENTER = 1200;
 const HOLD = 3000;
-const FALLBACK_MODEL = '/assets/images/models/model-girl.jpg';
+const FALLBACK_MODEL = '/assets/images/models/model-girl.webp';
 
 /**
  * Full-width hero banner.

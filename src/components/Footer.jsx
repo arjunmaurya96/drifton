@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
 import { socials, business } from '../data/site.js';
 import SocialIcon from './SocialIcon.jsx';
+import PolicyModal, { policies } from './PolicyModal.jsx';
 
 const OFFER_TEXT = 'Buy 3 Products – Pay for 2 Only';
 
@@ -17,6 +18,7 @@ const fl = 'text-ondark hover:text-mint';
 export default function Footer() {
   const { notify } = useStore();
   const [email, setEmail] = useState('');
+  const [policy, setPolicy] = useState(null); // which policy popup is open
 
   const subscribe = (e) => {
     e.preventDefault();
@@ -44,9 +46,9 @@ export default function Footer() {
     </div>
     <footer id="footer" className="bg-navy-900 pb-8 pt-[72px] text-ondark">
       <div className="container-x">
-        <div className="mb-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1.4fr]">
+        <div className="mb-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1.4fr]">
           <div className="flex flex-col gap-4">
-            <Link to="/" aria-label="DriftOn home" className="self-start"><img src="/assets/images/logo-drifton-white.png" alt="DriftOn" className="h-11 w-auto sm:h-12" /></Link>
+            <Link to="/" aria-label="DriftOn home" className="self-start"><img loading="lazy" decoding="async" src="/assets/images/logo-drifton-white.webp" alt="DriftOn" className="h-11 w-auto sm:h-12" /></Link>
             <span className="max-w-[300px] text-[14.5px] leading-relaxed">Natural crystal deodorants by AI Enterprises.</span>
             <span className="text-[14.5px] leading-relaxed">Customer care: <a href={`mailto:${business.email}`} className="font-semibold text-white underline-offset-4 hover:text-mint hover:underline">{business.email}</a></span>
           </div>
@@ -58,9 +60,12 @@ export default function Footer() {
           </Col>
           <Col title="Help">
             <a href={business.trackUrl} target="_blank" rel="noreferrer" className={fl}>Track order</a>
-            <Link to="/combo" className={fl}>Combo offers</Link>
-            <Link to="/terms" className={fl}>Terms &amp; conditions</Link>
             <Link to="/contact" className={fl}>Contact us</Link>
+          </Col>
+          <Col title="Policies">
+            {Object.entries(policies).map(([id, x]) => (
+              <button key={id} type="button" onClick={() => setPolicy(id)} className={`${fl} text-left`}>{x.title}</button>
+            ))}
           </Col>
           <form onSubmit={subscribe} className="flex flex-col gap-3.5">
             <h4 className="text-[17px] font-semibold text-white">Subscribe for offers</h4>
@@ -85,6 +90,7 @@ export default function Footer() {
           </ul>
         </div>
       </div>
+      <PolicyModal id={policy} onClose={() => setPolicy(null)} />
     </footer>
     </>
   );

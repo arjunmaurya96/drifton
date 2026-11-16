@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { products } from '../data/products.js';
 import ProductCard from './ProductCard.jsx';
-import { ImagesNote } from './InfoNote.jsx';
+import ProductInfoNote from './ProductInfoNote.jsx';
 import { ChevronLeft, ChevronRight } from './Icons.jsx';
 
 /**
@@ -27,10 +27,9 @@ export default function ProductGrid() {
       <div className="container-wide">
         <div className="mb-8 flex flex-col items-center gap-4 text-center sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-5 sm:text-left xl:mb-8 xl:items-center">
           <h2 className="font-jost text-[40px] font-medium leading-tight tracking-tight text-black sm:text-5xl xl:text-[44px]">Pick your crystal.</h2>
-          <Link to="/combo" className="border-b-[3px] border-black pb-2 font-jost text-[15px] font-semibold uppercase tracking-wide text-black hover:text-black">
-            See combo offers
-          </Link>
         </div>
+
+        <ProductInfoNote className="mb-6" />
 
         <div className="relative">
           <div ref={track}
@@ -48,7 +47,6 @@ export default function ProductGrid() {
           <button onClick={() => slide(1)} aria-label="Next products"
             className="absolute right-3 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-navy-900 shadow-lg sm:hidden"><ChevronRight /></button>
         </div>
-        <ImagesNote className="mt-6" />
       </div>
     </section>
   );

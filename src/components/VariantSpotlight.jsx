@@ -76,7 +76,7 @@ export default function VariantSpotlight() {
       {[{ p: left, k: (i + n - 1) % n, pos: 'left-[3%] max-md:left-[2%]' }, { p: right, k: (i + 1) % n, pos: 'right-[3%] max-md:right-[2%]' }].map(({ p, k, pos }) => (
         <button key={`${p.id}-${i}`} onClick={() => setI(k)} aria-label={`Show ${p.name}`}
           className={`absolute bottom-[3%] z-[5] h-[34%] animate-fade-up opacity-90 transition hover:opacity-100 md:h-[44%] ${pos}`}>
-          <img src={cutoutOf(p.id)} alt="" className="h-full w-auto object-contain [filter:brightness(.82)_saturate(.9)]" />
+          <img loading="lazy" decoding="async" src={cutoutOf(p.id)} alt="" className="h-full w-auto object-contain [filter:brightness(.82)_saturate(.9)]" />
         </button>
       ))}
 
@@ -84,14 +84,14 @@ export default function VariantSpotlight() {
       <button key={`${opposite.id}-o-${i}`} onClick={() => setI((i + 2) % n)} aria-label={`Show ${opposite.name}`}
         className="absolute bottom-[3%] left-[15%] z-[4] hidden h-[32%] animate-fade-up opacity-80 transition hover:opacity-100 md:block xl:left-[16%]"
         style={{ animationDelay: '120ms' }}>
-        <img src={cutoutOf(opposite.id)} alt="" className="h-full w-auto object-contain [filter:brightness(.7)_saturate(.85)]" />
+        <img loading="lazy" decoding="async" src={cutoutOf(opposite.id)} alt="" className="h-full w-auto object-contain [filter:brightness(.7)_saturate(.85)]" />
       </button>
 
       {/* centre product */}
       <Link key={`c-${i}`} to={`/product/${center.slug}`} aria-label={`View ${center.name}`}
         className="absolute bottom-[-2%] left-1/2 z-[6] h-[60%] -translate-x-1/2 md:h-[76%]">
         <span aria-hidden="true" className="absolute inset-x-[-30%] bottom-0 h-1/2 rounded-full blur-3xl" style={{ background: look.glow, opacity: 0.35 }} />
-        <img src={cutoutOf(center.id)} alt={center.name} className="relative h-full w-auto animate-pop object-contain" />
+        <img loading="lazy" decoding="async" src={cutoutOf(center.id)} alt={center.name} className="relative h-full w-auto animate-pop object-contain" />
       </Link>
 
       {/* mobile CTA */}

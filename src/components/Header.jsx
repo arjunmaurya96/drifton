@@ -8,11 +8,9 @@ import AnnouncementBar from './AnnouncementBar.jsx';
 
 const links = [
   { to: '/#shop', label: 'Shop' }, // the 4 products on the home page
-  { to: '/combo', label: 'Combo' },
   { to: '/ingredients', label: 'Know More Ingredients' },
   { to: '/terms', label: 'Terms & Conditions' },
   { href: business.trackUrl, label: 'Track' }, // Ekart tracking site
-  { to: '/check-ingredient', label: 'Check Your Ingredient' },
   { to: '/contact', label: 'Contact Us' },
 ];
 
@@ -22,7 +20,11 @@ function NavLink({ l, className, onClick }) {
   if (l.href) return <a href={l.href} target="_blank" rel="noreferrer" onClick={onClick} className={className}>{l.label}</a>;
   const go = () => {
     onClick?.();
-    if (l.to.startsWith('/#') && pathname === '/') document.getElementById(l.to.slice(2))?.scrollIntoView({ behavior: 'smooth' });
+    if (l.to.startsWith('/#') && pathname === '/') {
+      const el = document.getElementById(l.to.slice(2));
+      el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => el?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 650); // after the mobile menu closes
+    }
   };
   return <Link to={l.to} onClick={go} className={className}>{l.label}</Link>;
 }
@@ -68,7 +70,7 @@ export default function Header() {
       <AnnouncementBar />
       <div className="container-x flex h-[78px] items-center justify-between gap-5">
         <Link to="/" aria-label="Drifton home" className="shrink-0">
-          <img src="/assets/images/logo.png" alt="Drifton by AI Enterprises" className="h-9 w-auto sm:h-11" />
+          <img src="/assets/images/logo.webp" alt="Drifton by AI Enterprises" className="h-9 w-auto sm:h-11" />
         </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-4 xl:flex 2xl:gap-6">
@@ -93,11 +95,18 @@ export default function Header() {
           </button>
         </div>
       </div>
-      {open && (
-        <nav aria-label="Mobile" className="flex flex-col border-t border-line bg-white px-8 pb-5 pt-2 xl:hidden">
-          {links.map((l) => <NavLink key={l.label} l={l} onClick={() => setOpen(false)} className="py-3 font-semibold text-navy-900" />)}
+      {/* mobile menu: slides open slowly, links fade in one by one */}
+      <div className={`grid transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(.22,1,.36,1)] xl:hidden ${open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`} aria-hidden={!open}>
+        <nav aria-label="Mobile" className="flex min-h-0 flex-col overflow-hidden border-t border-line bg-white px-8">
+          <span className="h-2 shrink-0" />
+          {links.map((l, k) => (
+            <span key={l.label} className={`transition-all duration-500 ${open ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'}`} style={{ transitionDelay: open ? `${120 + k * 60}ms` : '0ms' }}>
+              <NavLink l={l} onClick={() => setOpen(false)} className="block py-3 font-semibold text-navy-900" />
+            </span>
+          ))}
+          <span className="h-4 shrink-0" />
         </nav>
-      )}
+      </div>
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
