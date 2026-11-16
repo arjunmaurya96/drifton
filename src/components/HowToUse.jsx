@@ -13,7 +13,7 @@ const steps = [
   { icon: 'wash', title: 'Clean & wash', text: 'Wash your underarms and pat them dry before you begin.', photo: '/assets/images/steps/step-1.webp' },
   { icon: 'wet', title: 'Wet the crystal', text: 'Remove the cap and dip the crystal top in water for a second.', photo: '/assets/images/steps/step-2.webp' },
   { icon: 'apply', title: 'Apply gently', text: 'Glide it 3–4 times on clean, damp underarms. No white marks.', photo: '/assets/images/steps/step-3.webp' },
-  { icon: 'store', title: 'Wipe clean & store', text: 'Wipe the crystal dry, put the cap back and store it upright.', img: '/assets/images/models/model-couple.webp', pos: '55% 35%' },
+  { icon: 'store', title: 'Wipe clean & store', text: 'Wipe the crystal dry, put the cap back and store it upright.', photo: '/assets/images/steps/step-4.webp' },
 ];
 
 export default function HowToUse() {
