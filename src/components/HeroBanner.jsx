@@ -32,7 +32,7 @@ export default function HeroBanner() {
 
   return (
     <section id="top" aria-label="Featured products" aria-roledescription="carousel"
-      className="relative h-[100svh] min-h-[640px] overflow-hidden">
+      className="relative h-[calc(100svh-136px)] min-h-[600px] overflow-hidden lg:h-[100svh] lg:min-h-[640px]">
       {/* Product-colour backgrounds (cross-fade) */}
       {bannerSlides.map((s, k) => (
         <div key={k} aria-hidden="true" className={`absolute inset-0 transition-opacity duration-1000 ${k === i ? 'opacity-100' : 'opacity-0'}`}
@@ -40,33 +40,34 @@ export default function HeroBanner() {
       ))}
 
       {/* Left: model photo, fading into the background colour */}
-      <div key={`m-${i}`} aria-hidden="true" className="absolute inset-y-0 left-0 w-full animate-from-left max-md:opacity-35 md:w-[50%] lg:w-[46%]"
-        style={{ WebkitMaskImage: 'linear-gradient(to right, #000 62%, transparent 100%)', maskImage: 'linear-gradient(to right, #000 62%, transparent 100%)' }}>
+      {/* Mobile/tablet: photo across the top, fading down. Desktop: photo on the left, fading right. */}
+      <div key={`m-${i}`} aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-[54%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] lg:inset-y-0 lg:right-auto lg:h-full lg:w-[46%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_62%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_62%,transparent_100%)]">
         <img src={slide.modelPhoto} alt="" className="h-full w-full object-cover" style={{ objectPosition: slide.modelPos || '58% center' }}
           // if a photo is missing (e.g. model-boy.jpg not added yet), fall back to the girl photo
           onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
       </div>
 
-      <div className="container-wide relative z-[2] grid h-full grid-cols-1 items-center gap-6 pb-20 pt-6 md:grid-cols-[1fr_42%] lg:grid-cols-[31%_1fr_36%]">
+      <div className="container-wide relative z-[2] flex h-full flex-col justify-end pb-24 pt-6 lg:grid lg:grid-cols-[31%_1fr_36%] lg:items-center lg:gap-6 lg:pb-20">
         <div className="hidden lg:block" />
 
         {/* Middle: text */}
-        <div key={`t-${i}`} className="flex flex-col gap-5">
+        <div key={`t-${i}`} className="relative z-[3] flex flex-col gap-4 lg:gap-5">
           <h1 className="animate-from-right">
-            <span className="block font-serif text-[52px] leading-[0.95] sm:text-[72px] xl:text-[88px]" style={{ color: slide.accent }}>{slide.serif}</span>
-            <span className={`mt-2 block font-jost text-[26px] font-semibold leading-tight sm:text-[32px] xl:text-[38px] ${dark ? 'text-white' : 'text-navy-900'}`}>{slide.line}</span>
+            <span className="block font-serif text-[44px] leading-[0.95] sm:text-[64px] xl:text-[88px]" style={{ color: slide.accent }}>{slide.serif}</span>
+            <span className={`mt-2 block font-jost text-[22px] font-semibold leading-tight sm:text-[30px] xl:text-[38px] ${dark ? 'text-white' : 'text-navy-900'}`}>{slide.line}</span>
           </h1>
-          <ul className="flex flex-wrap gap-2.5" aria-label="Key ingredients">
+          <ul className="hidden flex-wrap gap-2.5 sm:flex" aria-label="Key ingredients">
             {slide.ingredients.map((ing, k) => (
-              <li key={ing.name} className={`flex animate-from-right items-center gap-2 rounded-full py-1 pl-1 pr-3.5 text-[13px] font-semibold backdrop-blur-md ${dark ? 'bg-white/10 text-white ring-1 ring-white/20' : 'bg-white/60 text-navy-900 ring-1 ring-white/80'}`}
+              <li key={ing.name} className={`flex animate-from-right items-center gap-1.5 rounded-full py-1 pl-1 pr-3 text-[12px] font-semibold sm:gap-2 sm:pr-3.5 sm:text-[13px] backdrop-blur-md ${dark ? 'bg-white/10 text-white ring-1 ring-white/20' : 'bg-white/60 text-navy-900 ring-1 ring-white/80'}`}
                 style={{ animationDelay: `${250 + k * 150}ms` }}>
-                <span className="flex size-8 items-center justify-center rounded-full bg-white text-navy-900 shadow-sm [&_svg]:size-[18px]"><IngredientIcon icon={ing.icon} /></span>
+                <span className="flex size-7 items-center justify-center rounded-full bg-white sm:size-8 text-navy-900 shadow-sm [&_svg]:size-[18px]"><IngredientIcon icon={ing.icon} /></span>
                 {ing.name}
               </li>
             ))}
           </ul>
           <div className="flex animate-fade-up flex-wrap items-center gap-5" style={{ animationDelay: '650ms' }}>
-            <Link to={url} className={`inline-flex min-h-[54px] items-center rounded-full px-10 font-jost text-[17px] font-semibold tracking-wide shadow-lg ${dark ? 'bg-white text-navy-900 hover:bg-mint hover:text-navy-900' : 'bg-navy-900 text-white hover:bg-navy-700 hover:text-white'}`}>
+            <Link to={url} className={`inline-flex min-h-[50px] items-center rounded-full px-8 font-jost text-[16px] sm:min-h-[54px] sm:px-10 sm:text-[17px] font-semibold tracking-wide shadow-lg ${dark ? 'bg-white text-navy-900 hover:bg-mint hover:text-navy-900' : 'bg-navy-900 text-white hover:bg-navy-700 hover:text-white'}`}>
               SHOP NOW
             </Link>
             <Link to="/#shop" className={`font-jost text-lg font-medium underline underline-offset-8 ${dark ? 'text-white decoration-white/50 hover:text-mint' : 'text-navy-900 decoration-navy-900/40 hover:text-navy-700'}`}>All products</Link>
@@ -74,11 +75,11 @@ export default function HeroBanner() {
         </div>
 
         {/* Right: the product only */}
-        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="hidden h-full items-center justify-center md:flex">
+        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="absolute right-1 top-[24%] z-[2] flex h-[32%] items-end justify-end sm:right-6 sm:top-[16%] sm:h-[40%] lg:static lg:h-full lg:items-center lg:justify-center">
           {slide.rightImage ? (
-            <img src={slide.rightImage} alt={product.name} className="h-[min(78svh,800px)] w-auto animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
+            <img src={slide.rightImage} alt={product.name} className="h-full w-auto lg:h-[min(78svh,800px)] animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
           ) : (
-            <img src={slide.cutout} alt={product.name} className="h-[min(76svh,800px)] w-auto animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
+            <img src={slide.cutout} alt={product.name} className="h-full w-auto lg:h-[min(76svh,800px)] animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
           )}
         </Link>
       </div>

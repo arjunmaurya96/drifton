@@ -54,11 +54,11 @@ export default function VariantSpotlight() {
       </div>
 
       {/* big words */}
-      <div key={`l-${i}`} className="pointer-events-none absolute left-[4%] top-[17%] z-10 animate-from-left whitespace-nowrap text-right max-md:left-0 max-md:right-0 max-md:top-[13%] max-md:text-center md:left-auto md:right-[61%]">
+      <div key={`l-${i}`} className="pointer-events-none absolute left-[4%] top-[17%] z-10 animate-from-left whitespace-nowrap text-right max-lg:left-0 max-lg:right-0 max-lg:top-[13%] max-lg:text-center lg:left-auto lg:right-[61%]">
         <span className="block font-display text-[56px] leading-none tracking-wide text-transparent [-webkit-text-stroke:2px_white] md:text-[80px] xl:text-[110px]">{look.left[0]}</span>
         <span className={`block font-display leading-[0.9] tracking-wide ${big(look.left[1])}`} style={{ color: '#fff' }}>{look.left[1]}</span>
       </div>
-      <div key={`r-${i}`} className="absolute left-[61%] top-[26%] z-10 hidden animate-from-right whitespace-nowrap md:block">
+      <div key={`r-${i}`} className="absolute left-[61%] top-[26%] z-10 hidden animate-from-right whitespace-nowrap lg:block">
         <span className="block font-display text-[80px] leading-none tracking-wide text-transparent [-webkit-text-stroke:2px_white] xl:text-[110px]">{look.right[0]}</span>
         <span className={`block font-display leading-[0.9] tracking-wide ${big(look.right[1])}`} style={{ color: look.accent }}>{look.right[1]}</span>
         <div className="mt-5 flex items-center gap-4">
@@ -95,7 +95,7 @@ export default function VariantSpotlight() {
       </Link>
 
       {/* mobile CTA */}
-      <div className="absolute inset-x-0 top-[33%] z-20 flex justify-center md:hidden">
+      <div className="absolute inset-x-0 top-[33%] z-20 flex justify-center lg:hidden">
         <Link to={`/product/${center.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-6 font-jost text-sm font-semibold uppercase text-navy-900">Shop {center.short}</Link>
       </div>
     </section>
