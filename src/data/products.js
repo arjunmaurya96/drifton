@@ -88,14 +88,16 @@ export const products = [
   },
 ];
 
-// ===== Home hero banner =====
-// Left: model photo. Middle: headline, key ingredients, SHOP NOW. Right: the product on its own (no box, no shadow).
-// Background: a gradient in the product's own colours.
-// modelPhoto: photo on the left. Slides alternate girl / boy:
-//   public/assets/images/models/model-girl.jpg and model-boy.jpg (until model-boy.jpg is added, the girl photo is shown).
-// cutout: transparent PNG of just the product (public/assets/images/cutouts/).
-// Ingredients are DUMMY — confirm the real key ingredients for each variant with the client.
-// icon: 'gem' | 'flower' | 'leaf' | 'drop' | 'hex' | 'sprig'
+// ===== Home hero banner: full-width image slides (headline text is part of the image) =====
+// Images are in public/assets/images/hero/. Order alternates girl / boy. `link` = where SHOP NOW goes.
+export const heroImages = [
+  { image: '/assets/images/hero/hero-1-girls.jpg', alt: 'Go outside, stay fresh. Drifton natural mineral deodorant alum stick range', link: '/#shop' },
+  { image: '/assets/images/hero/hero-2-boys.jpg', alt: 'Stay active, stay fresh. Drifton natural mineral deodorant alum stick range', link: '/#shop' },
+  { image: '/assets/images/hero/hero-3-girl-range.jpg', alt: 'Natural freshness, four unique ways. Drifton alum stick range', link: '/#shop' },
+  { image: '/assets/images/hero/hero-4-girl.jpg', alt: 'Natural freshness that lasts. Drifton natural mineral deodorant alum stick', link: '/product/lavender-alum-stick' },
+];
+
+// Product cutouts + colours (used by the variant spotlight section).
 export const bannerSlides = [
   {
     productId: 'palash', modelPhoto: '/assets/images/models/model-girl.jpg', cutout: '/assets/images/cutouts/palash.png',
