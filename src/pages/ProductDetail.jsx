@@ -62,9 +62,8 @@ export default function ProductDetail() {
     if (!product) return [];
     const imgs = [
       { type: 'image', src: product.image },
-      { type: 'image', src: product.image, pos: 'center 30%', scale: 1.5 },
-      { type: 'image', src: product.image, pos: 'center 80%', scale: 1.35 },
-      { type: 'image', src: product.image, pos: '30% center', scale: 1.25 },
+      { type: 'image', src: product.image, pos: 'center 20%', scale: 1.7 },
+      { type: 'image', src: product.image, pos: 'center 85%', scale: 1.5 },
     ];
     if (product.video) imgs.splice(1, 0, { type: 'video', src: product.video, poster: product.poster });
     return imgs;
@@ -133,7 +132,7 @@ export default function ProductDetail() {
                 {products.map((p) => (
                   <Link key={p.id} to={`/product/${p.slug}`} aria-current={p.id === product.id}
                     className={`flex items-center gap-2.5 rounded-full border-[1.5px] py-1.5 pl-1.5 pr-4 text-[14.5px] font-semibold text-navy-900 transition ${p.id === product.id ? 'border-navy-700 bg-blue-soft' : 'border-line-strong bg-white hover:border-navy-700'}`}>
-                    <img src={p.image} alt="" className="size-[34px] rounded-full object-cover" />{p.short}
+                    <img src={p.image} alt="" className="size-[34px] rounded-full bg-white object-contain p-0.5" />{p.short}
                   </Link>
                 ))}
               </div>
@@ -225,11 +224,11 @@ export default function ProductDetail() {
           <Block id="ingredients" title="Key ingredients">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {[
-                { name: 'Natural alum crystal', note: 'Potassium alum, a mineral salt used for generations to keep odour in check.', img: '/assets/images/charcoal.jpg', tint: '#E9ECF1' },
+                { name: 'Natural alum crystal', note: 'Potassium alum, a mineral salt used for generations to keep odour in check.', img: '/assets/images/cutouts/crystal.png', tint: '#E9ECF1' },
                 { name: product.ingredient, note: product.ingredientNote, img: product.image, tint: product.bg },
               ].map((ing) => (
                 <div key={ing.name} className="flex items-center gap-4 rounded-3xl p-4" style={{ background: ing.tint }}>
-                  <img src={ing.img} alt="" className="size-24 shrink-0 rounded-2xl object-cover" />
+                  <img src={ing.img} alt="" className="size-24 shrink-0 rounded-2xl bg-white/60 object-contain p-2" />
                   <span>
                     <b className="mb-1 block font-head text-xl font-semibold">{ing.name}</b>
                     <span className="text-[14.5px] leading-relaxed text-navy-500">{ing.note}</span>

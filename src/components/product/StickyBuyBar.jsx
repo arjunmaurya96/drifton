@@ -19,7 +19,7 @@ export default function StickyBuyBar({ product, rating, price, qty, setQty, onAd
     <div className={`fixed inset-x-0 bottom-0 z-50 border-t border-line bg-white/95 backdrop-blur transition-transform duration-300 ${show ? 'translate-y-0' : 'translate-y-full'}`}>
       <div className="container-x flex items-center justify-between gap-4 py-3">
         <div className="flex min-w-0 items-center gap-3">
-          <img src={product.image} alt="" className="size-14 rounded-2xl object-cover" />
+          <img src={product.image} alt="" className="size-14 rounded-2xl bg-page object-contain p-1" />
           <div className="hidden min-w-0 sm:block">
             <b className="block truncate font-head font-semibold">{product.name}</b>
             <span className="flex items-center gap-2 text-sm text-muted-2"><Stars value={rating} size={14} /> {rating.toFixed(1)}</span>

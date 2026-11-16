@@ -53,7 +53,7 @@ export default function Reviews() {
                       <small className="text-[13.5px] text-muted-2">{p.name}</small>
                     </span>
                   </span>
-                  <img src={p.image} alt="" className="size-[54px] rounded-2xl object-cover" />
+                  <img src={p.image} alt="" className="size-[54px] rounded-2xl bg-white object-contain p-1" />
                 </div>
               </article>
             );

@@ -39,10 +39,10 @@ export default function Footer() {
             <Link to="/#refer" className={fl}>Refer &amp; Earn</Link>
           </Col>
           <Col title="Help">
-            <a href="#footer" className={fl}>Track order</a>
-            <a href="#footer" className={fl}>Shipping policy</a>
-            <a href="#footer" className={fl}>Returns &amp; refunds</a>
-            <a href="#footer" className={fl}>Privacy policy</a>
+            <Link to="/track" className={fl}>Track order</Link>
+            <Link to="/combo" className={fl}>Combo offers</Link>
+            <Link to="/terms" className={fl}>Terms &amp; conditions</Link>
+            <Link to="/contact" className={fl}>Contact us</Link>
           </Col>
           <form onSubmit={subscribe} className="flex flex-col gap-3.5">
             <h4 className="text-[17px] font-semibold text-white">Subscribe for offers</h4>

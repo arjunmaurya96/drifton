@@ -21,7 +21,7 @@ export default function ProductMarquee({ dark = false }) {
         {loop.map((it, i) => (
           <Link key={i} to={`/product/${it.product.slug}`} aria-hidden={i >= items.length} tabIndex={i >= items.length ? -1 : 0}
             className={`flex shrink-0 items-center gap-4 px-7 ${dark ? 'text-white hover:text-mint' : 'text-navy-900 hover:text-brand'}`}>
-            <img src={it.product.image} alt="" className="size-16 rounded-full border-[3px] border-[#EEF1F8] object-cover" />
+            <img src={it.product.image} alt="" className="size-16 rounded-full border-[3px] border-[#EEF1F8] bg-blue-soft object-contain p-1.5" />
             <span className="whitespace-nowrap font-head text-[30px] font-semibold tracking-tight">{it.name}</span>
             <span className="ml-7 text-brand"><Sparkle /></span>
           </Link>

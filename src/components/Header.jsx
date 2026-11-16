@@ -7,11 +7,12 @@ import AnnouncementBar from './AnnouncementBar.jsx';
 
 const links = [
   { to: '/shop', label: 'Shop' },
-  { to: '/#why', label: 'Why Drifton' },
-  { to: '/#how', label: 'How to use' },
-  { to: '/#tested', label: 'Tested' },
-  { to: '/#reviews', label: 'Reviews' },
-  { to: '/#refer', label: 'Refer & Earn' },
+  { to: '/combo', label: 'Combo' },
+  { to: '/ingredients', label: 'Know More Ingredients' },
+  { to: '/terms', label: 'Terms & Conditions' },
+  { to: '/track', label: 'Track' },
+  { to: '/check-ingredient', label: 'Check Your Ingredient' },
+  { to: '/contact', label: 'Contact Us' },
 ];
 
 const Badge = ({ n }) => (
@@ -58,9 +59,9 @@ export default function Header() {
           <img src="/assets/images/logo.png" alt="Drifton by AI Enterprises" className="h-9 w-auto sm:h-11" />
         </Link>
 
-        <nav aria-label="Main" className="hidden items-center gap-7 xl:flex">
+        <nav aria-label="Main" className="hidden items-center gap-4 xl:flex 2xl:gap-6">
           {links.map((l) => (
-            <Link key={l.to} to={l.to} className="text-[15px] font-medium text-navy-500 transition-colors hover:text-brand">{l.label}</Link>
+            <Link key={l.to} to={l.to} className="whitespace-nowrap text-[14px] font-medium text-navy-500 transition-colors hover:text-brand 2xl:text-[15px]">{l.label}</Link>
           ))}
         </nav>
 
@@ -75,7 +76,7 @@ export default function Header() {
             <Badge n={count} />
           </button>
           <span className="mx-2 hidden h-6 w-px bg-[#E0E4EF] sm:block" />
-          <button onClick={() => openAuth('login')} className="hidden min-h-11 rounded-full px-4 text-[15px] font-semibold text-navy-700 hover:bg-[#EEF1F8] sm:block">Log in</button>
+          <button onClick={() => openAuth('login')} className="hidden min-h-11 rounded-full px-4 text-[15px] font-semibold text-navy-700 hover:bg-[#EEF1F8] sm:block xl:hidden 2xl:block">Log in</button>
           <button onClick={() => openAuth('signup')} className="min-h-10 whitespace-nowrap rounded-full bg-navy-700 px-3 text-[14px] sm:min-h-11 sm:px-4 sm:text-[15px] font-semibold text-white transition-colors hover:bg-brand sm:px-5">Sign up</button>
           <button className="icon-btn xl:hidden" aria-label="Menu" aria-expanded={open} onClick={() => setOpen(!open)}>
             {open ? <Close /> : <Menu />}

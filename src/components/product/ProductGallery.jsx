@@ -18,7 +18,7 @@ function Media({ m, big = false, name = '' }) {
         </span>
       )
     ) : (
-      <img src={m.src} alt={big ? name : ''} className="h-full w-full object-cover" style={{ objectPosition: m.pos || 'center', transform: `scale(${m.scale || 1})` }} />
+      <img src={m.src} alt={big ? name : ''} className={`h-full w-full object-contain ${big ? 'p-8 sm:p-12' : 'p-2'}`} style={{ objectPosition: m.pos || 'center', transform: `scale(${m.scale || 1})` }} />
     )
   );
 }

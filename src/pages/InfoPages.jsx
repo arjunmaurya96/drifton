@@ -1,0 +1,303 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { products, bannerSlides, formatINR, makeLine } from '../data/products.js';
+import { business } from '../data/site.js';
+import { useStore } from '../context/StoreContext.jsx';
+import IngredientIcon from '../components/IngredientIcon.jsx';
+import { Check, CheckCircle, Pin, Clock, Box, Truck } from '../components/Icons.jsx';
+
+// ---------------------------------------------------------------------
+// Shared page header
+// ---------------------------------------------------------------------
+function PageHead({ eyebrow, title, accent, text }) {
+  return (
+    <div className="border-b border-line bg-white">
+      <div className="container-x flex flex-col gap-3 py-12 sm:py-16">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-muted-2">
+          <Link to="/" className="text-muted-2 hover:text-brand">Home</Link><span>/</span><span className="text-navy-900">{title} {accent}</span>
+        </nav>
+        <span className="eyebrow">{eyebrow}</span>
+        <h1 className="font-serif text-[46px] leading-none text-navy-900 sm:text-[64px]">{title} <span className="text-brand">{accent}</span></h1>
+        {text && <p className="max-w-[620px] text-[17px] text-muted">{text}</p>}
+      </div>
+    </div>
+  );
+}
+
+const ingredientsOf = (id) => bannerSlides.find((b) => b.productId === id)?.ingredients || [];
+const byId = (id) => products.find((p) => p.id === id);
+
+// ---------------------------------------------------------------------
+// Combo  (DUMMY combos & prices — confirm with the client)
+// ---------------------------------------------------------------------
+const combos = [
+  { id: 'duo', name: 'Fresh Duo', note: 'Palash + Charcoal', items: ['palash', 'charcoal'], price: 1199, tag: 'Save ₹199' },
+  { id: 'floral', name: 'Floral Trio', note: 'Palash + Rose + Pure Crystal', items: ['palash', 'rose', 'lavender'], price: 1699, tag: 'Buy 2 get 1 free' },
+  { id: 'all', name: 'The Full Range', note: 'All 4 variants', items: ['palash', 'charcoal', 'rose', 'lavender'], price: 2099, tag: 'Best value' },
+];
+
+export function Combo() {
+  const { addToCart, openBuy } = useStore();
+  return (
+    <>
+      <PageHead eyebrow="Combo offers" title="Better" accent="together" text="Pick a combo, mix your favourite crystals and save more." />
+      <div className="container-x grid grid-cols-1 gap-6 py-14 md:grid-cols-3">
+        {combos.map((c) => {
+          const ps = c.items.map(byId);
+          const mrp = ps.reduce((s, p) => s + p.mrp, 0);
+          return (
+            <article key={c.id} className="flex flex-col overflow-hidden rounded-2xl border border-line bg-white">
+              <div className="relative flex h-[300px] items-end justify-center gap-1 px-4 pt-6" style={{ background: `linear-gradient(135deg, ${ps[0].bg}, ${ps[ps.length - 1].bg})` }}>
+                {ps.map((p, k) => (
+                  <img key={p.id} src={p.image} alt={p.name} className="w-auto object-contain" style={{ height: `${k === Math.floor(ps.length / 2) ? 92 : 76}%`, maxWidth: `${92 / ps.length}%` }} />
+                ))}
+                <span className="absolute left-4 top-4 rounded-full bg-navy-900 px-3 py-1.5 text-xs font-bold text-white">{c.tag}</span>
+              </div>
+              <div className="flex flex-1 flex-col gap-3 p-6">
+                <h2 className="text-2xl font-semibold">{c.name}</h2>
+                <p className="text-muted-2">{c.note}</p>
+                <span className="flex items-baseline gap-2.5">
+                  <b className="font-head text-2xl">{formatINR(c.price)}</b>
+                  <s className="text-muted-2">{formatINR(mrp)}</s>
+                </span>
+                <div className="mt-auto grid grid-cols-2 gap-2.5 pt-2">
+                  <button onClick={() => ps.forEach((p) => addToCart(p))} className="min-h-11 rounded-full border-[1.5px] border-navy-900 text-[13px] font-semibold uppercase text-navy-900 hover:bg-navy-900 hover:text-white">Add to cart</button>
+                  <button onClick={() => openBuy(ps.map((p) => ({ ...makeLine(p), unitPrice: c.price / ps.length })))} className="min-h-11 rounded-full bg-brand text-[13px] font-semibold uppercase text-white hover:bg-brand-dark">Buy now</button>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------
+// Know more ingredients
+// ---------------------------------------------------------------------
+const glossary = {
+  'Natural Alum': 'A naturally occurring mineral salt (potassium alum) — the crystal at the heart of every Drifton stick.',
+  'Palash Flower': 'A bright orange flower long used in Indian traditions, added for a warm floral touch.',
+  'Aloe Vera': 'A soothing plant extract known for its light, cooling feel on skin.',
+  'Vitamin E': 'An antioxidant commonly used in skin care for a gentle, cared-for feel.',
+  'Activated Charcoal': 'Known for its deep-clean feel, ideal for active, sweaty days.',
+  'Tea Tree': 'A fresh, herbal extract with a clean scent.',
+  Mint: 'A cool, fresh note for an instant feeling of freshness.',
+  'Rose Petals': 'A classic, gentle floral note.',
+  Glycerin: 'Helps the stick glide smoothly when wet.',
+  'Mineral Crystal': 'Pure crystal alum with nothing extra — simple and clean.',
+};
+
+export function Ingredients() {
+  return (
+    <>
+      <PageHead eyebrow="Know more" title="What's" accent="inside" text="Every Drifton stick starts with natural alum, then adds a botanical touch. Here is what each one contains." />
+      <div className="container-x flex flex-col gap-6 py-14">
+        {products.map((p) => (
+          <section key={p.id} className="grid grid-cols-1 overflow-hidden rounded-2xl border border-line bg-white md:grid-cols-[280px_1fr]">
+            <div className="flex h-[260px] items-center justify-center md:h-full" style={{ background: p.bg }}>
+              <img src={p.image} alt={p.name} className="h-[80%] w-auto object-contain" />
+            </div>
+            <div className="flex flex-col gap-4 p-6 sm:p-8">
+              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: p.accent }}>{p.tag}</span>
+              <h2 className="text-[28px] font-semibold">{p.name}</h2>
+              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {ingredientsOf(p.id).map((ing) => (
+                  <li key={ing.name} className="flex items-start gap-3 rounded-2xl bg-page p-4">
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-navy-900 [&_svg]:size-5"><IngredientIcon icon={ing.icon} /></span>
+                    <span><b className="block font-semibold">{ing.name}</b><span className="text-sm text-muted-2">{glossary[ing.name]}</span></span>
+                  </li>
+                ))}
+              </ul>
+              <Link to={`/product/${p.slug}`} className="btn-navy self-start">View product</Link>
+            </div>
+          </section>
+        ))}
+        <p className="text-sm text-muted-2">Ingredient lists are a preview. Always check the full list printed on the pack.</p>
+      </div>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------
+// Check your ingredient
+// ---------------------------------------------------------------------
+export function CheckIngredient() {
+  const all = [...new Set(products.flatMap((p) => ingredientsOf(p.id).map((i) => i.name)))];
+  const [avoid, setAvoid] = useState([]);
+  const toggle = (n) => setAvoid((a) => (a.includes(n) ? a.filter((x) => x !== n) : [...a, n]));
+
+  return (
+    <>
+      <PageHead eyebrow="Check your ingredient" title="Find your" accent="match" text="Tap anything you want to avoid. We'll show which Drifton sticks suit you." />
+      <div className="container-x grid grid-cols-1 gap-8 py-14 lg:grid-cols-[360px_1fr]">
+        <div className="flex h-fit flex-col gap-4 rounded-2xl border border-line bg-white p-6 lg:sticky lg:top-6">
+          <b className="font-head text-lg">I want to avoid…</b>
+          <div className="flex flex-wrap gap-2">
+            {all.map((n) => (
+              <button key={n} onClick={() => toggle(n)} aria-pressed={avoid.includes(n)}
+                className={`min-h-10 rounded-full px-3.5 text-sm font-semibold ${avoid.includes(n) ? 'bg-[#C0392B] text-white' : 'border-[1.5px] border-line-strong bg-white text-navy-900 hover:border-navy-700'}`}>
+                {n}
+              </button>
+            ))}
+          </div>
+          {avoid.length > 0 && <button onClick={() => setAvoid([])} className="self-start text-sm font-semibold text-navy-700 underline">Clear</button>}
+        </div>
+        <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          {products.map((p) => {
+            const ings = ingredientsOf(p.id);
+            const hit = ings.filter((i) => avoid.includes(i.name)).map((i) => i.name);
+            const ok = hit.length === 0;
+            return (
+              <li key={p.id} className={`flex flex-col overflow-hidden rounded-2xl border-2 bg-white transition ${ok ? 'border-brand' : 'border-line opacity-70'}`}>
+                <div className="flex h-[220px] items-center justify-center" style={{ background: p.bg }}><img src={p.image} alt={p.name} className="h-[82%] w-auto object-contain" /></div>
+                <div className="flex flex-col gap-2 p-5">
+                  <span className={`flex items-center gap-1.5 text-sm font-bold ${ok ? 'text-brand-dark' : 'text-[#C0392B]'}`}>{ok ? <><Check size={16} /> Good match</> : `Contains ${hit.join(', ')}`}</span>
+                  <b className="font-head text-lg font-semibold">{p.name}</b>
+                  <span className="text-sm text-muted-2">{ings.map((i) => i.name).join(' · ')}</span>
+                  <Link to={`/product/${p.slug}`} className="mt-2 text-sm font-semibold text-navy-700 underline">View product</Link>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------
+// Terms & conditions  (DUMMY text — replace with the client's legal terms)
+// ---------------------------------------------------------------------
+const terms = [
+  ['Orders', 'All orders are subject to availability and confirmation of the order price. We may cancel an order if a product is out of stock or a pricing error occurs.'],
+  ['Pricing & payment', 'Prices are in Indian Rupees (INR) and include applicable taxes. Payment can be made by UPI, card, net banking or cash on delivery where available.'],
+  ['Shipping', 'Prepaid orders ship free. Delivery times are estimates and may vary by location.'],
+  ['Returns & refunds', 'Unopened products can be returned within [X] days of delivery. Refunds are processed to the original payment method within [X] working days.'],
+  ['Offers & coupons', 'Offers cannot be combined unless stated. One coupon per order. We may change or end offers at any time.'],
+  ['Product use', 'For external use only. Do a patch test before first use and stop using the product if irritation occurs.'],
+  ['Contact', `For any questions, write to ${business.email} or call ${business.phone}.`],
+];
+
+export function Terms() {
+  return (
+    <>
+      <PageHead eyebrow="Legal" title="Terms &" accent="conditions" text="Please read these terms before placing an order. [Sample terms — replace with the client's final legal text.]" />
+      <div className="container-x py-14">
+        <ol className="flex max-w-[860px] flex-col gap-4">
+          {terms.map(([h, t], k) => (
+            <li key={h} className="flex gap-4 rounded-2xl border border-line bg-white p-6">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-navy-900 font-head text-sm font-bold text-mint">{k + 1}</span>
+              <span><b className="mb-1 block font-head text-lg">{h}</b><span className="leading-relaxed text-muted">{t}</span></span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------
+// Track order  (DEMO — connect to your courier / order API)
+// ---------------------------------------------------------------------
+const stages = ['Order placed', 'Packed', 'Shipped', 'Out for delivery', 'Delivered'];
+
+export function Track() {
+  const [id, setId] = useState('');
+  const [phone, setPhone] = useState('');
+  const [res, setRes] = useState(null);
+  const [err, setErr] = useState('');
+
+  const submit = (e) => {
+    e.preventDefault();
+    setErr('');
+    if (!id.trim() || !/^[6-9]\d{9}$/.test(phone)) return setErr('Enter your order ID and the 10-digit mobile number used for the order.');
+    setRes({ id: id.trim().toUpperCase(), step: 2, eta: 'in 2–3 days' }); // DEMO status
+  };
+
+  return (
+    <>
+      <PageHead eyebrow="Track" title="Track your" accent="order" text="Enter your order ID and mobile number to see where your Drifton is." />
+      <div className="container-x grid grid-cols-1 gap-8 py-14 lg:grid-cols-2">
+        <form onSubmit={submit} className="flex h-fit flex-col gap-4 rounded-2xl border border-line bg-white p-6 sm:p-8">
+          <label className="flex flex-col gap-1.5 text-sm font-semibold">Order ID
+            <input value={id} onChange={(e) => setId(e.target.value)} placeholder="e.g. DRF1234567" className="min-h-12 rounded-xl border-[1.5px] border-line-strong px-4 text-[15px] font-normal outline-none focus:border-navy-700" />
+          </label>
+          <label className="flex flex-col gap-1.5 text-sm font-semibold">Mobile number
+            <input value={phone} inputMode="numeric" maxLength={10} onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))} placeholder="98765 43210" className="min-h-12 rounded-xl border-[1.5px] border-line-strong px-4 text-[15px] font-normal outline-none focus:border-navy-700" />
+          </label>
+          {err && <p role="alert" className="text-sm font-semibold text-[#C0392B]">{err}</p>}
+          <button className="btn-primary self-start">Track order</button>
+        </form>
+
+        <div className="rounded-2xl border border-line bg-white p-6 sm:p-8">
+          {res ? (
+            <div className="flex flex-col gap-5">
+              <div className="flex items-center gap-3">
+                <span className="flex size-11 items-center justify-center rounded-full bg-mint-soft text-brand"><Truck size={22} /></span>
+                <span><b className="block font-head text-lg">Order #{res.id}</b><span className="text-sm text-muted-2">Expected delivery {res.eta} · demo status</span></span>
+              </div>
+              <ol className="flex flex-col">
+                {stages.map((s, k) => {
+                  const done = k <= res.step;
+                  return (
+                    <li key={s} className="flex gap-4">
+                      <span className="flex flex-col items-center">
+                        <span className={`flex size-8 items-center justify-center rounded-full ${done ? 'bg-brand text-white' : 'bg-page text-muted-2'}`}>{done ? <Check size={16} /> : k + 1}</span>
+                        {k < stages.length - 1 && <span className={`h-8 w-0.5 ${k < res.step ? 'bg-brand' : 'bg-line'}`} />}
+                      </span>
+                      <span className={`pt-1 font-semibold ${done ? 'text-navy-900' : 'text-muted-2'}`}>{s}</span>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center gap-3 py-10 text-center text-muted-2">
+              <Box size={40} />
+              Your order status will appear here.
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------
+// Contact us
+// ---------------------------------------------------------------------
+export function Contact() {
+  const { notify } = useStore();
+  const [f, setF] = useState({ name: '', email: '', msg: '' });
+  const send = (e) => {
+    e.preventDefault();
+    if (!f.name || !f.email.includes('@') || !f.msg) return notify('Please fill in all fields');
+    setF({ name: '', email: '', msg: '' });
+    notify('Thanks! We will get back to you soon.'); // DEMO — connect to email / CRM
+  };
+  const input = 'min-h-12 w-full rounded-xl border-[1.5px] border-line-strong px-4 text-[15px] font-normal outline-none focus:border-navy-700';
+  return (
+    <>
+      <PageHead eyebrow="Contact us" title="We're here to" accent="help" text="Questions about an order, a product or a bulk enquiry? Write to us." />
+      <div className="container-x grid grid-cols-1 gap-8 py-14 lg:grid-cols-[1fr_400px]">
+        <form onSubmit={send} className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-6 sm:p-8">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <label className="flex flex-col gap-1.5 text-sm font-semibold">Name<input className={input} value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></label>
+            <label className="flex flex-col gap-1.5 text-sm font-semibold">Email<input type="email" className={input} value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></label>
+          </div>
+          <label className="flex flex-col gap-1.5 text-sm font-semibold">Message<textarea rows={6} className={`${input} py-3`} value={f.msg} onChange={(e) => setF({ ...f, msg: e.target.value })} /></label>
+          <button className="btn-primary self-start">Send message</button>
+        </form>
+        <aside className="flex flex-col gap-4 rounded-2xl bg-navy-900 p-7 text-white">
+          <b className="font-head text-xl">{business.name}</b>
+          <span className="flex gap-3 text-ondark"><span className="text-mint"><Pin /></span>{business.address}</span>
+          <span className="flex gap-3 text-ondark"><span className="text-mint"><Clock size={18} /></span>{business.hours}</span>
+          <a href={`tel:${business.phone.replace(/\s/g, '')}`} className="flex gap-3 text-white hover:text-mint"><span className="text-mint"><CheckCircle size={18} /></span>{business.phone}</a>
+          <a href={`mailto:${business.email}`} className="flex gap-3 text-white hover:text-mint"><span className="text-mint"><CheckCircle size={18} /></span>{business.email}</a>
+        </aside>
+      </div>
+    </>
+  );
+}

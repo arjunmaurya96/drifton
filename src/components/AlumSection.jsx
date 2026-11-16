@@ -13,7 +13,7 @@ export default function AlumSection() {
       <div className="container-x">
         <div className="grid grid-cols-1 items-center gap-10 rounded-[36px] border border-line bg-white p-5 md:p-7 lg:grid-cols-[.95fr_1.05fr] lg:gap-16 lg:pr-14">
           <div className="relative h-[420px] overflow-hidden rounded-[28px] bg-[#E9ECF1] md:h-[560px]">
-            <img src="/assets/images/charcoal.jpg" alt="Drifton natural crystal alum stick" loading="lazy" className="h-full w-full object-cover" />
+            <img src="/assets/images/cutouts/charcoal.png" alt="Drifton natural crystal alum stick" loading="lazy" className="mx-auto h-[82%] w-auto object-contain pt-10" />
             <span className="absolute left-5 top-5 rounded-xl bg-white px-3.5 py-2 text-xs font-bold uppercase tracking-widest text-navy-700">Timeless mineral</span>
             <span className="absolute inset-x-5 bottom-5 flex items-center justify-between gap-3 rounded-[20px] bg-navy-900/90 px-5 py-4 text-white">
               <span>

@@ -56,7 +56,7 @@ export default function SearchOverlay({ open, onClose }) {
                 {results.map((p) => (
                   <li key={p.id}>
                     <Link to={`/product/${p.slug}`} onClick={onClose} className="flex items-center gap-3 rounded-2xl border border-line p-2.5 pr-4 text-navy-900 hover:border-navy-700 hover:text-navy-900">
-                      <img src={p.image} alt="" className="size-16 rounded-xl object-cover" />
+                      <img src={p.image} alt="" className="size-16 rounded-xl bg-page object-contain p-1" />
                       <span className="min-w-0">
                         <b className="block truncate font-head font-semibold">{p.name}</b>
                         <span className="text-sm text-muted-2">{formatINR(p.price)} <s className="ml-1">{formatINR(p.mrp)}</s></span>

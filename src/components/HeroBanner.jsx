@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { bannerSlides, getProductById } from '../data/products.js';
-import IngredientIcon from './IngredientIcon.jsx';
 import { ChevronLeft, ChevronRight } from './Icons.jsx';
 
 // Timing (ms): slide comes in, then stays still for 3 seconds, then the next one slides in.
@@ -42,44 +41,19 @@ export default function HeroBanner() {
       {/* Left: model photo, fading into the background colour */}
       {/* Mobile/tablet: photo across the top, fading down. Desktop: photo on the left, fading right. */}
       <div key={`m-${i}`} aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-[54%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] lg:inset-y-0 lg:right-auto lg:h-full lg:w-[46%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_62%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_62%,transparent_100%)]">
+        className="absolute inset-x-0 top-0 h-[58%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] lg:inset-y-0 lg:right-auto lg:h-full lg:w-[50%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_62%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_62%,transparent_100%)]">
         <img src={slide.modelPhoto} alt="" className="h-full w-full object-cover" style={{ objectPosition: slide.modelPos || '58% center' }}
           // if a photo is missing (e.g. model-boy.jpg not added yet), fall back to the girl photo
           onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
       </div>
 
-      <div className="container-wide relative z-[2] flex h-full flex-col justify-end pb-24 pt-6 lg:grid lg:grid-cols-[31%_1fr_36%] lg:items-center lg:gap-6 lg:pb-20">
-        <div className="hidden lg:block" />
-
-        {/* Middle: text */}
-        <div key={`t-${i}`} className="relative z-[3] flex flex-col gap-4 lg:gap-5">
-          <h1 className="animate-from-right">
-            <span className="block font-serif text-[44px] leading-[0.95] sm:text-[64px] xl:text-[88px]" style={{ color: slide.accent }}>{slide.serif}</span>
-            <span className={`mt-2 block font-jost text-[22px] font-semibold leading-tight sm:text-[30px] xl:text-[38px] ${dark ? 'text-white' : 'text-navy-900'}`}>{slide.line}</span>
-          </h1>
-          <ul className="hidden flex-wrap gap-2.5 sm:flex" aria-label="Key ingredients">
-            {slide.ingredients.map((ing, k) => (
-              <li key={ing.name} className={`flex animate-from-right items-center gap-1.5 rounded-full py-1 pl-1 pr-3 text-[12px] font-semibold sm:gap-2 sm:pr-3.5 sm:text-[13px] backdrop-blur-md ${dark ? 'bg-white/10 text-white ring-1 ring-white/20' : 'bg-white/60 text-navy-900 ring-1 ring-white/80'}`}
-                style={{ animationDelay: `${250 + k * 150}ms` }}>
-                <span className="flex size-7 items-center justify-center rounded-full bg-white sm:size-8 text-navy-900 shadow-sm [&_svg]:size-[18px]"><IngredientIcon icon={ing.icon} /></span>
-                {ing.name}
-              </li>
-            ))}
-          </ul>
-          <div className="flex animate-fade-up flex-wrap items-center gap-5" style={{ animationDelay: '650ms' }}>
-            <Link to={url} className={`inline-flex min-h-[50px] items-center rounded-full px-8 font-jost text-[16px] sm:min-h-[54px] sm:px-10 sm:text-[17px] font-semibold tracking-wide shadow-lg ${dark ? 'bg-white text-navy-900 hover:bg-mint hover:text-navy-900' : 'bg-navy-900 text-white hover:bg-navy-700 hover:text-white'}`}>
-              SHOP NOW
-            </Link>
-            <Link to="/#shop" className={`font-jost text-lg font-medium underline underline-offset-8 ${dark ? 'text-white decoration-white/50 hover:text-mint' : 'text-navy-900 decoration-navy-900/40 hover:text-navy-700'}`}>All products</Link>
-          </div>
-        </div>
-
+      <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 lg:items-center lg:justify-end lg:pb-0">
         {/* Right: the product only */}
-        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="absolute right-1 top-[24%] z-[2] flex h-[32%] items-end justify-end sm:right-6 sm:top-[16%] sm:h-[40%] lg:static lg:h-full lg:items-center lg:justify-center">
+        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[50%] items-end justify-center sm:h-[54%] lg:h-full lg:w-[54%] lg:items-center">
           {slide.rightImage ? (
-            <img src={slide.rightImage} alt={product.name} className="h-full w-auto lg:h-[min(78svh,800px)] animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
+            <img src={slide.rightImage} alt={product.name} className="h-full w-auto lg:h-[min(82svh,840px)] animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
           ) : (
-            <img src={slide.cutout} alt={product.name} className="h-full w-auto lg:h-[min(76svh,800px)] animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
+            <img src={slide.cutout} alt={product.name} className="h-full w-auto lg:h-[min(82svh,840px)] animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
           )}
         </Link>
       </div>

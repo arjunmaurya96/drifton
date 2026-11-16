@@ -79,7 +79,7 @@ export default function BuyNowModal() {
               <ul className="flex flex-col gap-3">
                 {lines.map((l, k) => (
                   <li key={l.key} className="flex items-center gap-3 rounded-2xl bg-page p-2.5 pr-4">
-                    <img src={l.image} alt="" className="size-16 rounded-xl object-cover" />
+                    <img src={l.image} alt="" className="size-16 rounded-xl bg-white object-contain p-1" />
                     <span className="min-w-0 flex-1">
                       <b className="block truncate font-head font-semibold">{l.name}</b>
                       <small className="text-muted-2">{l.pack} · {formatINR(l.unitPrice)}</small>

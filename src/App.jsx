@@ -9,6 +9,7 @@ import Home from './pages/Home.jsx';
 import ProductDetail from './pages/ProductDetail.jsx';
 import NotFound from './pages/NotFound.jsx';
 import Shop from './pages/Shop.jsx';
+import { Combo, Ingredients, CheckIngredient, Terms, Track, Contact } from './pages/InfoPages.jsx';
 import BuyNowModal from './components/BuyNowModal.jsx';
 
 function ScrollManager() {
@@ -32,6 +33,12 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
+          <Route path="/combo" element={<Combo />} />
+          <Route path="/ingredients" element={<Ingredients />} />
+          <Route path="/check-ingredient" element={<CheckIngredient />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/track" element={<Track />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/product/:slug" element={<ProductDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

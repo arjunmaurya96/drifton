@@ -15,8 +15,9 @@ export const products = [
     badge: 'Bestseller',
     price: 699,
     mrp: 999,
-    image: `${IMG}/palash.jpg`,
-    video: `${VID}/hero-palash.mp4`,
+    image: `${IMG}/cutouts/palash.png`, // product only, no background
+    photo: `${IMG}/palash.jpg`,
+    video: null,
     poster: `${IMG}/poster-palash.jpg`,
     bg: '#FCEFD9',
     accent: '#A3461A',
@@ -35,8 +36,9 @@ export const products = [
     badge: 'New',
     price: 699,
     mrp: 999,
-    image: `${IMG}/charcoal.jpg`,
-    video: `${VID}/hero-charcoal.mp4`,
+    image: `${IMG}/cutouts/charcoal.png`, // product only, no background
+    photo: `${IMG}/charcoal.jpg`,
+    video: null,
     poster: `${IMG}/poster-charcoal.jpg`,
     bg: '#E4E6EB',
     accent: '#3A4466',
@@ -55,8 +57,9 @@ export const products = [
     badge: 'Sale',
     price: 699,
     mrp: 999,
-    image: `${IMG}/rose.jpg`,
-    video: `${VID}/hero-rose.mp4`,
+    image: `${IMG}/cutouts/rose.png`, // product only, no background
+    photo: `${IMG}/rose.jpg`,
+    video: null,
     poster: `${IMG}/poster-rose.jpg`,
     bg: '#FBE3EA',
     accent: '#A02E54',
@@ -75,7 +78,8 @@ export const products = [
     badge: 'Sale',
     price: 699,
     mrp: 999,
-    image: `${IMG}/lavender-crystal.jpg`, // client's crystal + water photo
+    image: `${IMG}/cutouts/crystal.png`, // product only, no background
+    photo: `${IMG}/lavender-crystal.jpg`,
     video: null,
     poster: null,
     bg: '#D9ECFA',
