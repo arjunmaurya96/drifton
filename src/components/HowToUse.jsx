@@ -24,14 +24,14 @@ export default function HowToUse() {
         <h2 id="how-title" className="font-serif text-[48px] leading-none text-navy-900 sm:text-[68px]">How to <span className="text-brand">use</span></h2>
         <p className="max-w-[460px] text-[16px] text-muted sm:text-[17px]">Just like it says on the pack — fresh all day in under 10 seconds.</p>
       </div>
-      <ol className="container-wide grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4 xl:gap-6">
+      <ol className="container-wide grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-8 lg:gap-10">
         {steps.map((s, k) => (
           <li key={s.title} className="relative flex flex-col">
             {/* step marker + connector line (timeline) */}
             <div className="mb-4 flex items-center gap-3">
               <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#123A7A] font-head text-[17px] font-bold text-white ring-4 ring-[#E3ECF8]">{k + 1}</span>
               <span className="text-[12px] font-bold uppercase tracking-[2px] text-[#123A7A]">Step {k + 1}</span>
-              {k < steps.length - 1 && <span aria-hidden="true" className="ml-1 hidden h-0.5 flex-1 bg-[repeating-linear-gradient(90deg,#9DB6DA_0_8px,transparent_8px_14px)] xl:block" />}
+              {k % 2 === 0 && <span aria-hidden="true" className="ml-1 hidden h-0.5 flex-1 bg-[repeating-linear-gradient(90deg,#9DB6DA_0_8px,transparent_8px_14px)] sm:block" />}
             </div>
 
             {/* image — every card the same size */}
@@ -43,7 +43,7 @@ export default function HowToUse() {
                   <img src={s.img} alt="" loading="lazy" decoding="async" className="block aspect-[1199/1312] w-full object-cover" style={{ objectPosition: s.pos }} />
                   <div className="absolute inset-0 bg-gradient-to-r from-white/85 via-white/20 to-transparent" />
                   <div className="absolute left-[4%] top-[9%] flex w-[28%] flex-col items-center gap-2 text-center">
-                    <span className="whitespace-nowrap rounded-full bg-[#123A7A] px-3 py-1 font-head text-[16px] font-bold text-white sm:text-[18px] xl:text-[14px]">Step {k + 1}</span>
+                    <span className="whitespace-nowrap rounded-full bg-[#123A7A] px-3 py-1 font-head text-[16px] font-bold text-white sm:text-[20px] lg:text-[26px]">Step {k + 1}</span>
                     <span className="flex aspect-square w-[80%] items-center justify-center rounded-full border-[2.5px] border-[#123A7A] bg-white text-[#123A7A] [&_svg]:h-1/2 [&_svg]:w-1/2">{icons[s.icon]}</span>
                   </div>
                 </>
@@ -52,8 +52,8 @@ export default function HowToUse() {
 
             {/* caption — same for all four */}
             <div className="mt-4 flex flex-col gap-1 px-1">
-              <h3 className="font-head text-[20px] font-bold leading-tight text-navy-900">{s.title}</h3>
-              <p className="text-[14.5px] leading-relaxed text-muted">{s.text}</p>
+              <h3 className="font-head text-[22px] font-bold leading-tight text-navy-900 sm:text-[26px]">{s.title}</h3>
+              <p className="text-[15px] leading-relaxed text-muted sm:text-[16px]">{s.text}</p>
             </div>
           </li>
         ))}
