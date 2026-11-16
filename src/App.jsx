@@ -17,6 +17,8 @@ const Ingredients = lazy(() => import('./pages/InfoPages.jsx').then((m) => ({ de
 const Terms = lazy(() => import('./pages/InfoPages.jsx').then((m) => ({ default: m.Terms })));
 const Contact = lazy(() => import('./pages/InfoPages.jsx').then((m) => ({ default: m.Contact })));
 
+const AdminApp = lazy(() => import('./admin/AdminApp.jsx')); // admin panel: loaded only on /admin
+
 const PageLoader = () => (
   <div className="flex min-h-[60svh] items-center justify-center" aria-label="Loading">
     <span className="size-10 animate-spin rounded-full border-4 border-line border-t-navy-700" />
@@ -52,6 +54,14 @@ function ScrollManager() {
 }
 
 export default function App() {
+  const { pathname } = useLocation();
+  if (pathname.startsWith('/admin')) {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <Routes><Route path="/admin/*" element={<AdminApp />} /></Routes>
+      </Suspense>
+    );
+  }
   return (
     <>
       <ScrollManager />
