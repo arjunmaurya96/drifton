@@ -89,33 +89,41 @@ export function Ingredients() {
         </div>
       </section>
 
-      <div className="container-wide py-8 sm:py-12">
-        <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7 xl:gap-8">
-          {ingredientOrder.map(byId).map((p) => (
-            <li key={p.id} className="flex flex-col overflow-hidden rounded-[24px] bg-white shadow-[0_18px_50px_-18px_rgba(15,26,60,.35)] ring-1 ring-line transition-transform duration-300 hover:-translate-y-1">
-              {/* ingredient image — same size for all four, shown whole */}
-              <img src={`/assets/images/ingredients/${p.id}.webp`} alt={`${p.name} ingredients`} loading="lazy" decoding="async"
-                className="block aspect-[1194/1280] w-full object-cover" style={{ background: p.bg }} />
-              <div className="flex flex-1 flex-col gap-4 p-5 sm:p-7">
-                <div>
-                  <span className="text-[11.5px] font-bold uppercase tracking-[2px]" style={{ color: p.accent }}>{p.tag}</span>
-                  <h2 className="mt-1 text-[24px] font-semibold leading-tight sm:text-[28px]">{p.name}</h2>
-                </div>
-                <ol className="flex flex-col divide-y divide-line rounded-2xl bg-page">
-                  {p.ingredients.map((n, k) => (
-                    <li key={n} className="flex items-start gap-3 px-4 py-3">
-                      <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-white text-[12.5px] font-bold text-navy-900 ring-1 ring-line">{k + 1}</span>
-                      <span className="min-w-0"><b className="block text-[15px] font-semibold">{n}</b><span className="text-[13.5px] leading-snug text-muted-2">{glossary[n]}</span></span>
-                    </li>
-                  ))}
-                </ol>
-                <Link to="/#shop" className="btn-navy mt-auto self-start">View product</Link>
+      <div className="container-wide flex flex-col gap-6 py-8 sm:gap-8 sm:py-12">
+        {ingredientOrder.map(byId).map((p, k) => (
+          // zig-zag: image left on 1st & 3rd, right on 2nd & 4th
+          <section key={p.id} className="overflow-hidden rounded-[28px] border border-line bg-white shadow-[0_20px_60px_-30px_rgba(15,26,60,.35)]">
+            <div className={`grid grid-cols-1 items-stretch ${k % 2 ? 'lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]' : 'lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]'}`}>
+              {/* image panel — the ingredient image is shown whole, raised on a soft colour panel */}
+              <div className={`flex items-center justify-center p-5 sm:p-7 lg:p-9 ${k % 2 ? 'lg:order-2' : ''}`} style={{ background: `linear-gradient(160deg, ${p.bg} 0%, #FFFFFF 100%)` }}>
+                <img src={`/assets/images/ingredients/${p.id}.webp`} alt={`${p.name} ingredients`} loading="lazy" decoding="async"
+                  className="block aspect-[1194/1280] w-full max-w-[420px] rounded-[20px] object-cover shadow-[0_24px_50px_-20px_rgba(15,26,60,.55)] ring-4 ring-white" />
               </div>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-8"><IngredientGyan /></div>
-        <p className="mt-4 text-sm text-muted-2">Always read the ingredient list printed on the pack before use.</p>
+              {/* text */}
+              <div className="flex flex-col justify-center gap-5 p-6 sm:p-9 lg:p-12">
+                <div>
+                  <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11.5px] font-bold uppercase tracking-[2px]" style={{ background: p.bg, color: p.accent }}>{p.tag}</span>
+                  <h2 className="mt-3 font-head text-[26px] font-bold leading-tight tracking-tight sm:text-[34px]">{p.name}</h2>
+                  <p className="mt-2 max-w-[560px] text-[15px] leading-relaxed text-muted">{p.description}</p>
+                </div>
+                <div>
+                  <span className="mb-3 block text-[12px] font-bold uppercase tracking-[2px] text-muted-2">{p.ingredients.length} ingredients</span>
+                  <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                    {p.ingredients.map((n, i) => (
+                      <li key={n} className="flex items-start gap-3 rounded-2xl border border-line bg-page p-3.5">
+                        <span className="flex size-8 shrink-0 items-center justify-center rounded-full text-[13px] font-bold text-white" style={{ background: p.accent }}>{i + 1}</span>
+                        <span className="min-w-0"><b className="block text-[15px] font-semibold">{n}</b><span className="text-[13px] leading-snug text-muted-2">{glossary[n]}</span></span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <Link to="/#shop" className="btn-navy self-start">View product</Link>
+              </div>
+            </div>
+          </section>
+        ))}
+        <IngredientGyan />
+        <p className="text-sm text-muted-2">Always read the ingredient list printed on the pack before use.</p>
       </div>
     </>
   );
