@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
-import { formatINR, COMBO_PRICE } from '../data/products.js';
+import { formatINR } from '../data/products.js';
 
 /**
  * Product card, phitku style: a full-bleed photo of the product with its own natural
@@ -17,7 +17,7 @@ export default function ProductCard({ product, className = 'h-[600px] sm:h-[680p
       <Link to={url} aria-label={`View ${product.name}`} className="absolute inset-0">
         <img src={product.scene} alt={product.name} loading="lazy" className="h-full w-full object-cover object-[50%_42%]" />
       </Link>
-      <span className="pointer-events-none absolute right-4 top-4 rounded-full bg-white px-4 py-2 font-jost text-[14px] font-medium text-navy-900">2 for {formatINR(COMBO_PRICE)}</span>
+      <span className="pointer-events-none absolute right-4 top-4 rounded-full bg-white px-4 py-2 font-jost text-[14px] font-medium text-navy-900">Sale</span>
 
       {/* name, price and button on the photo */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-1.5 bg-gradient-to-t from-black/55 via-black/15 to-transparent px-5 pb-6 pt-28 text-center text-white">

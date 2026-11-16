@@ -11,6 +11,13 @@ import NotFound from './pages/NotFound.jsx';
 import Shop from './pages/Shop.jsx';
 import { Combo, Ingredients, CheckIngredient, Terms, Track, Contact } from './pages/InfoPages.jsx';
 import BuyNowModal from './components/BuyNowModal.jsx';
+import ComboTopBanner from './components/ComboTopBanner.jsx';
+
+// Combo banner on top of every inner page (not on home; the shop page has its own offer banners)
+function TopBanner() {
+  const { pathname } = useLocation();
+  return pathname === '/' || pathname === '/shop' ? null : <ComboTopBanner />;
+}
 
 function ScrollManager() {
   const { pathname, hash } = useLocation();
@@ -30,6 +37,7 @@ export default function App() {
       <ScrollManager />
       <Header />
       <main>
+        <TopBanner />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />

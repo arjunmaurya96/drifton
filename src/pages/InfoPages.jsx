@@ -4,7 +4,7 @@ import { products, combos, formatINR, makeLine, UNIT_PRICE, COMBO_PRICE, COMBO_S
 import { termsEffective, termsIntro, termsSections } from '../data/terms.js';
 import { business } from '../data/site.js';
 import { useStore } from '../context/StoreContext.jsx';
-import { Check, CheckCircle, Pin, Clock, Box, Truck } from '../components/Icons.jsx';
+import { Check, CheckCircle, Pin, Clock, Box, Truck, Mail, Arrow } from '../components/Icons.jsx';
 
 // ---------------------------------------------------------------------
 // Shared page header
@@ -35,16 +35,14 @@ export function Combo() {
   return (
     <>
       <PageHead eyebrow="Combo offers" title="Better" accent="together" text={`Any 2 sticks for ${formatINR(COMBO_PRICE)} instead of ${formatINR(UNIT_PRICE * 2)}, with free delivery. Pick a ready combo or add any 2 to your cart — the combo price is applied automatically.`} />
-      <div className="container-x grid grid-cols-1 gap-5 py-10 sm:grid-cols-2 sm:py-14 lg:grid-cols-3 lg:gap-6">
+      <div className="container-wide grid grid-cols-1 gap-5 py-10 sm:grid-cols-2 sm:py-14 lg:grid-cols-3 lg:gap-6">
         {combos.map((c) => {
           const ps = c.items.map(byId);
           return (
             <article key={c.id} className="flex flex-col overflow-hidden rounded-2xl border border-line bg-white">
-              <div className="relative grid h-[340px] grid-cols-2 sm:h-[400px]">
-                {ps.map((p) => (
-                  <img key={p.id} src={p.scene} alt={p.name} className="h-full w-full object-cover object-[50%_45%]" style={{ background: p.bg }} />
-                ))}
-                <span className="absolute left-4 top-4 rounded-full bg-navy-900 px-3 py-1.5 text-xs font-bold text-white">Save {formatINR(COMBO_SAVING)}</span>
+              <div className="relative aspect-[6/5]" style={{ background: `linear-gradient(110deg, ${ps[0].bg}, ${ps[1].bg})` }}>
+                <img src={`/assets/images/combos/${c.id}.jpg`} alt={`${c.name} combo`} className="h-full w-full object-cover" />
+                <span className="absolute left-4 top-4 rounded-full bg-navy-900 px-3 py-1.5 text-xs font-bold text-white">Sale</span>
               </div>
               <div className="flex flex-1 flex-col gap-2 p-5 sm:p-6">
                 <span className="text-xs font-bold uppercase tracking-widest text-brand-dark">{c.tag}</span>
@@ -85,15 +83,15 @@ export function Ingredients() {
   return (
     <>
       <PageHead eyebrow="Know more" title="What's" accent="inside" text="Every DriftOn stick starts with natural potassium alum and glycerine. Here is the full ingredient list of each one." />
-      <div className="container-x flex flex-col gap-5 py-10 sm:gap-6 sm:py-14">
+      <div className="container-wide flex flex-col gap-5 py-10 sm:gap-6 sm:py-14">
         {products.map((p) => (
-          <section key={p.id} className="grid grid-cols-1 overflow-hidden rounded-2xl border border-line bg-white md:grid-cols-[260px_1fr]">
-            <div className="h-[340px] md:h-auto md:min-h-[380px]" style={{ background: p.bg }}>
+          <section key={p.id} className="grid grid-cols-1 overflow-hidden rounded-2xl border border-line bg-white md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+            <div className="h-[460px] sm:h-[560px] md:h-auto md:min-h-[600px]" style={{ background: p.bg }}>
               <img src={p.scene} alt={p.name} className="h-full w-full object-cover object-[50%_45%]" />
             </div>
-            <div className="flex flex-col gap-4 p-5 sm:p-8">
+            <div className="flex flex-col justify-center gap-4 p-5 sm:p-10">
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: p.accent }}>{p.tag}</span>
-              <h2 className="text-[24px] font-semibold sm:text-[28px]">{p.name}</h2>
+              <h2 className="text-[26px] font-semibold sm:text-[34px]">{p.name}</h2>
               <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3">
                 {p.ingredients.map((n, k) => (
                   <li key={n} className="flex items-start gap-3 rounded-2xl bg-page p-3.5 sm:p-4">
@@ -123,7 +121,7 @@ export function CheckIngredient() {
   return (
     <>
       <PageHead eyebrow="Check your ingredient" title="Find your" accent="match" text="Tap anything you want to avoid. We'll show which Drifton sticks suit you." />
-      <div className="container-x grid grid-cols-1 gap-6 py-10 sm:py-14 lg:grid-cols-[360px_1fr] lg:gap-8">
+      <div className="container-wide grid grid-cols-1 gap-6 py-10 sm:py-14 lg:grid-cols-[340px_1fr] lg:gap-8">
         <div className="flex h-fit flex-col gap-4 rounded-2xl border border-line bg-white p-6 lg:sticky lg:top-6">
           <b className="font-head text-lg">I want to avoid…</b>
           <div className="flex flex-wrap gap-2">
@@ -143,7 +141,7 @@ export function CheckIngredient() {
             const ok = hit.length === 0;
             return (
               <li key={p.id} className={`flex flex-col overflow-hidden rounded-2xl border-2 bg-white transition ${ok ? 'border-brand' : 'border-line opacity-70'}`}>
-                <div className="h-[220px] sm:h-[280px]" style={{ background: p.bg }}><img src={p.scene} alt={p.name} className="h-full w-full object-cover object-[50%_45%]" /></div>
+                <div className="h-[260px] sm:h-[460px] xl:h-[520px]" style={{ background: p.bg }}><img src={p.scene} alt={p.name} className="h-full w-full object-cover object-[50%_45%]" /></div>
                 <div className="flex flex-col gap-2 p-3.5 sm:p-5">
                   <span className={`flex items-center gap-1.5 text-[13px] font-bold sm:text-sm ${ok ? 'text-brand-dark' : 'text-[#C0392B]'}`}>{ok ? <><Check size={16} /> Good match</> : `Contains ${hit.join(', ')}`}</span>
                   <b className="font-head text-[15px] font-semibold sm:text-lg">{p.name}</b>
@@ -270,33 +268,104 @@ export function Track() {
 // ---------------------------------------------------------------------
 // Contact us
 // ---------------------------------------------------------------------
+const topics = ['Order & delivery', 'Returns & refunds', 'Product question', 'Bulk / wholesale', 'Something else'];
+
 export function Contact() {
   const { notify } = useStore();
-  const [f, setF] = useState({ name: '', email: '', msg: '' });
+  const empty = { name: '', email: '', phone: '', order: '', topic: topics[0], msg: '' };
+  const [f, setF] = useState(empty);
+  const [sent, setSent] = useState(false);
+  const set = (k) => (e) => setF({ ...f, [k]: k === 'phone' ? e.target.value.replace(/\D/g, '') : e.target.value });
   const send = (e) => {
     e.preventDefault();
-    if (!f.name || !f.email.includes('@') || !f.msg) return notify('Please fill in all fields');
-    setF({ name: '', email: '', msg: '' });
-    notify('Thanks! We will get back to you soon.'); // DEMO — connect to email / CRM
+    if (!f.name.trim() || !/\S+@\S+\.\S+/.test(f.email) || !f.msg.trim()) return notify('Please add your name, a valid email and a message');
+    setSent(true); setF(empty); // DEMO — connect to email / CRM
   };
-  const input = 'min-h-12 w-full rounded-xl border-[1.5px] border-line-strong px-4 text-[15px] font-normal outline-none focus:border-navy-700';
+  const input = 'min-h-12 w-full rounded-xl border-[1.5px] border-line-strong bg-white px-4 text-[15px] font-normal text-navy-900 outline-none transition focus:border-navy-700 focus:ring-4 focus:ring-blue-soft';
+  const label = 'flex flex-col gap-1.5 text-[13.5px] font-semibold text-navy-900';
+  const cards = [
+    { Icon: Mail, title: 'Email us', value: business.email, href: `mailto:${business.email}`, note: 'We reply within 24 hours' },
+    { Icon: Clock, title: 'Working hours', value: business.hours, note: 'Closed on public holidays' },
+    { Icon: Pin, title: 'Registered office', value: business.address, href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.mapQuery)}`, note: 'Get directions' },
+  ];
+
   return (
     <>
-      <PageHead eyebrow="Contact us" title="We're here to" accent="help" text="Questions about an order, a product or a bulk enquiry? Write to us." />
-      <div className="container-x grid grid-cols-1 gap-6 py-10 sm:py-14 lg:grid-cols-[1fr_400px] lg:gap-8">
-        <form onSubmit={send} className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-6 sm:p-8">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <label className="flex flex-col gap-1.5 text-sm font-semibold">Name<input className={input} value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></label>
-            <label className="flex flex-col gap-1.5 text-sm font-semibold">Email<input type="email" className={input} value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} /></label>
+      <PageHead eyebrow="Contact us" title="We're here to" accent="help" text="Questions about an order, a product or a bulk enquiry? Our customer care team will get back to you within one working day." />
+
+      <div className="container-wide grid grid-cols-1 gap-4 pt-10 sm:grid-cols-3 sm:gap-5 sm:pt-14">
+        {cards.map(({ Icon, title, value, href, note }) => {
+          const Tag = href ? 'a' : 'div';
+          return (
+            <Tag key={title} {...(href ? { href, target: href.startsWith('http') ? '_blank' : undefined, rel: 'noreferrer' } : {})}
+              className="flex items-start gap-4 rounded-2xl border border-line bg-white p-5 text-navy-900 transition hover:border-navy-700 sm:p-6">
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-navy-900 text-mint"><Icon size={22} /></span>
+              <span className="min-w-0">
+                <span className="block text-xs font-bold uppercase tracking-widest text-muted-2">{title}</span>
+                <b className="mt-1 block break-words font-head text-[16px] font-semibold leading-snug">{value}</b>
+                <span className="mt-1 block text-[13px] font-semibold text-brand-dark">{note}</span>
+              </span>
+            </Tag>
+          );
+        })}
+      </div>
+
+      <div className="container-wide grid grid-cols-1 gap-6 py-6 sm:py-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-8">
+        <div className="rounded-2xl border border-line bg-white p-5 sm:p-9">
+          {sent ? (
+            <div className="flex flex-col items-center gap-4 py-16 text-center">
+              <span className="flex size-16 items-center justify-center rounded-full bg-mint-soft text-brand"><CheckCircle size={34} /></span>
+              <h2 className="text-2xl font-semibold">Thank you! Your message is on its way.</h2>
+              <p className="max-w-[420px] text-muted">Our team will reply to your email within one working day.</p>
+              <button onClick={() => setSent(false)} className="btn-line">Send another message</button>
+            </div>
+          ) : (
+            <form onSubmit={send} className="flex flex-col gap-5" noValidate>
+              <div>
+                <h2 className="text-[24px] font-semibold sm:text-[28px]">Send us a message</h2>
+                <p className="mt-1 text-[15px] text-muted-2">Fields marked * are required.</p>
+              </div>
+              <fieldset>
+                <legend className="mb-2 text-[13.5px] font-semibold">What is it about?</legend>
+                <div className="flex flex-wrap gap-2">
+                  {topics.map((t) => (
+                    <button type="button" key={t} onClick={() => setF({ ...f, topic: t })} aria-pressed={f.topic === t}
+                      className={`min-h-10 rounded-full px-4 text-[13.5px] font-semibold transition ${f.topic === t ? 'bg-navy-900 text-white' : 'border-[1.5px] border-line-strong bg-white text-navy-900 hover:border-navy-700'}`}>{t}</button>
+                  ))}
+                </div>
+              </fieldset>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <label className={label}>Full name *<input className={input} value={f.name} onChange={set('name')} autoComplete="name" /></label>
+                <label className={label}>Email *<input type="email" className={input} value={f.email} onChange={set('email')} autoComplete="email" /></label>
+                <label className={label}>Mobile number<input className={input} inputMode="numeric" maxLength={10} value={f.phone} onChange={set('phone')} autoComplete="tel" /></label>
+                <label className={label}>Order ID (if any)<input className={input} placeholder="e.g. DRF1234567" value={f.order} onChange={set('order')} /></label>
+              </div>
+              <label className={label}>Message *<textarea rows={6} className={`${input} py-3`} value={f.msg} onChange={set('msg')} placeholder="Tell us how we can help…" /></label>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-[13px] text-muted-2">By sending, you agree to our <Link to="/terms" className="font-semibold text-navy-700 underline">Terms & Conditions</Link>.</span>
+                <button className="btn-primary min-h-[52px] px-8">Send message</button>
+              </div>
+            </form>
+          )}
+        </div>
+
+        <aside className="flex flex-col gap-5">
+          <div className="overflow-hidden rounded-2xl border border-line bg-white">
+            <iframe title="DriftOn office on Google Maps" src={`https://www.google.com/maps?q=${encodeURIComponent(business.mapQuery)}&output=embed`}
+              className="h-[260px] w-full border-0 sm:h-[300px]" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+            <div className="p-5">
+              <b className="font-head text-[17px]">{business.name}</b>
+              <p className="mt-1 text-[14px] text-muted">{business.address}</p>
+            </div>
           </div>
-          <label className="flex flex-col gap-1.5 text-sm font-semibold">Message<textarea rows={6} className={`${input} py-3`} value={f.msg} onChange={(e) => setF({ ...f, msg: e.target.value })} /></label>
-          <button className="btn-primary self-start">Send message</button>
-        </form>
-        <aside className="flex flex-col gap-4 rounded-2xl bg-navy-900 p-7 text-white">
-          <b className="font-head text-xl">{business.name}</b>
-          <span className="flex gap-3 text-ondark"><span className="text-mint"><Pin /></span>{business.address}</span>
-          <span className="flex gap-3 text-ondark"><span className="text-mint"><Clock size={18} /></span>{business.hours}</span>
-          <a href={`mailto:${business.email}`} className="flex gap-3 break-all text-white hover:text-mint"><span className="text-mint"><CheckCircle size={18} /></span>{business.email}</a>
+          <div className="rounded-2xl bg-navy-900 p-6 text-white">
+            <b className="font-head text-lg">Quick help</b>
+            <ul className="mt-3 flex flex-col divide-y divide-white/10">
+              {[['/track', 'Track your order'], ['/terms', 'Returns & refund policy'], ['/combo', 'Combo offers'], ['/check-ingredient', 'Check your ingredient']].map(([to, t]) => (
+                <li key={to}><Link to={to} className="flex items-center justify-between py-3 text-[15px] font-semibold text-white hover:text-mint">{t}<Arrow size={16} /></Link></li>
+              ))}
+            </ul>
+          </div>
         </aside>
       </div>
     </>

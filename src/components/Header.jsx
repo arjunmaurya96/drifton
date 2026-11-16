@@ -32,9 +32,9 @@ function useHideOnScroll() {
       ticking = true;
       requestAnimationFrame(() => {
         const y = window.scrollY;
-        if (y < 10) setHidden(false); // show at the very top
-        else if (y > lastY + 6) setHidden(true); // scrolling down
-        else if (y < lastY - 6) setHidden(false); // scrolling up a little
+        if (y <= 2) setHidden(false); // back at the very top
+        else if (y > lastY + 1) setHidden(true); // any scroll down: slide the whole header (top bar + nav) up
+        else if (y < lastY - 1) setHidden(false); // any scroll up: slide it back down
         lastY = y;
         ticking = false;
       });
@@ -52,7 +52,7 @@ export default function Header() {
   const hidden = useHideOnScroll() && !open && !searchOpen;
 
   return (
-    <header className={`sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur transition-transform duration-300 ease-out ${hidden ? '-translate-y-full' : 'translate-y-0 shadow-[0_8px_24px_-18px_rgba(15,26,60,.35)]'}`}>
+    <header className={`sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${hidden ? '-translate-y-full' : 'translate-y-0 shadow-[0_8px_24px_-18px_rgba(15,26,60,.35)]'}`}>
       <AnnouncementBar />
       <div className="container-x flex h-[78px] items-center justify-between gap-5">
         <Link to="/" aria-label="Drifton home" className="shrink-0">

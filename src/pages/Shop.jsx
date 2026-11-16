@@ -119,7 +119,7 @@ export default function Shop() {
               <div className="relative h-[72svh] min-h-[480px] overflow-hidden sm:h-[88svh] sm:min-h-[600px] xl:h-[100svh] xl:min-h-[780px]" style={{ background: p.bg }}>
                 <Link to={url} aria-label={`View ${p.name}`} className="block h-full"><img src={p.scene} alt={p.name} loading="lazy" className="h-full w-full object-cover object-[50%_42%]" /></Link>
                 <span className="absolute left-4 top-4 rounded-full bg-white px-3.5 py-1.5 font-jost text-[13px] font-medium text-navy-900">{p.badge}</span>
-                <span className="absolute bottom-4 left-4 rounded-full bg-brand px-3 py-1 text-xs font-bold text-white">2 for {formatINR(COMBO_PRICE)}</span>
+                <span className="absolute bottom-4 left-4 rounded-full bg-brand px-3 py-1 text-xs font-bold text-white">Sale</span>
                 <button onClick={() => toggleWish(p.id)} aria-pressed={inWish} aria-label={`${inWish ? 'Remove' : 'Add'} ${p.name} ${inWish ? 'from' : 'to'} wishlist`}
                   className="absolute right-3 top-3 flex size-10 items-center justify-center rounded-full bg-white/90 text-navy-900"><Heart filled={inWish} /></button>
               </div>
