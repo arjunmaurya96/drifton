@@ -29,6 +29,7 @@ export const combos = [
 export const products = [
   {
     id: 'palash',
+    scene: `${IMG}/scenes/palash.jpg`, // product photo with its natural ingredient (phitku style)
     slug: 'palash-alum-stick',
     name: 'Palash Alum Stick',
     short: 'Palash',
@@ -50,6 +51,7 @@ export const products = [
   },
   {
     id: 'charcoal',
+    scene: `${IMG}/scenes/charcoal.jpg`, // product photo with its natural ingredient (phitku style)
     slug: 'charcoal-alum-stick',
     name: 'Charcoal Alum Stick',
     short: 'Charcoal',
@@ -71,6 +73,7 @@ export const products = [
   },
   {
     id: 'rose',
+    scene: `${IMG}/scenes/rose.jpg`, // product photo with its natural ingredient (phitku style)
     slug: 'rose-alum-stick',
     name: 'Rose Alum Stick',
     short: 'Rose',
@@ -92,6 +95,7 @@ export const products = [
   },
   {
     id: 'natural',
+    scene: `${IMG}/scenes/natural.jpg`, // product photo with its natural ingredient (phitku style)
     slug: 'natural-alum-stick',
     name: 'Natural Alum Stick',
     short: 'Natural',
