@@ -7,7 +7,7 @@ import { formatINR } from '../data/products.js';
  * ingredient (palash flowers, rose, charcoal, crystals) and the name, price and
  * ADD TO CART sitting on the photo. Fixed — no hover effects.
  */
-export default function ProductCard({ product, className = 'h-[600px] sm:h-[680px]', quickCheckout = false }) {
+export default function ProductCard({ product, className = 'h-[500px] sm:h-[560px]', quickCheckout = false }) {
   const { addToCart, cart, openCheckout } = useStore();
   // quickCheckout (home page): add the stick and open the checkout popup straight away
   const onAdd = () => (quickCheckout ? (addToCart(product, 1, undefined, true), openCheckout()) : addToCart(product));
