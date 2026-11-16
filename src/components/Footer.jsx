@@ -4,6 +4,8 @@ import { useStore } from '../context/StoreContext.jsx';
 import { socials, business } from '../data/site.js';
 import SocialIcon from './SocialIcon.jsx';
 
+const OFFER_TEXT = 'Buy 3 Products – Pay for 2 Only';
+
 const Col = ({ title, children }) => (
   <div className="flex flex-col gap-3 text-[15px]">
     <h4 className="mb-1 text-[17px] font-semibold text-white">{title}</h4>
@@ -24,13 +26,29 @@ export default function Footer() {
   };
 
   return (
+    <>
+    {/* scrolling offer strip just above the footer */}
+    <div aria-label={OFFER_TEXT} className="overflow-hidden bg-brand py-3.5 text-white sm:py-4">
+      <div aria-hidden="true" className="flex w-max animate-marquee items-center hover:[animation-play-state:paused]">
+        {Array.from({ length: 2 }).map((_, half) => (
+          <div key={half} className="flex shrink-0 items-center">
+            {Array.from({ length: 6 }).map((__, k) => (
+              <span key={k} className="flex shrink-0 items-center gap-10 px-5 font-head text-[17px] font-semibold tracking-wide sm:gap-14 sm:px-7 sm:text-[21px]">
+                {OFFER_TEXT}
+                <span className="size-3.5 rotate-45 bg-white sm:size-4" />
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
     <footer id="footer" className="bg-navy-900 pb-8 pt-[72px] text-ondark">
       <div className="container-x">
         <div className="mb-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1.4fr]">
           <div className="flex flex-col gap-4">
             <Link to="/" aria-label="DriftOn home" className="self-start"><img src="/assets/images/logo-drifton-white.png" alt="DriftOn" className="h-11 w-auto sm:h-12" /></Link>
             <span className="max-w-[300px] text-[14.5px] leading-relaxed">Natural crystal deodorants by AI Enterprises.</span>
-            <span className="text-[14.5px] leading-relaxed">Customer care: {business.email}</span>
+            <span className="text-[14.5px] leading-relaxed">Customer care: <a href={`mailto:${business.email}`} className="font-semibold text-white underline-offset-4 hover:text-mint hover:underline">{business.email}</a></span>
           </div>
           <Col title="Shop">
             <Link to="/shop" className={fl}>All products</Link>
@@ -68,5 +86,6 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+    </>
   );
 }

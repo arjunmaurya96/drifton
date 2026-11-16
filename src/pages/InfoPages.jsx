@@ -162,6 +162,10 @@ export function CheckIngredient() {
 // Terms & conditions — client's text lives in src/data/terms.js
 // ---------------------------------------------------------------------
 const slugify = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+// turns any email address in the text into a clickable mailto link
+const withEmailLinks = (text) =>
+  text.split(/([\w.+-]+@[\w-]+\.[\w.]+)/g).map((part, i) =>
+    /@/.test(part) ? <a key={i} href={`mailto:${part}`} className="font-semibold text-navy-700 underline underline-offset-2 hover:text-brand">{part}</a> : part);
 
 export function Terms() {
   return (
@@ -183,8 +187,8 @@ export function Terms() {
               <div className="flex flex-col gap-3 text-[15px] leading-relaxed text-muted">
                 {sec.blocks.map((b, i) =>
                   b.h ? <h3 key={i} className="mt-2 font-head text-[16.5px] font-semibold text-navy-900">{b.h}</h3>
-                  : b.ul ? <ul key={i} className="flex flex-col gap-1.5 pl-1">{b.ul.map((x) => <li key={x} className="flex gap-2.5"><span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-brand" />{x}</li>)}</ul>
-                  : <p key={i} className="break-words">{b.p}</p>
+                  : b.ul ? <ul key={i} className="flex flex-col gap-1.5 pl-1">{b.ul.map((x) => <li key={x} className="flex gap-2.5"><span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-brand" /><span>{withEmailLinks(x)}</span></li>)}</ul>
+                  : <p key={i} className="break-words">{withEmailLinks(b.p)}</p>
                 )}
               </div>
             </li>

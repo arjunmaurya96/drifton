@@ -15,7 +15,7 @@ export function QtyStepper({ value, onChange, size = 'md' }) {
 }
 
 // Two offer cards inside the cart: add another variant, and the automatic 2-for-₹800 combo.
-function CartOffers({ cart, count, addToCart }) {
+export function CartOffers({ cart, count, addToCart }) {
   const inCart = new Set(cart.map((l) => l.id));
   const suggest = products.find((p) => !inCart.has(p.id)) || products[0];
   const odd = count % 2 === 1; // one more stick completes a combo

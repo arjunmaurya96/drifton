@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
-import { products, formatINR, summarize, coupons, UNIT_PRICE, COMBO_PRICE, COMBO_SAVING } from '../data/products.js';
+import { products, formatINR, summarize, coupons, UNIT_PRICE, COMBO_PRICE } from '../data/products.js';
 import { createPayment } from '../lib/payment.js';
-import { QtyStepper, PriceRows } from './CartDrawer.jsx';
+import { QtyStepper, PriceRows, CartOffers } from './CartDrawer.jsx';
 import { Close, Lock, CheckCircle, Shield, Truck, Plus, Trash, ChevronLeft } from './Icons.jsx';
 
 // =====================================================================
 //  Quick checkout (opens from "Add to cart" on the home page).
-//  Step 1: order — change quantities, add more variants, coupon.
-//  Step 2: details + mobile OTP verification.
-//  Step 3: payment.
+//  Step 1: order summary — quantities, offers, more variants, coupon.
+//  Step 2: mobile number + OTP verification (like phitku / Shiprocket checkout).
+//  Step 3: delivery address + payment.
 //  ⚠ DEMO ONLY: the OTP is not really sent (use 123456) and no money is taken.
 //  To go live, call your backend in sendOtp / verifyOtp / createPayment (e.g. MSG91 / Firebase + Razorpay).
 // =====================================================================
@@ -18,7 +18,7 @@ const DEMO_OTP = '123456';
 const RESEND_AFTER = 30; // seconds
 const COD_FEE = 49; // DUMMY
 
-const steps = ['Order', 'Verify OTP', 'Payment'];
+const steps = ['Order', 'Mobile', 'Address & pay'];
 const methods = [
   { id: 'upi', label: 'UPI', note: 'GPay, PhonePe, Paytm' },
   { id: 'card', label: 'Card', note: 'Credit / Debit' },
@@ -115,9 +115,7 @@ export default function CheckoutModal() {
 
   const sendOtp = () => {
     setErr('');
-    if (!d.name.trim() || !/^[6-9]\d{9}$/.test(d.phone) || !d.address.trim() || !/^\d{6}$/.test(d.pin)) {
-      return setErr('Please add your name, 10-digit mobile number, address and 6-digit pincode.');
-    }
+    if (!/^[6-9]\d{9}$/.test(d.phone)) return setErr('Please enter a valid 10-digit mobile number.');
     setOtpSent(true); setOtp(''); setTimer(RESEND_AFTER); // DEMO: here you would call your SMS / OTP API
   };
   const verifyOtp = () => {
@@ -125,7 +123,9 @@ export default function CheckoutModal() {
     if (otp === DEMO_OTP) { setVerified(true); setStep(2); } else setErr('Wrong OTP. Please try again.');
   };
   const pay = async () => {
-    setErr(''); setBusy(true);
+    setErr('');
+    if (!d.name.trim() || !d.address.trim() || !/^\d{6}$/.test(d.pin)) return setErr('Please add your name, full address and 6-digit pincode.');
+    setBusy(true);
     const r = await createPayment({ amount: total, method });
     setBusy(false);
     if (!r.ok) return setErr('Payment failed. Please try again.');
@@ -147,7 +147,8 @@ export default function CheckoutModal() {
           </div>
           <button className="icon-btn" onClick={closeCheckout} aria-label="Close"><Close /></button>
         </div>
-        {!order && <Stepper step={step} />}
+        {!order && <div className="bg-navy-900 px-4 py-2 text-center text-[12.5px] font-bold uppercase tracking-wide text-mint sm:text-[13px]">Any 2 roll-ons for {formatINR(COMBO_PRICE)} · Free delivery</div>}
+        {!order && <div className="pt-4"><Stepper step={step} /></div>}
 
         {order ? (
           <div className="flex flex-col items-center gap-4 border-t border-line px-6 py-12 text-center">
@@ -165,6 +166,10 @@ export default function CheckoutModal() {
               {/* ---------- STEP 1: order ---------- */}
               {step === 0 && (
                 <>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <b className="font-head text-[17px]">Order summary <span className="font-normal text-muted-2">({sum.sticks} {sum.sticks === 1 ? 'item' : 'items'})</span></b>
+                    {sum.comboSaving > 0 && <span className="rounded-full bg-mint-soft px-3 py-1 text-[12.5px] font-bold text-brand-dark">You save {formatINR(sum.comboSaving + sum.couponOff)}</span>}
+                  </div>
                   {cart.length === 0 ? (
                     <p className="rounded-2xl bg-page p-5 text-center text-muted">Your bag is empty. Add a stick below.</p>
                   ) : (
@@ -183,15 +188,8 @@ export default function CheckoutModal() {
                     </ul>
                   )}
 
-                  {/* combo status */}
-                  {sum.sticks > 0 && (
-                    <div className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-[14px] font-semibold ${sum.sticks % 2 ? 'bg-[#FFF4E5] text-[#8A4B00]' : 'bg-mint-soft text-brand-dark'}`}>
-                      <span className="text-lg">{sum.sticks % 2 ? '🎁' : '✓'}</span>
-                      {sum.sticks % 2
-                        ? `Add 1 more stick — any 2 for ${formatINR(COMBO_PRICE)}, save ${formatINR(COMBO_SAVING)} + free delivery`
-                        : `Combo price applied! You save ${formatINR(sum.comboSaving)} + free delivery`}
-                    </div>
-                  )}
+                  {/* the same 2 offer cards as in the cart */}
+                  {cart.length > 0 && <CartOffers cart={cart} count={sum.sticks} addToCart={(p) => addToCart(p, 1, undefined, true)} />}
 
                   {/* add more variants */}
                   <div>
@@ -225,36 +223,33 @@ export default function CheckoutModal() {
                 </>
               )}
 
-              {/* ---------- STEP 2: details + OTP ---------- */}
+              {/* ---------- STEP 2: mobile number + OTP ---------- */}
               {step === 1 && (
-                <>
-                  <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-2" disabled={otpSent && !verified}>
-                    <legend className="mb-2.5 text-sm font-bold">Delivery details</legend>
-                    <input className={field} placeholder="Full name" aria-label="Full name" autoComplete="name" value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} />
-                    <div className="flex items-center rounded-xl border-[1.5px] border-line-strong bg-white focus-within:border-navy-700">
-                      <span className="pl-4 pr-1 text-[15px] font-semibold text-muted-2">+91</span>
-                      <input className="min-h-12 w-full min-w-0 rounded-xl bg-transparent px-2 text-[15px] outline-none" placeholder="Mobile number" aria-label="Mobile number" inputMode="numeric" autoComplete="tel-national" maxLength={10}
-                        value={d.phone} onChange={(e) => setD({ ...d, phone: e.target.value.replace(/\D/g, '') })} />
+                <div className="flex flex-col gap-4 py-2">
+                  <div className="text-center">
+                    <h3 className="text-[20px] font-semibold">{otpSent ? 'Verify your number' : 'Enter mobile number'}</h3>
+                    <p className="text-[14px] text-muted-2">{otpSent ? `Enter the 6-digit OTP sent to +91 ${d.phone}` : 'Provide your mobile number to continue'}</p>
+                  </div>
+                  {!otpSent ? (
+                    <div className="flex items-center rounded-xl border-[1.5px] border-line-strong bg-white focus-within:border-navy-700 focus-within:ring-4 focus-within:ring-blue-soft">
+                      <span className="flex shrink-0 items-center gap-2 whitespace-nowrap border-r border-line px-4 text-[15px] font-semibold">🇮🇳 +91</span>
+                      <input autoFocus className="min-h-14 w-full min-w-0 rounded-xl bg-transparent px-4 text-[16px] outline-none" placeholder="10-digit mobile number" aria-label="Mobile number" inputMode="numeric" autoComplete="tel-national" maxLength={10}
+                        value={d.phone} onChange={(e) => setD({ ...d, phone: e.target.value.replace(/\D/g, '') })} onKeyDown={(e) => e.key === 'Enter' && sendOtp()} />
                     </div>
-                    <input className={`${field} sm:col-span-2`} placeholder="House no., street, area, city" aria-label="Address" autoComplete="street-address" value={d.address} onChange={(e) => setD({ ...d, address: e.target.value })} />
-                    <input className={field} placeholder="Pincode" aria-label="Pincode" inputMode="numeric" maxLength={6} value={d.pin} onChange={(e) => setD({ ...d, pin: e.target.value.replace(/\D/g, '') })} />
-                  </fieldset>
-
-                  {otpSent && (
+                  ) : (
                     <div className="flex flex-col gap-3 rounded-2xl bg-page p-4 sm:p-5">
-                      <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <b className="text-[15px]">Enter the 6-digit OTP sent to +91 {d.phone}</b>
-                        <button type="button" onClick={() => { setOtpSent(false); setOtp(''); }} className="text-[13px] font-semibold text-navy-700 underline">Change number</button>
-                      </div>
                       <OtpBoxes value={otp} onChange={setOtp} />
                       <div className="flex flex-wrap items-center justify-between gap-2 text-[13px]">
                         <span className="rounded-full bg-[#FFF4E5] px-3 py-1 font-semibold text-[#8A4B00]">Demo OTP: {DEMO_OTP}</span>
-                        {timer > 0 ? <span className="text-muted-2">Resend OTP in {timer}s</span>
-                          : <button type="button" onClick={sendOtp} className="font-semibold text-navy-700 underline">Resend OTP</button>}
+                        <span className="flex gap-3">
+                          <button type="button" onClick={() => { setOtpSent(false); setOtp(''); }} className="font-semibold text-navy-700 underline">Change number</button>
+                          {timer > 0 ? <span className="text-muted-2">Resend in {timer}s</span>
+                            : <button type="button" onClick={sendOtp} className="font-semibold text-navy-700 underline">Resend OTP</button>}
+                        </span>
                       </div>
                     </div>
                   )}
-                </>
+                </div>
               )}
 
               {/* ---------- STEP 3: payment ---------- */}
@@ -263,6 +258,12 @@ export default function CheckoutModal() {
                   <div className="flex items-center gap-3 rounded-2xl bg-mint-soft px-4 py-3 text-[14px] font-semibold text-brand-dark">
                     <CheckCircle size={20} /> Mobile +91 {d.phone} verified
                   </div>
+                  <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <legend className="mb-2.5 text-sm font-bold">Delivery address</legend>
+                    <input className={field} placeholder="Full name" aria-label="Full name" autoComplete="name" value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} />
+                    <input className={field} placeholder="Pincode" aria-label="Pincode" inputMode="numeric" maxLength={6} value={d.pin} onChange={(e) => setD({ ...d, pin: e.target.value.replace(/\D/g, '') })} />
+                    <input className={`${field} sm:col-span-2`} placeholder="House no., street, area, city" aria-label="Address" autoComplete="street-address" value={d.address} onChange={(e) => setD({ ...d, address: e.target.value })} />
+                  </fieldset>
                   <fieldset>
                     <legend className="mb-2.5 text-sm font-bold">Choose payment</legend>
                     <div className="grid grid-cols-2 gap-2.5">
@@ -275,10 +276,6 @@ export default function CheckoutModal() {
                       ))}
                     </div>
                   </fieldset>
-                  <div className="rounded-2xl border border-line p-4">
-                    <b className="mb-2 block text-sm">Deliver to</b>
-                    <p className="text-[14px] text-muted">{d.name} · +91 {d.phone}<br />{d.address}, {d.pin}</p>
-                  </div>
                 </>
               )}
 
