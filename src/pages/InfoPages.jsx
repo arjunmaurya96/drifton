@@ -45,9 +45,9 @@ const glossary = {
 // Photos: placeholders from our product shots until the client sends the real ingredient pictures.
 const gyan = [
   { title: 'What is potassium alum?', img: '/assets/images/scenes/natural.webp', text: 'Potassium alum is a naturally occurring mineral salt that forms clear crystals. It has been used in personal care across India for generations — many households know it as "phitkari".' },
-  { title: 'How does an alum stick work?', img: '/assets/images/scenes/charcoal.webp', text: 'Wet the crystal, glide it on clean, dry underarms and let it dry. It leaves a thin, invisible mineral layer — no white marks on clothes and no sticky feel.' },
+  { title: 'How does an alum roll on work?', img: '/assets/images/scenes/charcoal.webp', text: 'Wet the crystal, glide it on clean, dry underarms and let it dry. It leaves a thin, invisible mineral layer — no white marks on clothes and no sticky feel.' },
   { title: 'Why glycerine?', img: '/assets/images/scenes/rose.webp', text: 'Glycerine helps the crystal glide smoothly on the skin, so applying it feels easy and comfortable every day.' },
-  { title: 'Palash, rose & charcoal', img: '/assets/images/scenes/palash.webp', text: 'Palash extract (from the bright orange flame-of-the-forest flower), rose extract and activated charcoal give each variant its own character. The Natural stick keeps it simple with just alum and glycerine.' },
+  { title: 'Palash, rose & charcoal', img: '/assets/images/scenes/palash.webp', text: 'Palash extract (from the bright orange flame-of-the-forest flower), rose extract and activated charcoal give each variant its own character. The Natural roll on keeps it simple with just alum and glycerine.' },
 ];
 
 function IngredientGyan() {
@@ -58,7 +58,7 @@ function IngredientGyan() {
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {gyan.map((g) => (
           <article key={g.title} className="overflow-hidden rounded-2xl bg-white/5 ring-1 ring-white/10">
-            <img src={g.img} alt="" loading="lazy" decoding="async" className="h-44 w-full object-cover object-center" />
+            <img src={g.img} alt="" loading="lazy" decoding="async" className="aspect-[4/5] w-full object-cover object-[50%_42%]" />
             <div className="p-4">
               <h3 className="font-head text-[17px] font-semibold">{g.title}</h3>
               <p className="mt-1.5 text-[14px] leading-relaxed text-ondark">{g.text}</p>
