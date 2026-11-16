@@ -35,7 +35,7 @@ export default function GoogleBusiness() {
             <div className="flex items-center gap-4 rounded-2xl bg-page p-5">
               <b className="font-head text-5xl font-bold leading-none">{hasRating ? business.rating.toFixed(1) : '–'}</b>
               <span className="flex flex-col gap-1">
-                <span className="flex gap-0.5 text-[#F2A93B]">{[0, 1, 2, 3, 4].map((k) => <Star key={k} size={18} />)}</span>
+                <span className="flex gap-0.5 text-[#F2A93B]">{[1, 2, 3, 4, 5].map((k) => <span key={k} className={hasRating && k > Math.round(business.rating) ? 'text-line-strong' : ''}><Star size={18} /></span>)}</span>
                 <span className="text-sm text-muted-2">{hasRating ? `${business.reviewCount} Google reviews` : '[Google rating will show here]'}</span>
               </span>
             </div>
