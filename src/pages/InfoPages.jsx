@@ -177,20 +177,32 @@ export function Terms() {
 // ---------------------------------------------------------------------
 // Contact us
 // ---------------------------------------------------------------------
-const topics = ['Order & delivery', 'Returns & refunds', 'Product question', 'Bulk / wholesale', 'Something else'];
+// Contact topics — Distributor enquiry & Retailers added for the client.
+// For business topics the form asks for company + city instead of an order ID.
+const topics = [
+  { id: 'order', label: 'Order & delivery', icon: '📦' },
+  { id: 'returns', label: 'Returns & refunds', icon: '↩️' },
+  { id: 'product', label: 'Product question', icon: '💧' },
+  { id: 'distributor', label: 'Distributor enquiry', icon: '🤝', business: true },
+  { id: 'retailer', label: 'Retailers', icon: '🏪', business: true },
+  { id: 'bulk', label: 'Bulk / wholesale', icon: '📊', business: true },
+  { id: 'other', label: 'Something else', icon: '💬' },
+];
 
 export function Contact() {
   const { notify } = useStore();
-  const empty = { name: '', email: '', phone: '', order: '', topic: topics[0], msg: '' };
+  const empty = { name: '', email: '', phone: '', order: '', company: '', city: '', topic: topics[0].id, msg: '' };
   const [f, setF] = useState(empty);
   const [sent, setSent] = useState(false);
+  const topic = topics.find((t) => t.id === f.topic);
   const set = (k) => (e) => setF({ ...f, [k]: k === 'phone' ? e.target.value.replace(/\D/g, '') : e.target.value });
   const send = (e) => {
     e.preventDefault();
     if (!f.name.trim() || !/\S+@\S+\.\S+/.test(f.email) || !f.msg.trim()) return notify('Please add your name, a valid email and a message');
+    if (topic.business && (!f.company.trim() || !f.city.trim() || f.phone.length !== 10)) return notify('Please add your business name, city and 10-digit mobile number');
     setSent(true); setF(empty); // DEMO — connect to email / CRM
   };
-  const input = 'min-h-12 w-full rounded-xl border-[1.5px] border-line-strong bg-white px-4 text-[15px] font-normal text-navy-900 outline-none transition focus:border-navy-700 focus:ring-4 focus:ring-blue-soft';
+  const input = 'min-h-[52px] w-full rounded-2xl border-[1.5px] border-line bg-page px-4 text-[15px] font-normal text-navy-900 outline-none transition placeholder:text-muted-2 focus:border-navy-700 focus:bg-white focus:ring-4 focus:ring-blue-soft';
   const label = 'flex flex-col gap-1.5 text-[13.5px] font-semibold text-navy-900';
   const cards = [
     { Icon: Mail, title: 'Email us', value: business.email, href: `mailto:${business.email}`, note: 'We reply within 24 hours' },
@@ -200,10 +212,48 @@ export function Contact() {
 
   return (
     <>
-      <PageHead eyebrow="Contact us" title="We're here to" accent="help" text="Questions about an order, a product or a bulk enquiry? Our customer care team will get back to you within one working day." />
+      {/* hero */}
+      <section className="container-wide pt-5 sm:pt-6">
+        <div className="relative flex flex-col overflow-hidden rounded-[28px] bg-[linear-gradient(115deg,#0F1A3C_0%,#1C2E6B_55%,#17703D_120%)] text-white sm:block">
+          <span aria-hidden="true" className="absolute -right-20 -top-24 size-[340px] rounded-full bg-mint/15 blur-3xl" />
+          <div className="relative z-[2] flex flex-col gap-3 px-6 pb-4 pt-8 sm:max-w-[58%] sm:px-10 sm:py-12 lg:px-14">
+            <span className="inline-flex items-center gap-2 self-start rounded-full bg-white/10 px-3.5 py-1.5 text-[11.5px] font-bold uppercase tracking-[2px] text-mint ring-1 ring-white/15">
+              <span className="size-1.5 animate-pulse rounded-full bg-mint" /> We&apos;re online · Mon–Sat
+            </span>
+            <h1 className="font-serif text-[38px] leading-[1.02] sm:text-[52px] lg:text-[60px]">We&apos;re here to <span className="text-mint">help</span></h1>
+            <p className="max-w-[520px] text-[15px] leading-relaxed text-ondark sm:text-[16.5px]">Questions about an order or a product? Want to become a distributor or stock DriftOn in your store? Write to us — we reply within one working day.</p>
+            <div className="mt-2 flex flex-wrap gap-2.5">
+              <a href={`mailto:${business.email}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-mint px-5 text-[14px] font-bold text-navy-900 hover:bg-white"><Mail size={18} /> Email us</a>
+              <button type="button" onClick={() => { setF({ ...f, topic: 'distributor' }); document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
+                className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white/10 px-5 text-[14px] font-semibold text-white ring-1 ring-white/25 hover:bg-white/20">🤝 Become a distributor</button>
+            </div>
+          </div>
+          <img src="/assets/images/hero-products/all-four.webp" alt="" aria-hidden="true"
+            className="relative mx-auto h-[120px] w-auto object-contain sm:absolute sm:bottom-0 sm:right-8 sm:mx-0 sm:h-[78%] sm:max-w-[38%] lg:right-14" />
+        </div>
+      </section>
 
-      <div className="container-wide grid grid-cols-1 gap-6 pb-6 pt-10 sm:pb-8 sm:pt-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-8">
-        <div className="rounded-2xl border border-line bg-white p-5 sm:p-9">
+      {/* quick contact cards */}
+      <div className="container-wide grid grid-cols-1 gap-4 pt-6 sm:grid-cols-3 sm:gap-5">
+        {cards.map(({ Icon, title, value, href, note }) => {
+          const Tag = href ? 'a' : 'div';
+          return (
+            <Tag key={title} {...(href ? { href, target: href.startsWith('http') ? '_blank' : undefined, rel: 'noreferrer' } : {})}
+              className="group flex items-start gap-4 rounded-[22px] border border-line bg-white p-5 text-navy-900 shadow-[0_10px_30px_-18px_rgba(15,26,60,.35)] transition hover:-translate-y-0.5 hover:border-navy-700 sm:p-6">
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-navy-900 text-mint transition group-hover:bg-brand group-hover:text-white"><Icon size={22} /></span>
+              <span className="min-w-0">
+                <span className="block text-xs font-bold uppercase tracking-widest text-muted-2">{title}</span>
+                <b className="mt-1 block break-words font-head text-[15.5px] font-semibold leading-snug">{value}</b>
+                <span className="mt-1 block text-[13px] font-semibold text-brand-dark">{note}</span>
+              </span>
+            </Tag>
+          );
+        })}
+      </div>
+
+      {/* form + side */}
+      <div id="contact-form" className="container-wide grid scroll-mt-24 grid-cols-1 gap-6 pb-14 pt-6 sm:pb-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-8">
+        <div className="rounded-[28px] border border-line bg-white p-5 shadow-[0_24px_60px_-30px_rgba(15,26,60,.35)] sm:p-9">
           {sent ? (
             <div className="flex flex-col items-center gap-4 py-16 text-center">
               <span className="flex size-16 items-center justify-center rounded-full bg-mint-soft text-brand"><CheckCircle size={34} /></span>
@@ -212,27 +262,41 @@ export function Contact() {
               <button onClick={() => setSent(false)} className="btn-line">Send another message</button>
             </div>
           ) : (
-            <form onSubmit={send} className="flex flex-col gap-5" noValidate>
+            <form onSubmit={send} className="flex flex-col gap-6" noValidate>
               <div>
-                <h2 className="text-[24px] font-semibold sm:text-[28px]">Send us a message</h2>
+                <h2 className="font-head text-[26px] font-bold tracking-tight sm:text-[32px]">Send us a message</h2>
                 <p className="mt-1 text-[15px] text-muted-2">Fields marked * are required.</p>
               </div>
               <fieldset>
-                <legend className="mb-2 text-[13.5px] font-semibold">What is it about?</legend>
-                <div className="flex flex-wrap gap-2">
+                <legend className="mb-3 text-[14px] font-semibold">What is it about?</legend>
+                <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 xl:grid-cols-4">
                   {topics.map((t) => (
-                    <button type="button" key={t} onClick={() => setF({ ...f, topic: t })} aria-pressed={f.topic === t}
-                      className={`min-h-10 rounded-full px-4 text-[13.5px] font-semibold transition ${f.topic === t ? 'bg-navy-900 text-white' : 'border-[1.5px] border-line-strong bg-white text-navy-900 hover:border-navy-700'}`}>{t}</button>
+                    <button type="button" key={t.id} onClick={() => setF({ ...f, topic: t.id })} aria-pressed={f.topic === t.id}
+                      className={`flex min-h-[52px] items-center gap-2.5 rounded-2xl px-3.5 text-left text-[13.5px] font-semibold leading-tight transition ${f.topic === t.id ? 'bg-navy-900 text-white shadow-md' : 'border-[1.5px] border-line bg-white text-navy-900 hover:border-navy-700'}`}>
+                      <span className="text-[18px]" aria-hidden="true">{t.icon}</span>{t.label}
+                    </button>
                   ))}
                 </div>
+                {topic.business && (
+                  <p className="mt-3 rounded-2xl bg-mint-soft px-4 py-3 text-[13.5px] font-medium text-brand-dark">
+                    {topic.id === 'retailer' ? 'Stock DriftOn in your store — share your store details and our team will send you retailer pricing.' : 'Interested in distributing DriftOn in your area? Share your details and our sales team will call you.'}
+                  </p>
+                )}
               </fieldset>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <label className={label}>Full name *<input className={input} value={f.name} onChange={set('name')} autoComplete="name" /></label>
-                <label className={label}>Email *<input type="email" className={input} value={f.email} onChange={set('email')} autoComplete="email" /></label>
-                <label className={label}>Mobile number<input className={input} inputMode="numeric" maxLength={10} value={f.phone} onChange={set('phone')} autoComplete="tel" /></label>
-                <label className={label}>Order ID (if any)<input className={input} placeholder="e.g. DRF1234567" value={f.order} onChange={set('order')} /></label>
+                <label className={label}>Full name *<input className={input} placeholder="Your name" value={f.name} onChange={set('name')} autoComplete="name" /></label>
+                <label className={label}>Email *<input type="email" className={input} placeholder="you@example.com" value={f.email} onChange={set('email')} autoComplete="email" /></label>
+                <label className={label}>Mobile number{topic.business ? ' *' : ''}<input className={input} placeholder="10-digit mobile" inputMode="numeric" maxLength={10} value={f.phone} onChange={set('phone')} autoComplete="tel" /></label>
+                {topic.business ? (
+                  <>
+                    <label className={label}>{topic.id === 'retailer' ? 'Store name *' : 'Business / company name *'}<input className={input} value={f.company} onChange={set('company')} autoComplete="organization" /></label>
+                    <label className={`${label} sm:col-span-2`}>City / area *<input className={input} placeholder="e.g. Delhi NCR" value={f.city} onChange={set('city')} autoComplete="address-level2" /></label>
+                  </>
+                ) : (
+                  <label className={label}>Order ID (if any)<input className={input} placeholder="e.g. DRF1234567" value={f.order} onChange={set('order')} /></label>
+                )}
               </div>
-              <label className={label}>Message *<textarea rows={6} className={`${input} py-3`} value={f.msg} onChange={set('msg')} placeholder="Tell us how we can help…" /></label>
+              <label className={label}>Message *<textarea rows={5} className={`${input} py-3`} value={f.msg} onChange={set('msg')} placeholder="Tell us how we can help…" /></label>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <span className="text-[13px] text-muted-2">By sending, you agree to our <Link to="/terms" className="font-semibold text-navy-700 underline">Terms & Conditions</Link>.</span>
                 <button className="btn-primary min-h-[52px] px-8">Send message</button>
@@ -242,33 +306,32 @@ export function Contact() {
         </div>
 
         <aside className="flex flex-col gap-5">
-          <div className="overflow-hidden rounded-2xl border border-line bg-white">
+          <div className="overflow-hidden rounded-[28px] border border-line bg-white shadow-[0_24px_60px_-30px_rgba(15,26,60,.35)]">
             <iframe title="DriftOn office on Google Maps" src={`https://www.google.com/maps?q=${encodeURIComponent(business.mapQuery)}&output=embed`}
-              className="h-[260px] w-full border-0 sm:h-[300px]" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
-            <div className="p-5">
+              className="h-[240px] w-full border-0 sm:h-[280px]" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+            <div className="flex flex-col gap-1 p-5 sm:p-6">
               <b className="font-head text-[17px]">{business.name}</b>
-              <p className="mt-1 text-[14px] text-muted">{business.address}</p>
+              <p className="text-[14px] text-muted">{business.address}</p>
+            </div>
+          </div>
+          <div className="relative overflow-hidden rounded-[28px] bg-navy-900 p-6 text-white sm:p-7">
+            <span aria-hidden="true" className="absolute -bottom-16 -right-10 size-48 rounded-full bg-brand/30 blur-2xl" />
+            <span className="relative text-[11.5px] font-bold uppercase tracking-[2px] text-mint">Partner with us</span>
+            <h3 className="relative mt-2 font-head text-[22px] font-bold leading-tight">Distributors &amp; retailers welcome</h3>
+            <ul className="relative mt-4 flex flex-col gap-2.5 text-[14.5px] text-ondark">
+              {['Attractive margins on all 4 variants', 'Marketing support & product samples', 'Quick dispatch across India'].map((x) => (
+                <li key={x} className="flex items-start gap-2.5"><span className="mt-0.5 text-mint"><Check size={16} /></span>{x}</li>
+              ))}
+            </ul>
+            <div className="relative mt-5 flex flex-wrap gap-2.5">
+              {['distributor', 'retailer'].map((id) => (
+                <button key={id} type="button" onClick={() => { setF({ ...f, topic: id }); document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
+                  className="min-h-10 rounded-full bg-white px-4 text-[13.5px] font-semibold text-navy-900 hover:bg-mint">{id === 'distributor' ? 'Distributor enquiry' : 'Retailer enquiry'}</button>
+              ))}
             </div>
           </div>
         </aside>
       </div>
-      <div className="container-wide grid grid-cols-1 gap-4 pb-12 sm:grid-cols-3 sm:gap-5 sm:pb-16">
-        {cards.map(({ Icon, title, value, href, note }) => {
-          const Tag = href ? 'a' : 'div';
-          return (
-            <Tag key={title} {...(href ? { href, target: href.startsWith('http') ? '_blank' : undefined, rel: 'noreferrer' } : {})}
-              className="flex items-start gap-4 rounded-2xl border border-line bg-white p-5 text-navy-900 transition hover:border-navy-700 sm:p-6">
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-navy-900 text-mint"><Icon size={22} /></span>
-              <span className="min-w-0">
-                <span className="block text-xs font-bold uppercase tracking-widest text-muted-2">{title}</span>
-                <b className="mt-1 block break-words font-head text-[16px] font-semibold leading-snug">{value}</b>
-                <span className="mt-1 block text-[13px] font-semibold text-brand-dark">{note}</span>
-              </span>
-            </Tag>
-          );
-        })}
-      </div>
-
     </>
   );
 }
