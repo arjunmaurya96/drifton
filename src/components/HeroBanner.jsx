@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { bannerSlides, getProductById, products } from '../data/products.js';
+import { bannerSlides, getProductById } from '../data/products.js';
 import { ChevronLeft, ChevronRight } from './Icons.jsx';
 
 // Timing (ms): slide comes in, then stays still for 3 seconds, then the next one slides in.
@@ -48,22 +48,11 @@ export default function HeroBanner() {
       </div>
 
       <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 lg:items-center lg:justify-end lg:pb-14">
-        {/* Right: this slide's product big, its other variants small underneath */}
-        <div key={`p-${i}`} className="flex h-[56%] w-full flex-col items-center justify-end gap-2 sm:h-[58%] lg:h-full lg:w-[50%] lg:justify-center lg:gap-5">
-          <Link to={url} aria-label={`View ${product.name}`} className="flex min-h-0 flex-1 items-end justify-center lg:h-[min(60svh,620px)] lg:flex-none">
-            <img src={product.image} alt={product.name} className="h-full w-auto max-w-full animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
-          </Link>
-          <ul className="flex shrink-0 items-end justify-center gap-4 sm:gap-6 lg:gap-8">
-            {products.filter((p) => p.id !== product.id).map((p, k) => (
-              <li key={p.id} className="animate-fade-up" style={{ animationDelay: `${350 + k * 120}ms` }}>
-                <Link to={`/product/${p.slug}`} aria-label={`View ${p.name}`} className="flex flex-col items-center gap-1">
-                  <img src={p.image} alt="" className="h-[clamp(64px,10svh,96px)] w-auto object-contain lg:h-[clamp(90px,14svh,140px)]" />
-                  <span className={`font-jost text-[12px] font-medium uppercase tracking-wider lg:text-[13px] ${dark ? 'text-white/85' : 'text-navy-900/80'}`}>{p.short}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/* Right: this slide's product big in the middle, its other variants smaller around it (no text, no base) */}
+        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[54%] w-full items-end justify-center sm:h-[56%] lg:h-full lg:w-[50%] lg:items-center">
+          <img src={slide.rightImage || slide.cutout} alt={`${product.name} and other Drifton variants`}
+            className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(80svh,820px)]" style={{ animationDelay: '150ms' }} />
+        </Link>
       </div>
 
       {/* Controls */}
