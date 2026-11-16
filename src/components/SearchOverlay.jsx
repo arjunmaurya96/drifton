@@ -59,7 +59,7 @@ export default function SearchOverlay({ open, onClose }) {
                       <img src={p.image} alt="" className="size-16 rounded-xl bg-page object-contain p-1" />
                       <span className="min-w-0">
                         <b className="block truncate font-head font-semibold">{p.name}</b>
-                        <span className="text-sm text-muted-2">{formatINR(p.price)} <s className="ml-1">{formatINR(p.mrp)}</s></span>
+                        <span className="text-sm text-muted-2">{formatINR(p.price)}</span>
                       </span>
                     </Link>
                   </li>

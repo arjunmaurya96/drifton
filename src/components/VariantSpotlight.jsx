@@ -8,7 +8,7 @@ const looks = {
   palash: { from: '#3A1A06', to: '#0E0602', glow: '#FF8A2A', accent: '#FFB15E', left: ['FLOWER', 'POWER'], right: ['ZERO', 'ODOUR'] },
   charcoal: { from: '#2A2D35', to: '#08090C', glow: '#FF7A2F', accent: '#FF9A55', left: ['DEEP', 'CLEAN'], right: ['ZERO', 'SMELL'] },
   rose: { from: '#3D0F22', to: '#12040A', glow: '#FF5C93', accent: '#FF8FB6', left: ['SOFT', 'FRESH'], right: ['ALL', 'DAY'] },
-  lavender: { from: '#0D2A4A', to: '#040C18', glow: '#4FB2FF', accent: '#8FD0FF', left: ['PURE', 'CRYSTAL'], right: ['100%', 'NATURAL'] },
+  natural: { from: '#0D2A4A', to: '#040C18', glow: '#4FB2FF', accent: '#8FD0FF', left: ['PURE', 'CRYSTAL'], right: ['100%', 'NATURAL'] },
 };
 
 const cutoutOf = (id) => bannerSlides.find((s) => s.productId === id)?.cutout;
@@ -64,7 +64,7 @@ export default function VariantSpotlight() {
         <div className="mt-5 flex items-center gap-4">
           <span>
             <b className="block font-jost text-lg font-medium">{center.name}</b>
-            <span className="font-jost text-white/80"><s className="text-white/50">{formatINR(center.mrp)}</s> {formatINR(center.price)}</span>
+            <span className="font-jost text-white/80">{formatINR(center.price)} <span className="text-white/50">· any 2 for ₹800</span></span>
           </span>
           <Link to={`/product/${center.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-6 font-jost text-sm font-semibold uppercase tracking-wide text-navy-900 hover:bg-mint hover:text-navy-900">
             Shop now <Arrow size={16} />

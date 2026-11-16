@@ -49,11 +49,11 @@ export default function HeroBanner() {
 
       <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 lg:items-center lg:justify-end lg:pb-0">
         {/* Right: the product only */}
-        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[50%] items-end justify-center sm:h-[54%] lg:h-full lg:w-[54%] lg:items-center">
+        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[44%] w-full items-end justify-center sm:h-[50%] lg:h-full lg:w-[50%] lg:items-center">
           {slide.rightImage ? (
-            <img src={slide.rightImage} alt={product.name} className="h-full w-auto lg:h-[min(82svh,840px)] animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
+            <img src={slide.rightImage} alt={product.name} className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(74svh,760px)]" style={{ animationDelay: '150ms' }} />
           ) : (
-            <img src={slide.cutout} alt={product.name} className="h-full w-auto lg:h-[min(82svh,840px)] animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
+            <img src={slide.cutout} alt={product.name} className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(74svh,760px)]" style={{ animationDelay: '150ms' }} />
           )}
         </Link>
       </div>

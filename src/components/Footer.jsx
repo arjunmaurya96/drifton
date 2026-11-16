@@ -30,7 +30,7 @@ export default function Footer() {
           <div className="flex flex-col gap-4">
             <span className="font-head text-3xl font-bold text-white">Drift<span className="text-mint">o</span>n</span>
             <span className="max-w-[300px] text-[14.5px] leading-relaxed">Natural crystal deodorants by AI Enterprises.</span>
-            <span className="text-[14.5px] leading-relaxed">Customer care: {business.email}<br />{business.phone}</span>
+            <span className="text-[14.5px] leading-relaxed">Customer care: {business.email}</span>
           </div>
           <Col title="Shop">
             <Link to="/shop" className={fl}>All products</Link>

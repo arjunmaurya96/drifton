@@ -1,10 +1,10 @@
 import { Truck, Cash, Lock, Return } from './Icons.jsx';
 
 const services = [
-  { title: 'Free shipping', sub: 'On prepaid orders', Icon: Truck },
+  { title: 'Free delivery', sub: 'On every combo of 2', Icon: Truck },
   { title: 'Cash on delivery', sub: 'Pay when it arrives', Icon: Cash },
   { title: 'Secure payments', sub: 'Safe & secure checkout', Icon: Lock },
-  { title: 'Easy returns', sub: 'Hassle-free policy', Icon: Return },
+  { title: '48-hour returns', sub: 'On unopened products', Icon: Return },
 ];
 
 export default function ServiceCards() {

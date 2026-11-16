@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { products, bannerSlides, formatINR, makeLine } from '../data/products.js';
+import { products, combos, formatINR, makeLine, UNIT_PRICE, COMBO_PRICE, COMBO_SAVING } from '../data/products.js';
+import { termsEffective, termsIntro, termsSections } from '../data/terms.js';
 import { business } from '../data/site.js';
 import { useStore } from '../context/StoreContext.jsx';
-import IngredientIcon from '../components/IngredientIcon.jsx';
 import { Check, CheckCircle, Pin, Clock, Box, Truck } from '../components/Icons.jsx';
 
 // ---------------------------------------------------------------------
@@ -12,57 +12,52 @@ import { Check, CheckCircle, Pin, Clock, Box, Truck } from '../components/Icons.
 function PageHead({ eyebrow, title, accent, text }) {
   return (
     <div className="border-b border-line bg-white">
-      <div className="container-x flex flex-col gap-3 py-12 sm:py-16">
+      <div className="container-x flex flex-col gap-3 py-9 sm:py-14">
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-muted-2">
           <Link to="/" className="text-muted-2 hover:text-brand">Home</Link><span>/</span><span className="text-navy-900">{title} {accent}</span>
         </nav>
         <span className="eyebrow">{eyebrow}</span>
-        <h1 className="font-serif text-[46px] leading-none text-navy-900 sm:text-[64px]">{title} <span className="text-brand">{accent}</span></h1>
-        {text && <p className="max-w-[620px] text-[17px] text-muted">{text}</p>}
+        <h1 className="font-serif text-[40px] leading-none text-navy-900 sm:text-[60px]">{title} <span className="text-brand">{accent}</span></h1>
+        {text && <p className="max-w-[620px] text-[15.5px] text-muted sm:text-[17px]">{text}</p>}
       </div>
     </div>
   );
 }
 
-const ingredientsOf = (id) => bannerSlides.find((b) => b.productId === id)?.ingredients || [];
+const ingredientsOf = (id) => products.find((p) => p.id === id)?.ingredients || [];
 const byId = (id) => products.find((p) => p.id === id);
 
 // ---------------------------------------------------------------------
-// Combo  (DUMMY combos & prices — confirm with the client)
+// Combo — the client's 3 combos, 2 sticks for ₹800 each
 // ---------------------------------------------------------------------
-const combos = [
-  { id: 'duo', name: 'Fresh Duo', note: 'Palash + Charcoal', items: ['palash', 'charcoal'], price: 1199, tag: 'Save ₹199' },
-  { id: 'floral', name: 'Floral Trio', note: 'Palash + Rose + Pure Crystal', items: ['palash', 'rose', 'lavender'], price: 1699, tag: 'Buy 2 get 1 free' },
-  { id: 'all', name: 'The Full Range', note: 'All 4 variants', items: ['palash', 'charcoal', 'rose', 'lavender'], price: 2099, tag: 'Best value' },
-];
-
 export function Combo() {
-  const { addToCart, openBuy } = useStore();
+  const { addToCart, openBuy, openCart } = useStore();
   return (
     <>
-      <PageHead eyebrow="Combo offers" title="Better" accent="together" text="Pick a combo, mix your favourite crystals and save more." />
-      <div className="container-x grid grid-cols-1 gap-6 py-14 md:grid-cols-3">
+      <PageHead eyebrow="Combo offers" title="Better" accent="together" text={`Any 2 sticks for ${formatINR(COMBO_PRICE)} instead of ${formatINR(UNIT_PRICE * 2)}, with free delivery. Pick a ready combo or add any 2 to your cart — the combo price is applied automatically.`} />
+      <div className="container-x grid grid-cols-1 gap-5 py-10 sm:grid-cols-2 sm:py-14 lg:grid-cols-3 lg:gap-6">
         {combos.map((c) => {
           const ps = c.items.map(byId);
-          const mrp = ps.reduce((s, p) => s + p.mrp, 0);
           return (
             <article key={c.id} className="flex flex-col overflow-hidden rounded-2xl border border-line bg-white">
-              <div className="relative flex h-[300px] items-end justify-center gap-1 px-4 pt-6" style={{ background: `linear-gradient(135deg, ${ps[0].bg}, ${ps[ps.length - 1].bg})` }}>
-                {ps.map((p, k) => (
-                  <img key={p.id} src={p.image} alt={p.name} className="w-auto object-contain" style={{ height: `${k === Math.floor(ps.length / 2) ? 92 : 76}%`, maxWidth: `${92 / ps.length}%` }} />
+              <div className="relative flex h-[280px] items-center justify-center gap-[6%] px-6 sm:h-[320px]" style={{ background: `linear-gradient(120deg, ${ps[0].bg}, ${ps[1].bg})` }}>
+                {ps.map((p) => (
+                  <img key={p.id} src={p.image} alt={p.name} className="h-[74%] w-auto max-w-[42%] object-contain" />
                 ))}
-                <span className="absolute left-4 top-4 rounded-full bg-navy-900 px-3 py-1.5 text-xs font-bold text-white">{c.tag}</span>
+                <span className="absolute left-4 top-4 rounded-full bg-navy-900 px-3 py-1.5 text-xs font-bold text-white">Save {formatINR(COMBO_SAVING)}</span>
               </div>
-              <div className="flex flex-1 flex-col gap-3 p-6">
-                <h2 className="text-2xl font-semibold">{c.name}</h2>
-                <p className="text-muted-2">{c.note}</p>
+              <div className="flex flex-1 flex-col gap-2 p-5 sm:p-6">
+                <span className="text-xs font-bold uppercase tracking-widest text-brand-dark">{c.tag}</span>
+                <h2 className="text-[22px] font-semibold sm:text-2xl">{c.name}</h2>
+                <p className="text-[14.5px] text-muted-2">{ps.map((p) => p.name).join(' + ')}</p>
                 <span className="flex items-baseline gap-2.5">
-                  <b className="font-head text-2xl">{formatINR(c.price)}</b>
-                  <s className="text-muted-2">{formatINR(mrp)}</s>
+                  <b className="font-head text-2xl">{formatINR(COMBO_PRICE)}</b>
+                  <s className="text-muted-2">{formatINR(UNIT_PRICE * 2)}</s>
+                  <span className="text-[13px] font-semibold text-brand-dark">+ free delivery</span>
                 </span>
-                <div className="mt-auto grid grid-cols-2 gap-2.5 pt-2">
-                  <button onClick={() => ps.forEach((p) => addToCart(p))} className="min-h-11 rounded-full border-[1.5px] border-navy-900 text-[13px] font-semibold uppercase text-navy-900 hover:bg-navy-900 hover:text-white">Add to cart</button>
-                  <button onClick={() => openBuy(ps.map((p) => ({ ...makeLine(p), unitPrice: c.price / ps.length })))} className="min-h-11 rounded-full bg-brand text-[13px] font-semibold uppercase text-white hover:bg-brand-dark">Buy now</button>
+                <div className="mt-auto grid grid-cols-2 gap-2.5 pt-3">
+                  <button onClick={() => { ps.forEach((p) => addToCart(p, 1, undefined, true)); openCart(); }} className="min-h-11 rounded-full border-[1.5px] border-navy-900 text-[13px] font-semibold uppercase text-navy-900 hover:bg-navy-900 hover:text-white">Add to cart</button>
+                  <button onClick={() => openBuy(ps.map((p) => makeLine(p)))} className="min-h-11 rounded-full bg-brand text-[13px] font-semibold uppercase text-white hover:bg-brand-dark">Buy now</button>
                 </div>
               </div>
             </article>
@@ -77,36 +72,33 @@ export function Combo() {
 // Know more ingredients
 // ---------------------------------------------------------------------
 const glossary = {
-  'Natural Alum': 'A naturally occurring mineral salt (potassium alum) — the crystal at the heart of every Drifton stick.',
-  'Palash Flower': 'A bright orange flower long used in Indian traditions, added for a warm floral touch.',
-  'Aloe Vera': 'A soothing plant extract known for its light, cooling feel on skin.',
-  'Vitamin E': 'An antioxidant commonly used in skin care for a gentle, cared-for feel.',
-  'Activated Charcoal': 'Known for its deep-clean feel, ideal for active, sweaty days.',
-  'Tea Tree': 'A fresh, herbal extract with a clean scent.',
-  Mint: 'A cool, fresh note for an instant feeling of freshness.',
-  'Rose Petals': 'A classic, gentle floral note.',
-  Glycerin: 'Helps the stick glide smoothly when wet.',
-  'Mineral Crystal': 'Pure crystal alum with nothing extra — simple and clean.',
+  'Natural potassium alum': 'A naturally occurring mineral salt — the crystal at the heart of every DriftOn stick.',
+  Glycerine: 'Helps the crystal glide smoothly on damp skin.',
+  'Palash extract': 'Extract of the bright orange Palash flower, long used in Indian traditions.',
+  'Rose extract': 'A classic, gentle floral extract.',
+  'Activated charcoal': 'Known for its deep-clean feel, ideal for active days.',
+  Colour: 'Gives the crystal its signature shade.',
+  Fragrance: 'A light scent that matches the variant.',
 };
 
 export function Ingredients() {
   return (
     <>
-      <PageHead eyebrow="Know more" title="What's" accent="inside" text="Every Drifton stick starts with natural alum, then adds a botanical touch. Here is what each one contains." />
-      <div className="container-x flex flex-col gap-6 py-14">
+      <PageHead eyebrow="Know more" title="What's" accent="inside" text="Every DriftOn stick starts with natural potassium alum and glycerine. Here is the full ingredient list of each one." />
+      <div className="container-x flex flex-col gap-5 py-10 sm:gap-6 sm:py-14">
         {products.map((p) => (
-          <section key={p.id} className="grid grid-cols-1 overflow-hidden rounded-2xl border border-line bg-white md:grid-cols-[280px_1fr]">
-            <div className="flex h-[260px] items-center justify-center md:h-full" style={{ background: p.bg }}>
-              <img src={p.image} alt={p.name} className="h-[80%] w-auto object-contain" />
+          <section key={p.id} className="grid grid-cols-1 overflow-hidden rounded-2xl border border-line bg-white md:grid-cols-[260px_1fr]">
+            <div className="flex h-[240px] items-center justify-center md:h-auto md:min-h-[300px]" style={{ background: p.bg }}>
+              <img src={p.image} alt={p.name} className="h-[200px] w-auto object-contain md:h-[240px]" />
             </div>
-            <div className="flex flex-col gap-4 p-6 sm:p-8">
+            <div className="flex flex-col gap-4 p-5 sm:p-8">
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: p.accent }}>{p.tag}</span>
-              <h2 className="text-[28px] font-semibold">{p.name}</h2>
-              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {ingredientsOf(p.id).map((ing) => (
-                  <li key={ing.name} className="flex items-start gap-3 rounded-2xl bg-page p-4">
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-navy-900 [&_svg]:size-5"><IngredientIcon icon={ing.icon} /></span>
-                    <span><b className="block font-semibold">{ing.name}</b><span className="text-sm text-muted-2">{glossary[ing.name]}</span></span>
+              <h2 className="text-[24px] font-semibold sm:text-[28px]">{p.name}</h2>
+              <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3">
+                {p.ingredients.map((n, k) => (
+                  <li key={n} className="flex items-start gap-3 rounded-2xl bg-page p-3.5 sm:p-4">
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white font-head text-sm font-bold text-navy-900">{k + 1}</span>
+                    <span><b className="block font-semibold">{n}</b><span className="text-sm text-muted-2">{glossary[n]}</span></span>
                   </li>
                 ))}
               </ul>
@@ -114,7 +106,7 @@ export function Ingredients() {
             </div>
           </section>
         ))}
-        <p className="text-sm text-muted-2">Ingredient lists are a preview. Always check the full list printed on the pack.</p>
+        <p className="text-sm text-muted-2">Always read the ingredient list printed on the pack before use.</p>
       </div>
     </>
   );
@@ -124,14 +116,14 @@ export function Ingredients() {
 // Check your ingredient
 // ---------------------------------------------------------------------
 export function CheckIngredient() {
-  const all = [...new Set(products.flatMap((p) => ingredientsOf(p.id).map((i) => i.name)))];
+  const all = [...new Set(products.flatMap((p) => p.ingredients))];
   const [avoid, setAvoid] = useState([]);
   const toggle = (n) => setAvoid((a) => (a.includes(n) ? a.filter((x) => x !== n) : [...a, n]));
 
   return (
     <>
       <PageHead eyebrow="Check your ingredient" title="Find your" accent="match" text="Tap anything you want to avoid. We'll show which Drifton sticks suit you." />
-      <div className="container-x grid grid-cols-1 gap-8 py-14 lg:grid-cols-[360px_1fr]">
+      <div className="container-x grid grid-cols-1 gap-6 py-10 sm:py-14 lg:grid-cols-[360px_1fr] lg:gap-8">
         <div className="flex h-fit flex-col gap-4 rounded-2xl border border-line bg-white p-6 lg:sticky lg:top-6">
           <b className="font-head text-lg">I want to avoid…</b>
           <div className="flex flex-wrap gap-2">
@@ -144,18 +136,18 @@ export function CheckIngredient() {
           </div>
           {avoid.length > 0 && <button onClick={() => setAvoid([])} className="self-start text-sm font-semibold text-navy-700 underline">Clear</button>}
         </div>
-        <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <ul className="grid grid-cols-2 gap-3 sm:gap-5">
           {products.map((p) => {
             const ings = ingredientsOf(p.id);
-            const hit = ings.filter((i) => avoid.includes(i.name)).map((i) => i.name);
+            const hit = ings.filter((n) => avoid.includes(n));
             const ok = hit.length === 0;
             return (
               <li key={p.id} className={`flex flex-col overflow-hidden rounded-2xl border-2 bg-white transition ${ok ? 'border-brand' : 'border-line opacity-70'}`}>
-                <div className="flex h-[220px] items-center justify-center" style={{ background: p.bg }}><img src={p.image} alt={p.name} className="h-[82%] w-auto object-contain" /></div>
-                <div className="flex flex-col gap-2 p-5">
-                  <span className={`flex items-center gap-1.5 text-sm font-bold ${ok ? 'text-brand-dark' : 'text-[#C0392B]'}`}>{ok ? <><Check size={16} /> Good match</> : `Contains ${hit.join(', ')}`}</span>
-                  <b className="font-head text-lg font-semibold">{p.name}</b>
-                  <span className="text-sm text-muted-2">{ings.map((i) => i.name).join(' · ')}</span>
+                <div className="flex h-[200px] items-center justify-center sm:h-[220px]" style={{ background: p.bg }}><img src={p.image} alt={p.name} className="h-[170px] w-auto object-contain sm:h-[185px]" /></div>
+                <div className="flex flex-col gap-2 p-3.5 sm:p-5">
+                  <span className={`flex items-center gap-1.5 text-[13px] font-bold sm:text-sm ${ok ? 'text-brand-dark' : 'text-[#C0392B]'}`}>{ok ? <><Check size={16} /> Good match</> : `Contains ${hit.join(', ')}`}</span>
+                  <b className="font-head text-[15px] font-semibold sm:text-lg">{p.name}</b>
+                  <span className="text-[12.5px] text-muted-2 sm:text-sm">{ings.join(' · ')}</span>
                   <Link to={`/product/${p.slug}`} className="mt-2 text-sm font-semibold text-navy-700 underline">View product</Link>
                 </div>
               </li>
@@ -168,30 +160,40 @@ export function CheckIngredient() {
 }
 
 // ---------------------------------------------------------------------
-// Terms & conditions  (DUMMY text — replace with the client's legal terms)
+// Terms & conditions — client's text lives in src/data/terms.js
 // ---------------------------------------------------------------------
-const terms = [
-  ['Orders', 'All orders are subject to availability and confirmation of the order price. We may cancel an order if a product is out of stock or a pricing error occurs.'],
-  ['Pricing & payment', 'Prices are in Indian Rupees (INR) and include applicable taxes. Payment can be made by UPI, card, net banking or cash on delivery where available.'],
-  ['Shipping', 'Prepaid orders ship free. Delivery times are estimates and may vary by location.'],
-  ['Returns & refunds', 'Unopened products can be returned within [X] days of delivery. Refunds are processed to the original payment method within [X] working days.'],
-  ['Offers & coupons', 'Offers cannot be combined unless stated. One coupon per order. We may change or end offers at any time.'],
-  ['Product use', 'For external use only. Do a patch test before first use and stop using the product if irritation occurs.'],
-  ['Contact', `For any questions, write to ${business.email} or call ${business.phone}.`],
-];
+const slugify = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
 export function Terms() {
   return (
     <>
-      <PageHead eyebrow="Legal" title="Terms &" accent="conditions" text="Please read these terms before placing an order. [Sample terms — replace with the client's final legal text.]" />
-      <div className="container-x py-14">
-        <ol className="flex max-w-[860px] flex-col gap-4">
-          {terms.map(([h, t], k) => (
-            <li key={h} className="flex gap-4 rounded-2xl border border-line bg-white p-6">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-navy-900 font-head text-sm font-bold text-mint">{k + 1}</span>
-              <span><b className="mb-1 block font-head text-lg">{h}</b><span className="leading-relaxed text-muted">{t}</span></span>
+      <PageHead eyebrow="Legal" title="Terms &" accent="conditions" text={`Effective date: ${termsEffective}. Welcome to DriftOn™! ${termsIntro}`} />
+      <div className="container-x grid grid-cols-1 gap-8 py-10 sm:py-14 lg:grid-cols-[280px_1fr] lg:gap-10">
+        <nav aria-label="Sections" className="hidden h-fit flex-col gap-0.5 rounded-2xl border border-line bg-white p-3 lg:sticky lg:top-6 lg:flex">
+          {termsSections.map((sec, k) => (
+            <a key={sec.title} href={`#${slugify(sec.title)}`} className="rounded-xl px-3 py-2 text-[14px] font-medium text-navy-500 hover:bg-page hover:text-brand">{k + 1}. {sec.title}</a>
+          ))}
+        </nav>
+        <ol className="flex min-w-0 flex-col gap-4">
+          {termsSections.map((sec, k) => (
+            <li key={sec.title} id={slugify(sec.title)} className="scroll-mt-28 rounded-2xl border border-line bg-white p-5 sm:p-7">
+              <h2 className="mb-3 flex items-start gap-3 font-head text-[19px] font-semibold sm:text-[21px]">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-navy-900 text-sm font-bold text-mint">{k + 1}</span>
+                <span className="pt-0.5">{sec.title}</span>
+              </h2>
+              <div className="flex flex-col gap-3 text-[15px] leading-relaxed text-muted">
+                {sec.blocks.map((b, i) =>
+                  b.h ? <h3 key={i} className="mt-2 font-head text-[16.5px] font-semibold text-navy-900">{b.h}</h3>
+                  : b.ul ? <ul key={i} className="flex flex-col gap-1.5 pl-1">{b.ul.map((x) => <li key={x} className="flex gap-2.5"><span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-brand" />{x}</li>)}</ul>
+                  : <p key={i} className="break-words">{b.p}</p>
+                )}
+              </div>
             </li>
           ))}
+          <li className="rounded-2xl bg-navy-900 p-6 text-white sm:p-7">
+            <b className="font-head text-lg">Thank you for choosing DriftOn™.</b>
+            <p className="mt-1 text-ondark">We appreciate your trust and support. We are committed to providing a reliable and satisfying shopping experience.</p>
+          </li>
         </ol>
       </div>
     </>
@@ -219,7 +221,7 @@ export function Track() {
   return (
     <>
       <PageHead eyebrow="Track" title="Track your" accent="order" text="Enter your order ID and mobile number to see where your Drifton is." />
-      <div className="container-x grid grid-cols-1 gap-8 py-14 lg:grid-cols-2">
+      <div className="container-x grid grid-cols-1 gap-6 py-10 sm:py-14 lg:grid-cols-2 lg:gap-8">
         <form onSubmit={submit} className="flex h-fit flex-col gap-4 rounded-2xl border border-line bg-white p-6 sm:p-8">
           <label className="flex flex-col gap-1.5 text-sm font-semibold">Order ID
             <input value={id} onChange={(e) => setId(e.target.value)} placeholder="e.g. DRF1234567" className="min-h-12 rounded-xl border-[1.5px] border-line-strong px-4 text-[15px] font-normal outline-none focus:border-navy-700" />
@@ -281,7 +283,7 @@ export function Contact() {
   return (
     <>
       <PageHead eyebrow="Contact us" title="We're here to" accent="help" text="Questions about an order, a product or a bulk enquiry? Write to us." />
-      <div className="container-x grid grid-cols-1 gap-8 py-14 lg:grid-cols-[1fr_400px]">
+      <div className="container-x grid grid-cols-1 gap-6 py-10 sm:py-14 lg:grid-cols-[1fr_400px] lg:gap-8">
         <form onSubmit={send} className="flex flex-col gap-4 rounded-2xl border border-line bg-white p-6 sm:p-8">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-1.5 text-sm font-semibold">Name<input className={input} value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></label>
@@ -294,8 +296,7 @@ export function Contact() {
           <b className="font-head text-xl">{business.name}</b>
           <span className="flex gap-3 text-ondark"><span className="text-mint"><Pin /></span>{business.address}</span>
           <span className="flex gap-3 text-ondark"><span className="text-mint"><Clock size={18} /></span>{business.hours}</span>
-          <a href={`tel:${business.phone.replace(/\s/g, '')}`} className="flex gap-3 text-white hover:text-mint"><span className="text-mint"><CheckCircle size={18} /></span>{business.phone}</a>
-          <a href={`mailto:${business.email}`} className="flex gap-3 text-white hover:text-mint"><span className="text-mint"><CheckCircle size={18} /></span>{business.email}</a>
+          <a href={`mailto:${business.email}`} className="flex gap-3 break-all text-white hover:text-mint"><span className="text-mint"><CheckCircle size={18} /></span>{business.email}</a>
         </aside>
       </div>
     </>

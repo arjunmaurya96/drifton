@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { products, packs, offer, productInfo, sampleReviews, getProductBySlug, formatINR, makeLine } from '../data/products.js';
+import { products, packs, offer, productInfo, sampleReviews, getProductBySlug, formatINR, makeLine, priceFor, UNIT_PRICE, DELIVERY_FEE } from '../data/products.js';
 import { useStore } from '../context/StoreContext.jsx';
 import ProductCard from '../components/ProductCard.jsx';
 import ProductMarquee from '../components/ProductMarquee.jsx';
@@ -18,7 +18,7 @@ const loveIcons = { gem: () => <Gem size={30} />, check: () => <CheckCircle size
 const stepScenes = [ShowerScene, RinseScene, ApplyScene];
 const toc = [
   ['description', 'Description'],
-  ['ingredients', 'Key ingredients'],
+  ['ingredients', 'Ingredients'],
   ['works', 'How does it work'],
   ['details', 'Product details'],
   ['use', 'How to use'],
@@ -27,8 +27,8 @@ const toc = [
 ];
 
 const Block = ({ id, title, children }) => (
-  <section id={id} className="scroll-mt-28 rounded-[28px] border border-line bg-white p-7 sm:p-9">
-    <h2 className="mb-5 text-[28px] font-bold tracking-tight">{title}</h2>
+  <section id={id} className="scroll-mt-28 rounded-[24px] border border-line bg-white p-5 sm:p-9">
+    <h2 className="mb-5 text-[24px] font-bold tracking-tight sm:text-[28px]">{title}</h2>
     {children}
   </section>
 );
@@ -73,9 +73,8 @@ export default function ProductDetail() {
 
   const reviews = sampleReviews;
   const rating = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
-  const unit = product.price * pack.multiplier * (1 - pack.off);
-  const unitMrp = product.mrp * pack.multiplier;
-  const off = Math.round((1 - unit / unitMrp) * 100);
+  const unit = priceFor(pack.multiplier); // price of one pack
+  const total = priceFor(pack.multiplier * qty);
   const inWish = wishlist.includes(product.id);
   const inCart = cart.filter((l) => l.id === product.id).reduce((s, l) => s + l.qty, 0);
   const related = products.filter((p) => p.id !== product.id);
@@ -92,7 +91,7 @@ export default function ProductDetail() {
       <div className="container-x">
         <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 py-6 text-sm text-muted-2">
           <Link to="/" className="text-muted-2 hover:text-brand">Home</Link><span>/</span>
-          <Link to="/#shop" className="text-muted-2 hover:text-brand">Shop</Link><span>/</span>
+          <Link to="/shop" className="text-muted-2 hover:text-brand">Shop</Link><span>/</span>
           <b className="font-semibold text-navy-900">{product.name}</b>
         </nav>
 
@@ -109,11 +108,10 @@ export default function ProductDetail() {
               </a>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="rounded-full bg-brand px-3 py-1 text-[13px] font-bold text-white">{off}% off</span>
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <b className="font-head text-4xl font-bold">{formatINR(unit)}</b>
-              <s className="text-lg text-[#6B7493]">{formatINR(unitMrp)}</s>
-              <span className="w-full text-[13.5px] text-muted-2">Inclusive of all taxes</span>
+              {pack.multiplier > 1 ? <s className="text-lg text-[#6B7493]">{formatINR(UNIT_PRICE * pack.multiplier)}</s> : <span className="text-[15px] font-semibold text-muted">+ delivery</span>}
+              <span className="w-full text-[13.5px] text-muted-2">Inclusive of all taxes · {pack.multiplier > 1 ? 'free delivery on combos' : `delivery ${formatINR(DELIVERY_FEE)}, free on any 2 sticks`}</span>
             </div>
 
             <div className="flex items-center gap-3.5 rounded-2xl border border-dashed border-brand bg-mint-soft px-4 py-3.5">
@@ -132,7 +130,7 @@ export default function ProductDetail() {
                 {products.map((p) => (
                   <Link key={p.id} to={`/product/${p.slug}`} aria-current={p.id === product.id}
                     className={`flex items-center gap-2.5 rounded-full border-[1.5px] py-1.5 pl-1.5 pr-4 text-[14.5px] font-semibold text-navy-900 transition ${p.id === product.id ? 'border-navy-700 bg-blue-soft' : 'border-line-strong bg-white hover:border-navy-700'}`}>
-                    <img src={p.image} alt="" className="size-[34px] rounded-full bg-white object-contain p-0.5" />{p.short}
+                    <span className="flex size-[34px] items-center justify-center rounded-full bg-white p-0.5"><img src={p.image} alt="" className="h-full w-auto object-contain" /></span>{p.short}
                   </Link>
                 ))}
               </div>
@@ -140,14 +138,14 @@ export default function ProductDetail() {
 
             <div>
               <span className="mb-2.5 block text-sm font-bold">Pack size</span>
-              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+              <div className="grid grid-cols-2 gap-2.5">
                 {packs.map((p) => {
                   const on = p.id === pack.id;
                   return (
                     <button key={p.id} onClick={() => setPack(p)} aria-pressed={on}
                       className={`flex flex-col gap-1 rounded-2xl border-[1.5px] bg-white p-3.5 text-left transition ${on ? 'border-navy-700 bg-blue-soft ring-1 ring-navy-700' : 'border-line-strong hover:border-navy-700'}`}>
                       <b className="text-[15px]">{p.label}</b>
-                      <span className="font-head text-lg font-bold">{formatINR(product.price * p.multiplier * (1 - p.off))}</span>
+                      <span className="font-head text-lg font-bold">{formatINR(priceFor(p.multiplier))}</span>
                       <small className="text-[13px] font-semibold text-brand-dark">{p.note}</small>
                     </button>
                   );
@@ -157,10 +155,10 @@ export default function ProductDetail() {
 
             <div className="flex flex-col gap-2.5">
               <span className="text-sm font-bold">Quantity <span className="font-medium text-muted-2">({inCart} in cart)</span></span>
-              <div id="main-buy" className="flex flex-wrap items-center gap-3">
+              <div id="main-buy" className="flex items-center gap-2 sm:gap-3">
                 <QtyStepper value={qty} onChange={(q) => setQty(Math.max(1, q))} />
-                <button className="btn-navy min-h-[54px] flex-1" onClick={add}>Add to cart · {formatINR(unit * qty)}</button>
-                <button className="icon-btn-outline size-[54px]" onClick={() => toggleWish(product.id)} aria-pressed={inWish} aria-label="Wishlist"><Heart filled={inWish} /></button>
+                <button className="btn-navy min-h-[54px] min-w-0 flex-1 px-3 sm:px-6" onClick={add}><span className="hidden sm:inline">Add to cart ·&nbsp;</span><span className="sm:hidden">Add ·&nbsp;</span>{formatINR(total)}</button>
+                <button className="icon-btn-outline size-[54px] shrink-0" onClick={() => toggleWish(product.id)} aria-pressed={inWish} aria-label="Wishlist"><Heart filled={inWish} /></button>
               </div>
               <button className="btn-primary min-h-[54px] w-full text-base" onClick={buy}>Buy now</button>
             </div>
@@ -177,7 +175,7 @@ export default function ProductDetail() {
             </form>
 
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-              {[[Truck, 'Free shipping on prepaid'], [Shield, 'Secure checkout'], [Return, 'Easy returns']].map(([I, t]) => (
+              {[[Truck, 'Free delivery on combos'], [Shield, 'Secure checkout'], [Return, '48-hour returns']].map(([I, t]) => (
                 <span key={t} className="flex items-center gap-2.5 rounded-2xl border border-line bg-white p-3.5 text-[13.5px] font-semibold text-navy-700">
                   <span className="text-brand"><I size={22} /></span>{t}
                 </span>
@@ -221,21 +219,15 @@ export default function ProductDetail() {
             <p className="text-[16.5px] leading-loose text-muted">{product.description} Drifton is a simple, mineral-based way to stay fresh every day. Just wet the crystal, glide it on, and go.</p>
           </Block>
 
-          <Block id="ingredients" title="Key ingredients">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {[
-                { name: 'Natural alum crystal', note: 'Potassium alum, a mineral salt used for generations to keep odour in check.', img: '/assets/images/cutouts/crystal.png', tint: '#E9ECF1' },
-                { name: product.ingredient, note: product.ingredientNote, img: product.image, tint: product.bg },
-              ].map((ing) => (
-                <div key={ing.name} className="flex items-center gap-4 rounded-3xl p-4" style={{ background: ing.tint }}>
-                  <img src={ing.img} alt="" className="size-24 shrink-0 rounded-2xl bg-white/60 object-contain p-2" />
-                  <span>
-                    <b className="mb-1 block font-head text-xl font-semibold">{ing.name}</b>
-                    <span className="text-[14.5px] leading-relaxed text-navy-500">{ing.note}</span>
-                  </span>
-                </div>
+          <Block id="ingredients" title="Ingredients">
+            <ul className="flex flex-wrap gap-2.5">
+              {product.ingredients.map((n) => (
+                <li key={n} className="flex items-center gap-2 rounded-full px-4 py-2.5 text-[15px] font-semibold text-navy-900" style={{ background: product.bg }}>
+                  <span className="size-2 rounded-full" style={{ background: product.accent }} />{n}
+                </li>
               ))}
-            </div>
+            </ul>
+            <p className="mt-4 text-[14.5px] leading-relaxed text-muted">{product.ingredientNote} Always read the label before use.</p>
           </Block>
 
           <Block id="works" title="How does it work">
@@ -299,7 +291,7 @@ export default function ProductDetail() {
               <span className="eyebrow">You may also like</span>
               <h2 className="h2">More from <span className="text-brand">Drifton</span></h2>
             </div>
-            <button className="btn-line" onClick={() => navigate('/#shop')}>View all</button>
+            <button className="btn-line" onClick={() => navigate('/shop')}>View all</button>
           </div>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((p) => <ProductCard key={p.id} product={p} />)}
@@ -307,7 +299,7 @@ export default function ProductDetail() {
         </div>
       </section>
 
-      <StickyBuyBar product={product} rating={rating} price={unit * qty} qty={qty} setQty={setQty} onAdd={add} onBuy={buy} watchId="main-buy" />
+      <StickyBuyBar product={product} rating={rating} price={total} qty={qty} setQty={setQty} onAdd={add} onBuy={buy} watchId="main-buy" />
     </>
   );
 }

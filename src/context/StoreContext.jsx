@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { products, UNIT_PRICE, summarize } from '../data/products.js';
 
 const StoreContext = createContext(null);
 
@@ -12,7 +13,14 @@ const load = (key, fallback) => {
 };
 
 export function StoreProvider({ children }) {
-  const [cart, setCart] = useState(() => load('drifton_cart', []));
+  // Old saved carts may have old prices/images/ids — rebuild each line from the current product data
+  const [cart, setCart] = useState(() =>
+    load('drifton_cart', []).map((l) => {
+      const p = products.find((x) => x.id === (l.id === 'lavender' ? 'natural' : l.id));
+      if (!p) return null;
+      const sticks = l.sticks || (/2/.test(l.pack) ? 2 : /3/.test(l.pack) ? 3 : 1);
+      return { ...l, key: `${p.id}-${sticks}`, id: p.id, name: p.name, image: p.image, sticks, pack: sticks === 2 ? 'Combo of 2' : sticks === 1 ? 'Single' : l.pack, unitPrice: UNIT_PRICE * sticks };
+    }).filter(Boolean));
   const [wishlist, setWishlist] = useState(() => load('drifton_wish', []));
   const [authMode, setAuthMode] = useState(null); // 'login' | 'signup' | null
   const [cartOpen, setCartOpen] = useState(false);
@@ -34,15 +42,15 @@ export function StoreProvider({ children }) {
   }, []);
 
   // A line is a product in a given pack size
-  const addToCart = useCallback((product, qty = 1, pack = { id: 1, label: 'Single', multiplier: 1, off: 0 }) => {
-    const key = `${product.id}-${pack.id}`;
-    const unitPrice = product.price * pack.multiplier * (1 - pack.off);
+  const addToCart = useCallback((product, qty = 1, pack = { id: 1, label: 'Single', multiplier: 1 }, silent = false) => {
+    const key = `${product.id}-${pack.multiplier}`;
+    const unitPrice = UNIT_PRICE * pack.multiplier;
     setCart((c) => {
       const found = c.find((l) => l.key === key);
       if (found) return c.map((l) => (l.key === key ? { ...l, qty: l.qty + qty } : l));
-      return [...c, { key, id: product.id, name: product.name, image: product.image, pack: pack.label, unitPrice, qty }];
+      return [...c, { key, id: product.id, name: product.name, image: product.image, pack: pack.label, sticks: pack.multiplier, unitPrice, qty }];
     });
-    notify(`${product.name} added to cart`);
+    if (!silent) notify(`${product.name} added to cart`);
   }, [notify]);
 
   const clearCart = useCallback(() => setCart([]), []);
@@ -57,10 +65,11 @@ export function StoreProvider({ children }) {
   }, [wishlist, notify]);
 
   const value = useMemo(() => {
-    const count = cart.reduce((s, l) => s + l.qty, 0);
-    const subtotal = cart.reduce((s, l) => s + l.qty * l.unitPrice, 0);
+    const count = cart.reduce((s, l) => s + l.qty * (l.sticks || 1), 0); // number of sticks
+    const summary = summarize(cart);
+    const subtotal = summary.items; // with the automatic combo price
     return {
-      cart, count, subtotal, addToCart, updateQty, clearCart,
+      cart, count, subtotal, summary, addToCart, updateQty, clearCart,
       wishlist, toggleWish,
       authMode, openAuth: setAuthMode, closeAuth: () => setAuthMode(null),
       cartOpen, openCart: () => setCartOpen(true), closeCart: () => setCartOpen(false),

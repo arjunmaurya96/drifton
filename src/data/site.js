@@ -1,14 +1,14 @@
 // =====================================================================
 //  Business + social links.
-//  ⚠ ALL VALUES BELOW ARE DUMMY (for the design preview).
-//  Replace them with the client's real details before going live.
+//  Name, address and email are from the client's T&C. Values marked DUMMY still need real details.
 // =====================================================================
 
 export const business = {
-  name: 'Drifton by AI Enterprises',
-  address: 'Shop No. 12, Green Park Market, New Delhi, Delhi 110016', // DUMMY
-  phone: '+91 98765 43210', // DUMMY
-  email: 'support@drifton.in', // DUMMY
+  name: 'DriftOn™ by AI Enterprises',
+  legalName: 'AI Enterprises',
+  address: 'Block-O, No. 28, Balraj Khanna Marg, West Patel Nagar, New Delhi – 110008, India',
+  phone: '', // add the customer-care number when available
+  email: 'infodrifton@gmail.com',
   hours: 'Mon–Sat, 10:00 AM – 7:00 PM', // DUMMY
   // Google Business Profile
   rating: 4.8, // DUMMY
@@ -16,7 +16,7 @@ export const business = {
   profileUrl: '#', // the client's Google Business Profile link
   reviewUrl: '#', // the profile's "write a review" link (g.page/r/...)
   // Google Maps embed: business name + city or the exact address
-  mapQuery: 'Green Park Market, New Delhi', // DUMMY
+  mapQuery: 'Balraj Khanna Marg, West Patel Nagar, New Delhi 110008',
 };
 
 // Footer social links ('#' = dummy). Set url to '' to hide an icon.

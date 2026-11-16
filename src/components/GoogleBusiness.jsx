@@ -43,7 +43,7 @@ export default function GoogleBusiness() {
             <ul className="flex flex-col gap-3 text-[15px] text-navy-500">
               <li className="flex items-start gap-3"><span className="mt-0.5 text-brand"><Pin /></span>{business.address}</li>
               <li className="flex items-start gap-3"><span className="mt-0.5 text-brand"><Clock size={18} /></span>{business.hours}</li>
-              <li className="flex items-start gap-3"><span className="mt-0.5 font-bold text-brand">☎</span>{business.phone}</li>
+              <li className="flex items-start gap-3 break-all"><span className="mt-0.5 font-bold text-brand">✉</span>{business.email}</li>
             </ul>
 
             <div className="flex flex-wrap gap-3">

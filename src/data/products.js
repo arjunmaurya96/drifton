@@ -5,27 +5,48 @@
 const IMG = '/assets/images';
 const VID = '/assets/videos';
 
+// ===== Pricing (from the client) =====
+// One stick ₹475 + delivery. Any 2 sticks = combo ₹800 (applied automatically in the cart).
+// DELIVERY_FEE is a PLACEHOLDER — confirm the real delivery charge with the client.
+export const UNIT_PRICE = 475;
+export const COMBO_PRICE = 800;
+export const DELIVERY_FEE = 50; // DUMMY — charged on single-stick orders only; combos ship free
+export const COMBO_SAVING = UNIT_PRICE * 2 - COMBO_PRICE; // ₹150 per pair
+
+// Price for n sticks with the combo applied to every pair
+export const priceFor = (n) => Math.floor(n / 2) * COMBO_PRICE + (n % 2) * UNIT_PRICE;
+
+// Coupons — DUMMY codes, confirm with the client
+export const coupons = { DRIFTON100: { off: 100, note: '₹100 off your first order' } };
+
+// The real combos from the client (each = 2 sticks for ₹800)
+export const combos = [
+  { id: 'rose-palash', name: 'Rose + Palash', items: ['rose', 'palash'], tag: 'Floral pair' },
+  { id: 'charcoal-rose', name: 'Charcoal + Rose', items: ['charcoal', 'rose'], tag: 'Fresh + floral' },
+  { id: 'natural-rose', name: 'Natural + Rose', items: ['natural', 'rose'], tag: 'Pure + floral' },
+];
+
 export const products = [
   {
     id: 'palash',
-    slug: 'palash-flower-alum-stick',
-    name: 'Palash Flower Alum Stick',
+    slug: 'palash-alum-stick',
+    name: 'Palash Alum Stick',
     short: 'Palash',
     tag: 'Floral · Bestseller',
     badge: 'Bestseller',
-    price: 699,
-    mrp: 999,
+    price: UNIT_PRICE,
     image: `${IMG}/cutouts/palash.png`, // product only, no background
     photo: `${IMG}/palash.jpg`,
     video: null,
     poster: `${IMG}/poster-palash.jpg`,
     bg: '#FCEFD9',
     accent: '#A3461A',
-    ingredient: 'Palash flower',
-    ingredientNote: 'A bright orange flower long used in Indian traditions, added for a warm floral touch.',
+    ingredients: ['Natural potassium alum', 'Glycerine', 'Palash extract', 'Colour', 'Fragrance'],
+    ingredient: 'Palash extract',
+    ingredientNote: 'Extract of the bright orange Palash flower, long used in Indian traditions, for a warm floral touch.',
     tagline: 'Warm, floral and naturally soothing',
     description:
-      'A natural alum crystal stick infused with the warmth of Palash flower. Glides on clear, leaves no white marks and keeps you feeling fresh through the day.',
+      'Natural potassium alum with Palash extract and glycerine. Glides on clear, leaves no white marks and keeps you feeling fresh through the day.',
   },
   {
     id: 'charcoal',
@@ -34,19 +55,19 @@ export const products = [
     short: 'Charcoal',
     tag: 'Detox · Fresh',
     badge: 'New',
-    price: 699,
-    mrp: 999,
+    price: UNIT_PRICE,
     image: `${IMG}/cutouts/charcoal.png`, // product only, no background
     photo: `${IMG}/charcoal.jpg`,
     video: null,
     poster: `${IMG}/poster-charcoal.jpg`,
     bg: '#E4E6EB',
     accent: '#3A4466',
+    ingredients: ['Natural potassium alum', 'Glycerine', 'Activated charcoal', 'Fragrance'],
     ingredient: 'Activated charcoal',
     ingredientNote: 'Known for its deep-clean feel, paired with alum for active, sweaty days.',
     tagline: 'A deep-clean feel for active days',
     description:
-      'Activated charcoal blended with natural alum crystal for a fresh, deep-clean feel. Made for gym days, long commutes and everything in between.',
+      'Natural potassium alum with activated charcoal and glycerine for a fresh, deep-clean feel. Made for gym days, long commutes and everything in between.',
   },
   {
     id: 'rose',
@@ -54,41 +75,41 @@ export const products = [
     name: 'Rose Alum Stick',
     short: 'Rose',
     tag: 'Floral · Gentle',
-    badge: 'Sale',
-    price: 699,
-    mrp: 999,
+    badge: 'Popular',
+    price: UNIT_PRICE,
     image: `${IMG}/cutouts/rose.png`, // product only, no background
     photo: `${IMG}/rose.jpg`,
     video: null,
     poster: `${IMG}/poster-rose.jpg`,
     bg: '#FBE3EA',
     accent: '#A02E54',
-    ingredient: 'Rose',
+    ingredients: ['Natural potassium alum', 'Glycerine', 'Rose extract', 'Colour', 'Fragrance'],
+    ingredient: 'Rose extract',
     ingredientNote: 'A classic, gentle floral note that keeps the routine light and pleasant.',
     tagline: 'Soft, classic and gentle on skin',
     description:
-      'Natural alum crystal with a soft touch of rose. Gentle on skin, easy to apply and a classic everyday favourite.',
+      'Natural potassium alum with rose extract and glycerine. Gentle on skin, easy to apply and a classic everyday favourite.',
   },
   {
-    id: 'lavender',
-    slug: 'lavender-alum-stick',
-    name: 'Lavender Alum Stick',
-    short: 'Lavender',
-    tag: 'Calm · Herbal',
-    badge: 'Sale',
-    price: 699,
-    mrp: 999,
+    id: 'natural',
+    slug: 'natural-alum-stick',
+    name: 'Natural Alum Stick',
+    short: 'Natural',
+    tag: 'Pure · Fragrance free',
+    badge: 'Pure',
+    price: UNIT_PRICE,
     image: `${IMG}/cutouts/crystal.png`, // product only, no background
     photo: `${IMG}/lavender-crystal.jpg`,
     video: null,
     poster: null,
     bg: '#D9ECFA',
-    accent: '#5B3FA8',
-    ingredient: 'Lavender',
-    ingredientNote: 'A calming herbal note for a relaxed start to the day.',
-    tagline: 'Calm, herbal and easy to love',
+    accent: '#1C6FB8',
+    ingredients: ['Natural potassium alum', 'Glycerine'],
+    ingredient: 'Glycerine',
+    ingredientNote: 'Helps the crystal glide smoothly on damp skin. Nothing else added.',
+    tagline: 'Just alum. Nothing else.',
     description:
-      'Natural alum crystal with calming lavender. A light, herbal way to start your morning and stay fresh all day.',
+      'Only natural potassium alum and glycerine — no colour, no fragrance. The simplest way to stay fresh every day.',
   },
 ];
 
@@ -100,43 +121,42 @@ export const products = [
 // cutout: transparent PNG of just the product (public/assets/images/cutouts/).
 // rightImage: product photo shown on the right (soft-faded edges). Put one per slide in
 //   public/assets/images/hero-products/ (e.g. range-palash.jpg). If empty, the cutout is shown.
-// Ingredients are DUMMY — confirm the real key ingredients for each variant with the client.
+// Ingredients from the client's list.
 // icon: 'gem' | 'flower' | 'leaf' | 'drop' | 'hex' | 'sprig'
 export const bannerSlides = [
   {
-    productId: 'palash', modelPhoto: '/assets/images/models/model-girl.jpg', modelPos: '58% center', cutout: '/assets/images/cutouts/palash.png', rightImage: '/assets/images/hero-products/range-crystal.png',
+    productId: 'palash', modelPhoto: '/assets/images/models/model-girl.jpg', modelPos: '58% center', cutout: '/assets/images/cutouts/palash.png', rightImage: '/assets/images/hero-products/range.png',
     bgFrom: '#FFF3E2', bgTo: '#FFC98A', glow: '#FFB45E', dark: false, accent: '#C2571A',
     serif: 'Crystal deo', line: 'that keeps you fresh 24/7',
     ingredients: [
-      { name: 'Natural Alum', icon: 'gem' }, { name: 'Palash Flower', icon: 'flower' },
-      { name: 'Aloe Vera', icon: 'leaf' }, { name: 'Vitamin E', icon: 'drop' },
+      { name: 'Natural Alum', icon: 'gem' }, { name: 'Glycerine', icon: 'drop' },
+      { name: 'Palash Extract', icon: 'flower' }, { name: 'Fragrance', icon: 'sprig' },
     ],
   },
   {
-    productId: 'charcoal', modelPhoto: '/assets/images/models/model-boy.jpg', modelPos: '55% center', cutout: '/assets/images/cutouts/charcoal.png', rightImage: '/assets/images/hero-products/range-crystal.png',
+    productId: 'charcoal', modelPhoto: '/assets/images/models/model-boy.jpg', modelPos: '55% center', cutout: '/assets/images/cutouts/charcoal.png', rightImage: '/assets/images/hero-products/range.png',
     bgFrom: '#4A5163', bgTo: '#161A23', glow: '#8C97B3', dark: true, accent: '#7BE0A6',
     serif: 'Deep clean', line: 'for your busiest days',
     ingredients: [
-      { name: 'Natural Alum', icon: 'gem' }, { name: 'Activated Charcoal', icon: 'hex' },
-      { name: 'Tea Tree', icon: 'leaf' }, { name: 'Mint', icon: 'sprig' },
+      { name: 'Natural Alum', icon: 'gem' }, { name: 'Glycerine', icon: 'drop' },
+      { name: 'Activated Charcoal', icon: 'hex' }, { name: 'Fragrance', icon: 'sprig' },
     ],
   },
   {
-    productId: 'rose', modelPhoto: '/assets/images/models/model-girls.jpg', modelPos: 'center 30%', cutout: '/assets/images/cutouts/rose.png', rightImage: '/assets/images/hero-products/range-crystal.png',
+    productId: 'rose', modelPhoto: '/assets/images/models/model-girls.jpg', modelPos: 'center 30%', cutout: '/assets/images/cutouts/rose.png', rightImage: '/assets/images/hero-products/range.png',
     bgFrom: '#FFF0F4', bgTo: '#F7B5CA', glow: '#F08AAE', dark: false, accent: '#B0305D',
     serif: 'Soft & fresh', line: 'with a touch of rose',
     ingredients: [
-      { name: 'Natural Alum', icon: 'gem' }, { name: 'Rose Petals', icon: 'flower' },
-      { name: 'Glycerin', icon: 'drop' }, { name: 'Aloe Vera', icon: 'leaf' },
+      { name: 'Natural Alum', icon: 'gem' }, { name: 'Glycerine', icon: 'drop' },
+      { name: 'Rose Extract', icon: 'flower' }, { name: 'Fragrance', icon: 'sprig' },
     ],
   },
   {
-    productId: 'lavender', modelPhoto: '/assets/images/models/model-couple.jpg', modelPos: '62% center', cutout: '/assets/images/cutouts/crystal.png', rightImage: '/assets/images/hero-products/range-crystal.png',
+    productId: 'natural', modelPhoto: '/assets/images/models/model-couple.jpg', modelPos: '62% center', cutout: '/assets/images/cutouts/crystal.png', rightImage: '/assets/images/hero-products/range.png',
     bgFrom: '#EEF7FF', bgTo: '#A9D3F5', glow: '#7FBDF0', dark: false, accent: '#1C6FB8',
     serif: 'Pure & clear', line: 'natural mineral freshness',
     ingredients: [
-      { name: 'Natural Alum', icon: 'gem' }, { name: 'Mineral Crystal', icon: 'drop' },
-      { name: 'Aloe Vera', icon: 'leaf' }, { name: 'Vitamin E', icon: 'flower' },
+      { name: 'Natural Alum', icon: 'gem' }, { name: 'Glycerine', icon: 'drop' },
     ],
   },
 ];
@@ -148,13 +168,12 @@ export const heroSlides = [
   { productId: 'rose', eyebrow: 'Floral · Gentle care', title: 'Soft as a', highlight: 'rose.', text: 'A gentle rose-infused crystal stick that glides on clear, with no white marks.' },
 ];
 
-// Dummy offer shown on the product page — confirm with client
-export const offer = { title: 'Buy 2 sticks, get the 3rd FREE!', note: 'Offer applied automatically at checkout.' };
+// Offer shown on the product page
+export const offer = { title: 'Any 2 sticks for ₹800', note: 'Combo price applied automatically in your cart. Free delivery on combos.' };
 
 export const packs = [
-  { id: 1, label: 'Single', note: '1 stick', multiplier: 1, off: 0 },
-  { id: 2, label: 'Pack of 2', note: 'Save 10%', multiplier: 2, off: 0.1 },
-  { id: 3, label: 'Pack of 3', note: 'Save 15%', multiplier: 3, off: 0.15 },
+  { id: 1, label: 'Single', note: '+ delivery', multiplier: 1 },
+  { id: 2, label: 'Combo of 2', note: `Save ₹${COMBO_SAVING} · free delivery`, multiplier: 2 },
 ];
 
 // Shared product-page content (same for every variant)
@@ -193,15 +212,15 @@ export const productInfo = {
     { title: 'Use regularly', text: 'Apply daily for the best everyday freshness.' },
   ],
   legal: [
-    ['Marketed by', 'AI Enterprises, [ADDRESS]'],
+    ['Marketed by', 'AI Enterprises, Block-O, No. 28, Balraj Khanna Marg, West Patel Nagar, New Delhi – 110008'],
     ['Manufactured by', '[MANUFACTURER NAME & ADDRESS]'],
-    ['MRP', '₹999 (incl. of all taxes)'],
+    ['Price', '₹475 per stick · any 2 for ₹800'],
     ['Country of origin', '[COUNTRY]'],
     ['Net quantity', '[NET WEIGHT]'],
     ['Best before', '[EXPIRY DETAILS]'],
   ],
   faqs: [
-    { q: 'Is the Drifton stick just alum?', a: 'The base is a natural alum crystal. Each variant also includes a botanical extract such as Palash, charcoal, rose or lavender. [Confirm full ingredient list with the client.]' },
+    { q: 'Is the Drifton stick just alum?', a: 'The base is a natural alum crystal. Every stick is natural potassium alum with glycerine. Palash, Rose and Charcoal also have their own extract and fragrance; the Natural stick has nothing else added.' },
     { q: 'Is it suitable for sensitive skin?', a: 'Alum crystal is generally gentle, but everyone’s skin is different. Do a small patch test first and stop using it if you notice irritation.' },
     { q: 'How long does one stick last?', a: 'With normal daily use a crystal stick lasts a long time. [Add the client’s tested duration here.]' },
     { q: 'Does it stop sweat or only odour?', a: 'An alum deodorant is designed to help with odour. It is not an antiperspirant, so you may still sweat normally.' },
@@ -213,17 +232,28 @@ export const sampleReviews = [
   { rating: 5, title: 'Fresh and light', text: 'Feels very light and fresh. No white marks on my clothes at all.', productId: 'palash' },
   { rating: 5, title: 'Great for gym days', text: 'I use it before workouts. Quick to apply and easy to carry.', productId: 'charcoal' },
   { rating: 4, title: 'Lovely smell', text: 'Gentle on skin and the rose note is soft, not overpowering.', productId: 'rose' },
-  { rating: 5, title: 'Good value', text: 'One stick lasts a long time. Will buy again.', productId: 'lavender' },
+  { rating: 5, title: 'Good value', text: 'One stick lasts a long time. Will buy again.', productId: 'natural' },
   { rating: 4, title: 'Takes a day to get used to', text: 'You have to wet it first, but once you get the habit it works well.', productId: 'palash' },
 ];
 
 export const getProductBySlug = (slug) => products.find((p) => p.slug === slug);
 export const getProductById = (id) => products.find((p) => p.id === id);
 export const formatINR = (n) => '₹' + Math.round(n).toLocaleString('en-IN');
-export const discount = (p) => Math.round((1 - p.price / p.mrp) * 100);
 
-// One order line (used by Buy now)
+// One order line (cart + Buy now). sticks = sticks in the pack; unitPrice = full price, combo discount is applied on the whole order.
 export const makeLine = (product, qty = 1, pack = packs[0]) => ({
   key: `${product.id}-${pack.id}`, id: product.id, name: product.name, image: product.image,
-  pack: pack.label, unitPrice: product.price * pack.multiplier * (1 - pack.off), qty,
+  pack: pack.label, sticks: pack.multiplier, unitPrice: UNIT_PRICE * pack.multiplier, qty,
 });
+
+// Order summary with the automatic combo price, delivery and coupon
+export const summarize = (lines, couponCode = '') => {
+  const sticks = lines.reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
+  const full = sticks * UNIT_PRICE;
+  const items = priceFor(sticks);
+  const comboSaving = full - items;
+  const delivery = sticks === 0 || sticks >= 2 ? 0 : DELIVERY_FEE;
+  const coupon = coupons[couponCode.trim().toUpperCase()];
+  const couponOff = coupon ? Math.min(coupon.off, items) : 0;
+  return { sticks, full, items, comboSaving, delivery, coupon: coupon ? couponCode.trim().toUpperCase() : '', couponOff, total: items + delivery - couponOff };
+};

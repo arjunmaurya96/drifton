@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { products, bannerSlides, formatINR, discount, makeLine } from '../data/products.js';
+import { products, formatINR, makeLine, getProductById, COMBO_PRICE, DELIVERY_FEE } from '../data/products.js';
 import { useStore } from '../context/StoreContext.jsx';
 import { Heart, Truck, Shield, Return, Cash } from '../components/Icons.jsx';
 
-const cutout = (id) => bannerSlides.find((b) => b.productId === id)?.cutout;
+const cutout = (id) => getProductById(id)?.image;
 
-// Offer banners (DUMMY offers — confirm with the client)
+// Offer banners (the coupon code is DUMMY — confirm with the client)
 const offers = [
   {
     eyebrow: 'First order offer', title: 'Flat ₹100 off', text: 'Use code', code: 'DRIFTON100',
     bg: 'linear-gradient(110deg, #FFF1DE 0%, #FFC98A 100%)', ink: '#0F1A3C', accent: '#C2571A', products: ['palash', 'rose'],
   },
   {
-    eyebrow: 'Combo deal', title: 'Buy 2, get 1 free', text: 'Mix any 3 crystals. Applied at checkout.', code: null,
-    bg: 'linear-gradient(110deg, #1C2E6B 0%, #0F1A3C 100%)', ink: '#FFFFFF', accent: '#7BE0A6', products: ['charcoal', 'lavender'],
+    eyebrow: 'Combo deal', title: `Any 2 for ${formatINR(COMBO_PRICE)}`, text: 'Mix any 2 sticks. Combo price + free delivery, applied in your cart.', code: null, link: '/combo',
+    bg: 'linear-gradient(110deg, #1C2E6B 0%, #0F1A3C 100%)', ink: '#FFFFFF', accent: '#7BE0A6', products: ['charcoal', 'natural'],
   },
 ];
 
@@ -22,7 +22,7 @@ const filters = [
   { id: 'all', label: 'All', match: () => true },
   { id: 'floral', label: 'Floral', match: (p) => /floral/i.test(p.tag) },
   { id: 'fresh', label: 'Detox & fresh', match: (p) => /detox|fresh/i.test(p.tag) },
-  { id: 'calm', label: 'Calm & pure', match: (p) => /calm|herbal/i.test(p.tag) },
+  { id: 'pure', label: 'Pure & fragrance free', match: (p) => /pure/i.test(p.tag) },
 ];
 
 const sorts = {
@@ -39,10 +39,10 @@ function OfferBanner({ o }) {
     setCopied(true); setTimeout(() => setCopied(false), 1800);
   };
   return (
-    <div className="relative flex h-[190px] items-center overflow-hidden rounded-2xl px-7 sm:h-[210px] sm:px-9" style={{ background: o.bg, color: o.ink }}>
-      <div className="relative z-[2] flex max-w-[58%] flex-col gap-2">
+    <div className="relative flex h-[170px] items-center overflow-hidden rounded-2xl px-5 sm:h-[210px] sm:px-9" style={{ background: o.bg, color: o.ink }}>
+      <div className="relative z-[2] flex max-w-[62%] flex-col gap-2 sm:max-w-[58%]">
         <span className="text-xs font-bold uppercase tracking-[2px]" style={{ color: o.accent }}>{o.eyebrow}</span>
-        <b className="font-serif text-[34px] font-normal leading-none sm:text-[44px]">{o.title}</b>
+        <b className="font-serif text-[28px] font-normal leading-none sm:text-[44px]">{o.title}</b>
         {o.code ? (
           <span className="flex flex-wrap items-center gap-2 text-sm">
             {o.text}
@@ -51,12 +51,12 @@ function OfferBanner({ o }) {
             </button>
           </span>
         ) : (
-          <span className="text-sm opacity-85">{o.text}</span>
+          <span className="text-[13px] opacity-85 sm:text-sm">{o.text}{o.link && <> <Link to={o.link} className="font-semibold underline" style={{ color: o.accent }}>See combos</Link></>}</span>
         )}
       </div>
-      <div aria-hidden="true" className="absolute bottom-0 right-[-44px] flex h-[78%] items-end gap-1 sm:right-8 sm:h-[115%]">
+      <div aria-hidden="true" className="absolute inset-y-0 right-3 flex items-center gap-2 sm:right-8">
         {o.products.map((id, k) => (
-          <img key={id} src={cutout(id)} alt="" className="w-auto object-contain drop-shadow-xl" style={{ height: k ? '78%' : '92%', transform: `rotate(${k ? 8 : -6}deg) translateY(${k ? 6 : 14}%)` }} />
+          <img key={id} src={cutout(id)} alt="" className="h-[110px] w-auto object-contain sm:h-[160px]" />
         ))}
       </div>
     </div>
@@ -84,22 +84,24 @@ export default function Shop() {
           <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-muted-2">
             <Link to="/" className="text-muted-2 hover:text-brand">Home</Link><span>/</span><span className="text-navy-900">Shop</span>
           </nav>
-          <h1 className="font-jost text-[38px] font-medium leading-tight tracking-tight">
+          <h1 className="font-jost text-[32px] font-medium leading-tight tracking-tight sm:text-[38px]">
             Shop all <span className="align-middle text-base font-normal text-muted-2">({list.length} products)</span>
           </h1>
         </div>
-        <div className="flex flex-wrap items-center gap-2.5">
-          {filters.map((x) => (
-            <button key={x.id} onClick={() => setFilter(x.id)} aria-pressed={filter === x.id}
-              className={`min-h-10 rounded-full px-4 text-sm font-semibold transition ${filter === x.id ? 'bg-navy-900 text-white' : 'border-[1.5px] border-line-strong bg-white text-navy-900 hover:border-navy-700'}`}>
-              {x.label}
-            </button>
-          ))}
+        <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-2.5">
+          <div className="-mx-4 flex min-w-0 items-center gap-2 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
+            {filters.map((x) => (
+              <button key={x.id} onClick={() => setFilter(x.id)} aria-pressed={filter === x.id}
+                className={`min-h-10 shrink-0 whitespace-nowrap rounded-full px-4 text-sm font-semibold transition ${filter === x.id ? 'bg-navy-900 text-white' : 'border-[1.5px] border-line-strong bg-white text-navy-900 hover:border-navy-700'}`}>
+                {x.label}
+              </button>
+            ))}
+          </div>
           <span className="mx-1 hidden h-6 w-px bg-line-strong sm:block" />
-          <label className="flex items-center gap-2 text-sm font-semibold">
-            <span className="sr-only sm:not-sr-only">Sort</span>
+          <label className="flex shrink-0 items-center gap-2 text-sm font-semibold">
+            Sort
             <select value={sort} onChange={(e) => setSort(e.target.value)}
-              className="min-h-10 rounded-full border-[1.5px] border-line-strong bg-white px-3.5 text-sm font-medium outline-none focus:border-navy-700">
+              className="min-h-10 flex-1 rounded-full border-[1.5px] border-line-strong bg-white px-3.5 text-sm font-medium outline-none focus:border-navy-700 sm:flex-none">
               {Object.entries(sorts).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
             </select>
           </label>
@@ -114,10 +116,10 @@ export default function Shop() {
           const inCart = cart.some((l) => l.id === p.id);
           return (
             <article key={p.id} className="flex flex-col overflow-hidden rounded-xl border border-line bg-white">
-              <div className="relative h-[88svh] min-h-[600px] overflow-hidden xl:h-[100svh] xl:min-h-[780px]" style={{ background: `linear-gradient(180deg, ${p.bg} 0%, #FFFFFF 92%)` }}>
+              <div className="relative h-[72svh] min-h-[480px] overflow-hidden sm:h-[88svh] sm:min-h-[600px] xl:h-[100svh] xl:min-h-[780px]" style={{ background: `linear-gradient(180deg, ${p.bg} 0%, #FFFFFF 92%)` }}>
                 <Link to={url} aria-label={`View ${p.name}`} className="flex h-full items-center justify-center"><img src={p.image} alt={p.name} loading="lazy" className="h-[78%] w-auto max-w-[78%] object-contain" /></Link>
                 <span className="absolute left-4 top-4 rounded-full bg-white px-3.5 py-1.5 font-jost text-[13px] font-medium text-navy-900">{p.badge}</span>
-                <span className="absolute bottom-4 left-4 rounded-full bg-brand px-3 py-1 text-xs font-bold text-white">{discount(p)}% OFF</span>
+                <span className="absolute bottom-4 left-4 rounded-full bg-brand px-3 py-1 text-xs font-bold text-white">2 for {formatINR(COMBO_PRICE)}</span>
                 <button onClick={() => toggleWish(p.id)} aria-pressed={inWish} aria-label={`${inWish ? 'Remove' : 'Add'} ${p.name} ${inWish ? 'from' : 'to'} wishlist`}
                   className="absolute right-3 top-3 flex size-10 items-center justify-center rounded-full bg-white/90 text-navy-900"><Heart filled={inWish} /></button>
               </div>
@@ -129,11 +131,11 @@ export default function Shop() {
                   </div>
                   <span className="shrink-0 text-right">
                     <b className="block font-head text-xl">{formatINR(p.price)}</b>
-                    <s className="text-sm text-muted-2">{formatINR(p.mrp)}</s>
+                    <small className="text-[12.5px] text-muted-2">+ delivery</small>
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-2.5">
-                  <button onClick={() => addToCart(p)} className="min-h-11 rounded-full border-[1.5px] border-navy-900 font-jost text-[13px] font-semibold uppercase tracking-wide text-navy-900 hover:bg-navy-900 hover:text-white">
+                  <button onClick={() => addToCart(p)} className="min-h-11 rounded-full border-[1.5px] border-navy-900 px-2 font-jost text-[12.5px] sm:text-[13px] font-semibold uppercase tracking-wide text-navy-900 hover:bg-navy-900 hover:text-white">
                     {inCart ? 'Add more' : 'Add to cart'}
                   </button>
                   <button onClick={() => openBuy([makeLine(p)])} className="min-h-11 rounded-full bg-brand font-jost text-[13px] font-semibold uppercase tracking-wide text-white hover:bg-brand-dark">
@@ -147,8 +149,8 @@ export default function Shop() {
       </div>
 
       {/* 4. Trust strip */}
-      <ul className="mt-12 grid grid-cols-2 gap-4 rounded-2xl bg-navy-900 p-6 text-white lg:grid-cols-4">
-        {[[Truck, 'Free shipping', 'On prepaid orders'], [Cash, 'Cash on delivery', 'Pay when it arrives'], [Shield, 'Secure payments', 'UPI, cards, net banking'], [Return, 'Easy returns', 'Hassle-free policy']].map(([I, t, s]) => (
+      <ul className="mt-12 grid grid-cols-1 gap-4 rounded-2xl bg-navy-900 p-5 text-white sm:grid-cols-2 sm:p-6 lg:grid-cols-4">
+        {[[Truck, 'Free delivery', `On combos · single ${formatINR(DELIVERY_FEE)}`], [Cash, 'Cash on delivery', 'Pay when it arrives'], [Shield, 'Secure payments', 'UPI, cards, net banking'], [Return, '48-hour returns', 'On unopened products']].map(([I, t, s]) => (
           <li key={t} className="flex items-center gap-3">
             <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-mint"><I size={22} /></span>
             <span><b className="block font-head text-[15px] font-semibold">{t}</b><small className="text-ondark">{s}</small></span>
