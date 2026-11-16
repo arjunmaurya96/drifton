@@ -21,7 +21,7 @@ export const business = {
 
 // Footer social links ('#' = dummy). Set url to '' to hide an icon.
 export const socials = [
-  { id: 'instagram', color: 'linear-gradient(45deg,#F58529,#DD2A7B 50%,#8134AF 75%,#515BD4)', label: 'Instagram', url: '#' },
+  { id: 'instagram', color: 'linear-gradient(45deg,#F58529,#DD2A7B 50%,#8134AF 75%,#515BD4)', label: 'Instagram', url: 'https://www.instagram.com/reels/Dd6qP9CRxax/' },
   { id: 'facebook', color: '#1877F2', label: 'Facebook', url: '#' },
   { id: 'youtube', color: '#FF0000', label: 'YouTube', url: '#' },
   { id: 'x', color: '#000000', label: 'X (Twitter)', url: '#' },
