@@ -28,7 +28,7 @@ export default function Footer() {
       <div className="container-x">
         <div className="mb-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1.4fr]">
           <div className="flex flex-col gap-4">
-            <span className="font-head text-3xl font-bold text-white">Drift<span className="text-mint">o</span>n</span>
+            <Link to="/" aria-label="DriftOn home" className="self-start"><img src="/assets/images/logo-drifton-white.png" alt="DriftOn" className="h-11 w-auto sm:h-12" /></Link>
             <span className="max-w-[300px] text-[14.5px] leading-relaxed">Natural crystal deodorants by AI Enterprises.</span>
             <span className="text-[14.5px] leading-relaxed">Customer care: {business.email}</span>
           </div>
@@ -54,7 +54,7 @@ export default function Footer() {
           </form>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#26366E] pt-6 text-[13.5px] text-[#9AA5C8]">
-          <span>© {new Date().getFullYear()} Drifton · AI Enterprises. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} DriftOn™ · AI Enterprises. All rights reserved.</span>
           <ul className="flex flex-wrap gap-2" aria-label="Follow Drifton">
             {socials.filter((x) => x.url).map((x) => (
               <li key={x.id}>

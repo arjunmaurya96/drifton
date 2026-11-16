@@ -16,7 +16,7 @@ export default function GoogleBusiness() {
   const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(business.mapQuery)}&output=embed`;
 
   return (
-    <section id="google" className="py-24">
+    <section id="google" className="pb-20 pt-8 sm:pb-24 sm:pt-10">
       <div className="container-x">
         <div className="mb-10 flex flex-col items-center gap-3 text-center">
           <span className="eyebrow">Find us on Google</span>

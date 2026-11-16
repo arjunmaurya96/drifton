@@ -12,6 +12,7 @@ import Shop from './pages/Shop.jsx';
 import { Combo, Ingredients, CheckIngredient, Terms, Track, Contact } from './pages/InfoPages.jsx';
 import BuyNowModal from './components/BuyNowModal.jsx';
 import ComboTopBanner from './components/ComboTopBanner.jsx';
+import CheckoutModal from './components/CheckoutModal.jsx';
 
 // Combo banner on top of every inner page (not on home; the shop page has its own offer banners)
 function TopBanner() {
@@ -55,6 +56,7 @@ export default function App() {
       <AuthModal />
       <CartDrawer />
       <BuyNowModal />
+      <CheckoutModal />
       <Toast />
     </>
   );

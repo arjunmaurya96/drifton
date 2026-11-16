@@ -37,7 +37,7 @@ export default function ProductGrid() {
             className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible lg:grid-cols-4 lg:gap-4 xl:min-h-0 xl:flex-1 [&::-webkit-scrollbar]:hidden">
             {products.map((p) => (
               <div key={p.id} className="w-full shrink-0 snap-start sm:w-auto xl:h-full">
-                <ProductCard product={p} className="h-[78svh] min-h-[540px] max-h-[720px] sm:h-[720px] sm:max-h-none lg:h-[640px] xl:h-full" />
+                <ProductCard product={p} quickCheckout className="h-[78svh] min-h-[540px] max-h-[720px] sm:h-[720px] sm:max-h-none lg:h-[640px] xl:h-full" />
               </div>
             ))}
           </div>

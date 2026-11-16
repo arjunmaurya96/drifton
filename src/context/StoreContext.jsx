@@ -26,6 +26,7 @@ export function StoreProvider({ children }) {
   const [cartOpen, setCartOpen] = useState(false);
   const [toast, setToast] = useState('');
   const [buy, setBuy] = useState(null); // { lines, fromCart } for the Buy now modal
+  const [checkoutOpen, setCheckoutOpen] = useState(false); // quick checkout with OTP (home page add to cart)
   const timer = useRef();
 
   useEffect(() => {
@@ -75,8 +76,9 @@ export function StoreProvider({ children }) {
       cartOpen, openCart: () => setCartOpen(true), closeCart: () => setCartOpen(false),
       toast, notify,
       buy, openBuy: (lines, fromCart = false) => setBuy({ lines, fromCart }), closeBuy: () => setBuy(null),
+      checkoutOpen, openCheckout: () => { setCartOpen(false); setCheckoutOpen(true); }, closeCheckout: () => setCheckoutOpen(false),
     };
-  }, [cart, wishlist, authMode, cartOpen, toast, addToCart, toggleWish, notify, clearCart, buy]);
+  }, [cart, wishlist, authMode, cartOpen, toast, addToCart, toggleWish, notify, clearCart, buy, checkoutOpen]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }

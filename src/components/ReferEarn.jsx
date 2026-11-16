@@ -13,7 +13,7 @@ export default function ReferEarn() {
   };
 
   return (
-    <section id="refer" className="pb-24 pt-14">
+    <section id="refer" className="pb-8 pt-14 sm:pb-10">
       <div className="container-x">
         <div className="flex flex-col items-start justify-between gap-10 rounded-[32px] bg-navy-900 px-7 py-10 text-white md:flex-row md:items-center md:px-14 md:py-14">
           <div className="flex max-w-[600px] flex-col gap-4">
