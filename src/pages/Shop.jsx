@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { products, formatINR, discount } from '../data/products.js';
+import { Link } from 'react-router-dom';
+import { products, formatINR, discount, makeLine } from '../data/products.js';
 import { useStore } from '../context/StoreContext.jsx';
 import { Heart } from '../components/Icons.jsx';
 
@@ -13,12 +13,11 @@ const sorts = {
 
 /** Shop page: every product, with Add to cart and Buy now right on the card. */
 export default function Shop() {
-  const { addToCart, toggleWish, wishlist, cart } = useStore();
-  const navigate = useNavigate();
+  const { addToCart, toggleWish, wishlist, cart, openBuy } = useStore();
   const [sort, setSort] = useState('featured');
   const list = [...products].sort(sorts[sort].fn);
 
-  const buyNow = (p) => navigate('/checkout', { state: { buyNow: { productId: p.id, qty: 1 } } });
+  const buyNow = (p) => openBuy([makeLine(p)]);
 
   return (
     <div className="container-x pb-24">

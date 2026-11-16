@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { products, packs, offer, productInfo, sampleReviews, getProductBySlug, formatINR } from '../data/products.js';
+import { products, packs, offer, productInfo, sampleReviews, getProductBySlug, formatINR, makeLine } from '../data/products.js';
 import { useStore } from '../context/StoreContext.jsx';
 import ProductCard from '../components/ProductCard.jsx';
 import ProductMarquee from '../components/ProductMarquee.jsx';
@@ -48,7 +48,7 @@ export default function ProductDetail() {
   const { slug } = useParams();
   const product = getProductBySlug(slug);
   const navigate = useNavigate();
-  const { addToCart, toggleWish, wishlist, cart } = useStore();
+  const { addToCart, toggleWish, wishlist, cart, openBuy } = useStore();
 
   const [pack, setPack] = useState(packs[0]);
   const [qty, setQty] = useState(1);
@@ -82,7 +82,7 @@ export default function ProductDetail() {
   const related = products.filter((p) => p.id !== product.id);
 
   const add = () => addToCart(product, qty, pack);
-  const buy = () => navigate('/checkout', { state: { buyNow: { productId: product.id, qty, packId: pack.id } } });
+  const buy = () => openBuy([makeLine(product, qty, pack)]);
   const checkPin = (e) => {
     e.preventDefault();
     setPinMsg(/^\d{6}$/.test(pin) ? `Delivery available to ${pin}. Usually ships in 1–2 days.` : 'Please enter a valid 6-digit pincode.');

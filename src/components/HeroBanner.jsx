@@ -32,7 +32,7 @@ export default function HeroBanner() {
 
   return (
     <section id="top" aria-label="Featured products" aria-roledescription="carousel"
-      className="relative h-[calc(100svh-118px)] max-h-[900px] min-h-[640px] overflow-hidden">
+      className="relative h-[100svh] min-h-[640px] overflow-hidden">
       {/* Product-colour backgrounds (cross-fade) */}
       {bannerSlides.map((s, k) => (
         <div key={k} aria-hidden="true" className={`absolute inset-0 transition-opacity duration-1000 ${k === i ? 'opacity-100' : 'opacity-0'}`}
@@ -47,7 +47,7 @@ export default function HeroBanner() {
           onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
       </div>
 
-      <div className="container-wide relative z-[2] grid h-full grid-cols-1 items-center gap-6 pb-20 pt-6 md:grid-cols-[1fr_38%] lg:grid-cols-[33%_1fr_32%]">
+      <div className="container-wide relative z-[2] grid h-full grid-cols-1 items-center gap-6 pb-20 pt-6 md:grid-cols-[1fr_42%] lg:grid-cols-[31%_1fr_36%]">
         <div className="hidden lg:block" />
 
         {/* Middle: text */}
@@ -75,7 +75,7 @@ export default function HeroBanner() {
 
         {/* Right: the product only */}
         <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="hidden h-full items-center justify-center md:flex">
-          <img src={slide.cutout} alt={product.name} className="h-[min(74svh,700px)] w-auto animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
+          <img src={slide.cutout} alt={product.name} className="h-[min(76svh,800px)] w-auto animate-from-right object-contain" style={{ animationDelay: '150ms' }} />
         </Link>
       </div>
 

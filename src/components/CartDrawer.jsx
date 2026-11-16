@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
 import { formatINR } from '../data/products.js';
 import { Close, Minus, Plus, Bag } from './Icons.jsx';
@@ -15,8 +15,7 @@ export function QtyStepper({ value, onChange, size = 'md' }) {
 }
 
 export default function CartDrawer() {
-  const { cart, cartOpen, closeCart, updateQty, subtotal } = useStore();
-  const navigate = useNavigate();
+  const { cart, cartOpen, closeCart, updateQty, subtotal, openBuy } = useStore();
   if (!cartOpen) return null;
 
   return (
@@ -52,7 +51,7 @@ export default function CartDrawer() {
           <div className="flex flex-col gap-3.5 border-t border-line px-6 py-5">
             <div className="flex justify-between text-[17px] font-semibold"><span>Subtotal</span><span>{formatINR(subtotal)}</span></div>
             <small className="text-muted-2">Shipping and discounts are calculated at checkout.</small>
-            <button className="btn-primary w-full" onClick={() => { closeCart(); navigate('/checkout'); }}>Checkout</button>
+            <button className="btn-primary w-full" onClick={() => { closeCart(); openBuy(cart, true); }}>Checkout</button>
           </div>
         )}
       </aside>

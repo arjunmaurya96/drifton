@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
 import { Search, Heart, Bag, Menu, Close } from './Icons.jsx';
 import SearchOverlay from './SearchOverlay.jsx';
+import AnnouncementBar from './AnnouncementBar.jsx';
 
 const links = [
   { to: '/shop', label: 'Shop' },
@@ -30,7 +31,7 @@ function useHideOnScroll() {
       ticking = true;
       requestAnimationFrame(() => {
         const y = window.scrollY;
-        if (y < 120) setHidden(false); // always show near the top
+        if (y < 10) setHidden(false); // show at the very top
         else if (y > lastY + 6) setHidden(true); // scrolling down
         else if (y < lastY - 6) setHidden(false); // scrolling up a little
         lastY = y;
@@ -51,6 +52,7 @@ export default function Header() {
 
   return (
     <header className={`sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur transition-transform duration-300 ease-out ${hidden ? '-translate-y-full' : 'translate-y-0 shadow-[0_8px_24px_-18px_rgba(15,26,60,.35)]'}`}>
+      <AnnouncementBar />
       <div className="container-x flex h-[78px] items-center justify-between gap-5">
         <Link to="/" aria-label="Drifton home" className="shrink-0">
           <img src="/assets/images/logo.png" alt="Drifton by AI Enterprises" className="h-9 w-auto sm:h-11" />

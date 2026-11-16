@@ -215,3 +215,9 @@ export const getProductBySlug = (slug) => products.find((p) => p.slug === slug);
 export const getProductById = (id) => products.find((p) => p.id === id);
 export const formatINR = (n) => '₹' + Math.round(n).toLocaleString('en-IN');
 export const discount = (p) => Math.round((1 - p.price / p.mrp) * 100);
+
+// One order line (used by Buy now)
+export const makeLine = (product, qty = 1, pack = packs[0]) => ({
+  key: `${product.id}-${pack.id}`, id: product.id, name: product.name, image: product.image,
+  pack: pack.label, unitPrice: product.price * pack.multiplier * (1 - pack.off), qty,
+});

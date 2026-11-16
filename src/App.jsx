@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import AnnouncementBar from './components/AnnouncementBar.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import AuthModal from './components/AuthModal.jsx';
@@ -10,7 +9,7 @@ import Home from './pages/Home.jsx';
 import ProductDetail from './pages/ProductDetail.jsx';
 import NotFound from './pages/NotFound.jsx';
 import Shop from './pages/Shop.jsx';
-import Checkout from './pages/Checkout.jsx';
+import BuyNowModal from './components/BuyNowModal.jsx';
 
 function ScrollManager() {
   const { pathname, hash } = useLocation();
@@ -28,20 +27,19 @@ export default function App() {
   return (
     <>
       <ScrollManager />
-      <AnnouncementBar />
       <Header />
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/product/:slug" element={<ProductDetail />} />
-          <Route path="/checkout" element={<Checkout />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
       <AuthModal />
       <CartDrawer />
+      <BuyNowModal />
       <Toast />
     </>
   );

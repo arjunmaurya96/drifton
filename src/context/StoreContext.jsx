@@ -17,6 +17,7 @@ export function StoreProvider({ children }) {
   const [authMode, setAuthMode] = useState(null); // 'login' | 'signup' | null
   const [cartOpen, setCartOpen] = useState(false);
   const [toast, setToast] = useState('');
+  const [buy, setBuy] = useState(null); // { lines, fromCart } for the Buy now modal
   const timer = useRef();
 
   useEffect(() => {
@@ -64,8 +65,9 @@ export function StoreProvider({ children }) {
       authMode, openAuth: setAuthMode, closeAuth: () => setAuthMode(null),
       cartOpen, openCart: () => setCartOpen(true), closeCart: () => setCartOpen(false),
       toast, notify,
+      buy, openBuy: (lines, fromCart = false) => setBuy({ lines, fromCart }), closeBuy: () => setBuy(null),
     };
-  }, [cart, wishlist, authMode, cartOpen, toast, addToCart, toggleWish, notify, clearCart]);
+  }, [cart, wishlist, authMode, cartOpen, toast, addToCart, toggleWish, notify, clearCart, buy]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }
