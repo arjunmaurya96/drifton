@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 // "Product Information and Descriptions" (section 3 of the client's T&C), shown above "Pick your variant".
 // Left: the content. Right: all 4 roll ons in one image.
 const points = [
@@ -16,32 +18,52 @@ const icons = [
 
 export default function ProductInfoNote({ className = '' }) {
   return (
-    <div className={`overflow-hidden rounded-[28px] border border-[#CFE3EE] bg-gradient-to-br from-[#F3F9FC] via-white to-[#EEF6F9] ${className}`}>
-      <div className="grid grid-cols-1 items-center lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
-        <div className="flex flex-col gap-5 p-6 sm:p-9 lg:p-12">
-          <span className="inline-flex items-center gap-2 self-start rounded-full bg-white px-3.5 py-1.5 text-[11.5px] font-bold uppercase tracking-[2px] text-[#2E7FA8] ring-1 ring-[#CFE3EE]">
-            <span className="size-1.5 rounded-full bg-[#2E7FA8]" /> Product information
-          </span>
-          <div>
-            <h2 className="font-head text-[28px] font-bold leading-tight tracking-tight text-navy-900 sm:text-[36px]">Honest about every <span className="text-brand">roll on.</span></h2>
-            <p className="mt-2 max-w-[560px] text-[15px] leading-relaxed text-muted">We make reasonable efforts to ensure that product descriptions, images, ingredients, prices and other information on our website are accurate. However:</p>
+    <div className={`relative overflow-hidden rounded-[32px] bg-[radial-gradient(120%_120%_at_0%_0%,#24408F_0%,#0F1A3C_55%,#0B1430_100%)] text-white ${className}`}>
+      {/* soft glows */}
+      <span aria-hidden="true" className="absolute -left-24 top-1/3 size-[420px] rounded-full bg-[#2E7FA8]/30 blur-[90px]" />
+      <span aria-hidden="true" className="absolute -right-20 -top-20 size-[300px] rounded-full bg-mint/15 blur-[80px]" />
+
+      <div className="relative grid grid-cols-1 items-center gap-8 p-6 sm:p-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-12 lg:p-14">
+        {/* products on a glowing stage */}
+        <div className="relative order-2 flex items-end justify-center pt-6 lg:order-1">
+          <span aria-hidden="true" className="absolute bottom-[6%] left-1/2 h-[46%] w-[88%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgba(123,224,166,.35),transparent)]" />
+          <span aria-hidden="true" className="absolute bottom-[3%] left-1/2 h-6 w-[78%] -translate-x-1/2 rounded-[50%] bg-black/45 blur-md" />
+          <img src="/assets/images/hero-products/all-four.webp" alt="DriftOn Natural, Palash, Charcoal and Rose Alum Roll On" loading="lazy" decoding="async"
+            className="relative w-full max-w-[520px] object-contain drop-shadow-[0_30px_40px_rgba(0,0,0,.45)]" />
+        </div>
+
+        {/* content */}
+        <div className="order-1 flex flex-col gap-6 lg:order-2">
+          <div className="flex flex-col gap-3">
+            <span className="inline-flex items-center gap-2 self-start rounded-full bg-white/10 px-3.5 py-1.5 text-[11.5px] font-bold uppercase tracking-[2px] text-mint ring-1 ring-white/15">
+              <span className="size-1.5 rounded-full bg-mint" /> Product information
+            </span>
+            <h2 className="font-head text-[30px] font-bold leading-[1.08] tracking-tight sm:text-[42px]">
+              Honest about every <span className="bg-gradient-to-r from-mint to-[#7FD3F7] bg-clip-text text-transparent">roll on.</span>
+            </h2>
+            <p className="max-w-[560px] text-[15px] leading-relaxed text-ondark sm:text-[16px]">
+              We make reasonable efforts to ensure that product descriptions, images, ingredients, prices and other information on our website are accurate. However:
+            </p>
           </div>
-          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+
+          <ol className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {points.map((p, k) => (
-              <li key={p.t} className="flex gap-3 rounded-2xl bg-white p-4 ring-1 ring-[#E2EDF3]">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#EAF4FA] text-[#2E7FA8]">{icons[k]}</span>
+              <li key={p.t} className="group flex gap-3.5 rounded-2xl bg-white/[.06] p-4 ring-1 ring-white/10 backdrop-blur transition hover:bg-white/[.1] hover:ring-mint/40">
+                <span className="relative flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-mint to-[#3FB27F] text-navy-900">
+                  {icons[k]}
+                  <span className="absolute -right-1.5 -top-1.5 flex size-5 items-center justify-center rounded-full bg-white text-[10.5px] font-bold text-navy-900">{k + 1}</span>
+                </span>
                 <span>
-                  <b className="block text-[14.5px] font-semibold text-navy-900">{p.t}</b>
-                  <span className="text-[13px] leading-relaxed text-muted">{p.d}</span>
+                  <b className="block text-[15px] font-semibold text-white">{p.t}</b>
+                  <span className="text-[13.5px] leading-relaxed text-[#B7C1DF]">{p.d}</span>
                 </span>
               </li>
             ))}
-          </ul>
-        </div>
-        <div className="relative flex h-full items-end justify-center px-6 pb-8 pt-2 sm:px-10 lg:py-12">
-          <span aria-hidden="true" className="absolute inset-x-[12%] bottom-6 top-[18%] rounded-full bg-[radial-gradient(closest-side,#D6EAF5,transparent)]" />
-          <img src="/assets/images/hero-products/all-four.webp" alt="DriftOn Natural, Palash, Charcoal and Rose Alum Roll On" loading="lazy" decoding="async"
-            className="relative w-full max-w-[560px] object-contain" />
+          </ol>
+
+          <Link to="/terms" className="inline-flex items-center gap-2 self-start text-[14px] font-semibold text-mint hover:text-white">
+            Read our full Terms &amp; Conditions <span aria-hidden="true">→</span>
+          </Link>
         </div>
       </div>
     </div>
