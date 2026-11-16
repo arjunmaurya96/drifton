@@ -8,8 +8,9 @@ const icons = {
   apply: <svg {...I}><circle cx="13" cy="8" r="4" /><path d="M6 27v-6a7 7 0 0 1 7-7c2 0 3.6.8 4.8 2" /><path d="M17 12l6-6M21 18l5-5 2 2-5 5z" /></svg>,
   store: <svg {...I}><path d="M11 22V11a5 5 0 0 1 10 0v11" /><rect x="9.5" y="22" width="13" height="6" rx="1.5" /><path d="M5 9l1 1M27 9l-1 1M6 18h-2M28 18h-2" /></svg>,
 };
+// photo: a finished step image from the client (text already on it). Others use our model photos + overlay until the client sends theirs.
 const steps = [
-  { icon: 'wash', title: 'Clean & wash', text: 'Wash your underarms and pat them dry before you begin.', img: '/assets/images/models/model-girl.webp', pos: '62% 35%' },
+  { icon: 'wash', title: 'Clean & wash', text: 'Wash your underarms and pat them dry before you begin.', photo: '/assets/images/steps/step-1.webp' },
   { icon: 'wet', title: 'Wet the crystal', text: 'Remove the cap and dip the crystal top in water for a second.', img: '/assets/images/models/model-girls.webp', pos: '30% 40%' },
   { icon: 'apply', title: 'Apply gently', text: 'Glide it 3–4 times on clean, damp underarms. No white marks.', img: '/assets/images/models/model-girls.webp', pos: '80% 30%' },
   { icon: 'store', title: 'Wipe clean & store', text: 'Wipe the crystal dry, put the cap back and store it upright.', img: '/assets/images/models/model-couple.webp', pos: '55% 35%' },
@@ -23,20 +24,20 @@ export default function HowToUse() {
         <h2 id="how-title" className="font-serif text-[48px] leading-none text-navy-900 sm:text-[68px]">How to <span className="text-brand">use</span></h2>
         <p className="max-w-[460px] text-[16px] text-muted sm:text-[17px]">Just like it says on the pack — fresh all day in under 10 seconds.</p>
       </div>
-      <ol className="container-wide grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
-        {steps.map((s, k) => (
-          <li key={s.title} className="group relative overflow-hidden rounded-[28px] bg-navy-900">
-            <img src={s.img} alt="" loading="lazy" decoding="async" className="aspect-[4/3] w-full object-cover sm:aspect-[16/10]" style={{ objectPosition: s.pos }} />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy-900/90 via-navy-900/25 to-transparent" />
-            {/* step badge, like the round icons on the pack */}
-            <span className="absolute left-5 top-5 flex items-center gap-3 sm:left-7 sm:top-7">
-              <span className="flex size-14 items-center justify-center rounded-full border-2 border-white/80 bg-white/90 text-navy-900 backdrop-blur sm:size-16">{icons[s.icon]}</span>
-              <span className="font-head text-[44px] font-bold leading-none text-white [text-shadow:0_2px_12px_rgba(0,0,0,.35)] sm:text-[52px]">{k + 1}</span>
-            </span>
-            <div className="absolute inset-x-0 bottom-0 flex flex-col gap-1.5 p-5 text-white sm:p-7">
-              <span className="text-[12px] font-bold uppercase tracking-[2px] text-mint">Step {k + 1}</span>
-              <h3 className="font-head text-[24px] font-bold uppercase leading-tight tracking-wide sm:text-[30px]">{s.title}</h3>
-              <p className="max-w-[440px] text-[15px] leading-relaxed text-white/85">{s.text}</p>
+      <ol className="container-wide grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4 xl:gap-5">
+        {steps.map((s, k) => s.photo ? (
+          <li key={s.title} className="overflow-hidden rounded-[28px] bg-[#EEF1F5] shadow-[0_20px_50px_-25px_rgba(15,26,60,.45)]">
+            <img src={s.photo} alt={`Step ${k + 1} — ${s.title}`} loading="lazy" decoding="async" className="aspect-[1199/1312] w-full object-cover" />
+          </li>
+        ) : (
+          <li key={s.title} className="group relative overflow-hidden rounded-[28px] bg-[#EEF1F5] shadow-[0_20px_50px_-25px_rgba(15,26,60,.45)]">
+            <img src={s.img} alt="" loading="lazy" decoding="async" className="aspect-[1199/1312] w-full object-cover" style={{ objectPosition: s.pos }} />
+            <div className="absolute inset-0 bg-gradient-to-r from-white/85 via-white/20 to-transparent" />
+            <div className="absolute left-[4%] top-[9%] flex w-[26%] flex-col items-center gap-2 text-center">
+              <span className="whitespace-nowrap rounded-full bg-[#123A7A] px-3 py-1 font-head text-[16px] font-bold text-white sm:text-[20px] xl:text-[14px]">Step {k + 1}</span>
+              <span className="flex aspect-square w-[78%] items-center justify-center rounded-full border-[2.5px] border-[#123A7A] bg-white text-[#123A7A] [&_svg]:h-1/2 [&_svg]:w-1/2">{icons[s.icon]}</span>
+              <h3 className="font-head text-[15px] font-bold leading-tight text-[#123A7A] sm:text-[19px] xl:text-[13px]">{s.title}</h3>
+              <span className="h-1 w-[80%] rounded-full bg-[#F07FA0]" />
             </div>
           </li>
         ))}
