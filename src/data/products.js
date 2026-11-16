@@ -88,46 +88,48 @@ export const products = [
   },
 ];
 
-// ===== Home hero banner (full-width image slides, phitku style) =====
-// model: DUMMY illustrated model shown behind the text ('girl' | 'girl2' | 'boy' | 'couple') until modelPhoto is set.
-// modelPhoto: photo of a model shown behind the text on the LEFT (fades into the product image).
-//   Put files in public/assets/images/models/ and set e.g. modelPhoto: '/assets/images/models/model-1.jpg'.
-//   Best: portrait or landscape photo, model looking at camera, at least 1200px tall.
-// image: DUMMY banners made from the product photos. Replace with real model photos
-// (e.g. '/assets/images/banner/model-1.jpg', 1920x1080 or wider, subject on the right half).
+// ===== Home hero banner =====
+// Left: model photo. Middle: headline, key ingredients, SHOP NOW. Right: the product on its own (no box, no shadow).
+// Background: a gradient in the product's own colours.
+// modelPhoto: the client's model photo (currently the same sample photo on every slide — add more and set one per slide).
+// cutout: transparent PNG of just the product (public/assets/images/cutouts/).
 // Ingredients are DUMMY — confirm the real key ingredients for each variant with the client.
 // icon: 'gem' | 'flower' | 'leaf' | 'drop' | 'hex' | 'sprig'
 export const bannerSlides = [
   {
-    productId: 'palash', image: '/assets/images/banner/banner-palash.jpg', modelPhoto: null, model: 'girl', modelTop: '#E8742A', stick: '#FFD45C',
-    serif: 'Crystal deo', line: 'that keeps you fresh 24/7', accent: '#FFD2A8',
+    productId: 'palash', modelPhoto: '/assets/images/models/model-girl.jpg', cutout: '/assets/images/cutouts/palash.png',
+    bgFrom: '#FFF3E2', bgTo: '#FFC98A', glow: '#FFB45E', dark: false, accent: '#C2571A',
+    serif: 'Crystal deo', line: 'that keeps you fresh 24/7',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Palash Flower', icon: 'flower' },
       { name: 'Aloe Vera', icon: 'leaf' }, { name: 'Vitamin E', icon: 'drop' },
     ],
   },
   {
-    productId: 'charcoal', image: '/assets/images/banner/banner-charcoal.jpg', modelPhoto: null, model: 'boy', modelTop: '#2B3558', stick: '#EEF1F8',
-    serif: 'Deep clean', line: 'for your busiest days', accent: '#CFD6E6',
+    productId: 'charcoal', modelPhoto: '/assets/images/models/model-girl.jpg', cutout: '/assets/images/cutouts/charcoal.png',
+    bgFrom: '#4A5163', bgTo: '#161A23', glow: '#8C97B3', dark: true, accent: '#7BE0A6',
+    serif: 'Deep clean', line: 'for your busiest days',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Activated Charcoal', icon: 'hex' },
       { name: 'Tea Tree', icon: 'leaf' }, { name: 'Mint', icon: 'sprig' },
     ],
   },
   {
-    productId: 'rose', image: '/assets/images/banner/banner-rose.jpg', modelPhoto: null, model: 'girl2', modelTop: '#C2406C', stick: '#F7A8C4',
-    serif: 'Soft & fresh', line: 'with a touch of rose', accent: '#FFC9DA',
+    productId: 'rose', modelPhoto: '/assets/images/models/model-girl.jpg', cutout: '/assets/images/cutouts/rose.png',
+    bgFrom: '#FFF0F4', bgTo: '#F7B5CA', glow: '#F08AAE', dark: false, accent: '#B0305D',
+    serif: 'Soft & fresh', line: 'with a touch of rose',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Rose Petals', icon: 'flower' },
       { name: 'Glycerin', icon: 'drop' }, { name: 'Aloe Vera', icon: 'leaf' },
     ],
   },
   {
-    productId: 'lavender', image: '/assets/images/banner/banner-lavender.jpg', modelPhoto: null, model: 'couple', modelTop: '#6A4BC4', stick: '#D9C8FF',
-    serif: 'Calm & fresh', line: 'for him and for her', accent: '#DCCBFF',
+    productId: 'lavender', modelPhoto: '/assets/images/models/model-girl.jpg', cutout: '/assets/images/cutouts/crystal.png',
+    bgFrom: '#EEF7FF', bgTo: '#A9D3F5', glow: '#7FBDF0', dark: false, accent: '#1C6FB8',
+    serif: 'Pure & clear', line: 'natural mineral freshness',
     ingredients: [
-      { name: 'Natural Alum', icon: 'gem' }, { name: 'Lavender', icon: 'sprig' },
-      { name: 'Chamomile', icon: 'flower' }, { name: 'Vitamin E', icon: 'drop' },
+      { name: 'Natural Alum', icon: 'gem' }, { name: 'Mineral Crystal', icon: 'drop' },
+      { name: 'Aloe Vera', icon: 'leaf' }, { name: 'Vitamin E', icon: 'flower' },
     ],
   },
 ];
