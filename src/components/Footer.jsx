@@ -33,7 +33,7 @@ export default function Footer() {
             <span className="text-[14.5px] leading-relaxed">Customer care: {business.email}<br />{business.phone}</span>
           </div>
           <Col title="Shop">
-            <Link to="/#shop" className={fl}>All products</Link>
+            <Link to="/shop" className={fl}>All products</Link>
             <Link to="/#why" className={fl}>Why Drifton</Link>
             <Link to="/#how" className={fl}>How to use</Link>
             <Link to="/#refer" className={fl}>Refer &amp; Earn</Link>
@@ -59,7 +59,7 @@ export default function Footer() {
             {socials.filter((x) => x.url).map((x) => (
               <li key={x.id}>
                 <a href={x.url} {...(x.url.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : {})} aria-label={x.label}
-                  className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-mint hover:text-navy-900">
+                  className="flex size-10 items-center justify-center rounded-full text-white shadow-md transition hover:-translate-y-0.5 hover:brightness-110" style={{ background: x.color }}>
                   <SocialIcon id={x.id} size={18} />
                 </a>
               </li>

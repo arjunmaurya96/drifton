@@ -48,7 +48,7 @@ export default function ProductDetail() {
   const { slug } = useParams();
   const product = getProductBySlug(slug);
   const navigate = useNavigate();
-  const { addToCart, toggleWish, wishlist, cart, openCart } = useStore();
+  const { addToCart, toggleWish, wishlist, cart } = useStore();
 
   const [pack, setPack] = useState(packs[0]);
   const [qty, setQty] = useState(1);
@@ -82,7 +82,7 @@ export default function ProductDetail() {
   const related = products.filter((p) => p.id !== product.id);
 
   const add = () => addToCart(product, qty, pack);
-  const buy = () => { addToCart(product, qty, pack); openCart(); };
+  const buy = () => navigate('/checkout', { state: { buyNow: { productId: product.id, qty, packId: pack.id } } });
   const checkPin = (e) => {
     e.preventDefault();
     setPinMsg(/^\d{6}$/.test(pin) ? `Delivery available to ${pin}. Usually ships in 1–2 days.` : 'Please enter a valid 6-digit pincode.');

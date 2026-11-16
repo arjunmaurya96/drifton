@@ -21,7 +21,7 @@ export default function ProductGrid() {
       <div className="container-wide xl:flex xl:min-h-0 xl:flex-1 xl:flex-col">
         <div className="mb-8 flex flex-col items-center gap-4 text-center sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-5 sm:text-left xl:mb-0 xl:h-[92px] xl:shrink-0 xl:items-center">
           <h2 className="font-jost text-[40px] font-medium leading-tight tracking-tight text-black sm:text-5xl xl:text-[44px]">Pick your crystal.</h2>
-          <Link to="/#shop" className="border-b-[3px] border-black pb-2 font-jost text-[15px] font-semibold uppercase tracking-wide text-black hover:text-black">
+          <Link to="/shop" className="border-b-[3px] border-black pb-2 font-jost text-[15px] font-semibold uppercase tracking-wide text-black hover:text-black">
             Shop deodorants &amp; more
           </Link>
         </div>

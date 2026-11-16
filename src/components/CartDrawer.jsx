@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
 import { formatINR } from '../data/products.js';
 import { Close, Minus, Plus, Bag } from './Icons.jsx';
@@ -15,7 +15,8 @@ export function QtyStepper({ value, onChange, size = 'md' }) {
 }
 
 export default function CartDrawer() {
-  const { cart, cartOpen, closeCart, updateQty, subtotal, notify } = useStore();
+  const { cart, cartOpen, closeCart, updateQty, subtotal } = useStore();
+  const navigate = useNavigate();
   if (!cartOpen) return null;
 
   return (
@@ -31,7 +32,7 @@ export default function CartDrawer() {
             <div className="flex flex-col items-center gap-4 py-16 text-center text-muted-2">
               <Bag size={40} />
               <span>Your cart is empty.</span>
-              <Link to="/#shop" className="btn-navy" onClick={closeCart}>Shop products</Link>
+              <Link to="/shop" className="btn-navy" onClick={closeCart}>Shop products</Link>
             </div>
           ) : (
             cart.map((l) => (
@@ -51,7 +52,7 @@ export default function CartDrawer() {
           <div className="flex flex-col gap-3.5 border-t border-line px-6 py-5">
             <div className="flex justify-between text-[17px] font-semibold"><span>Subtotal</span><span>{formatINR(subtotal)}</span></div>
             <small className="text-muted-2">Shipping and discounts are calculated at checkout.</small>
-            <button className="btn-primary w-full" onClick={() => notify('Checkout coming soon (demo)')}>Checkout</button>
+            <button className="btn-primary w-full" onClick={() => { closeCart(); navigate('/checkout'); }}>Checkout</button>
           </div>
         )}
       </aside>

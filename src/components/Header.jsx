@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
 import { Search, Heart, Bag, Menu, Close } from './Icons.jsx';
+import SearchOverlay from './SearchOverlay.jsx';
 
 const links = [
-  { to: '/#shop', label: 'Shop' },
+  { to: '/shop', label: 'Shop' },
   { to: '/#why', label: 'Why Drifton' },
   { to: '/#how', label: 'How to use' },
   { to: '/#tested', label: 'Tested' },
@@ -45,7 +46,8 @@ function useHideOnScroll() {
 export default function Header() {
   const { count, openAuth, openCart, wishlist } = useStore();
   const [open, setOpen] = useState(false);
-  const hidden = useHideOnScroll() && !open;
+  const [searchOpen, setSearchOpen] = useState(false);
+  const hidden = useHideOnScroll() && !open && !searchOpen;
 
   return (
     <header className={`sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur transition-transform duration-300 ease-out ${hidden ? '-translate-y-full' : 'translate-y-0 shadow-[0_8px_24px_-18px_rgba(15,26,60,.35)]'}`}>
@@ -61,7 +63,7 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-1">
-          <button className="icon-btn" aria-label="Search"><Search /></button>
+          <button className="icon-btn" aria-label="Search" aria-expanded={searchOpen} onClick={() => setSearchOpen(!searchOpen)}><Search /></button>
           <button className="icon-btn hidden sm:inline-flex" aria-label={`Wishlist, ${wishlist.length} items`}>
             <Heart size={21} />
             {wishlist.length > 0 && <Badge n={wishlist.length} />}
@@ -85,6 +87,7 @@ export default function Header() {
           ))}
         </nav>
       )}
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }

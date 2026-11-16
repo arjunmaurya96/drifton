@@ -44,6 +44,8 @@ export function StoreProvider({ children }) {
     notify(`${product.name} added to cart`);
   }, [notify]);
 
+  const clearCart = useCallback(() => setCart([]), []);
+
   const updateQty = (key, qty) =>
     setCart((c) => (qty <= 0 ? c.filter((l) => l.key !== key) : c.map((l) => (l.key === key ? { ...l, qty } : l))));
 
@@ -57,13 +59,13 @@ export function StoreProvider({ children }) {
     const count = cart.reduce((s, l) => s + l.qty, 0);
     const subtotal = cart.reduce((s, l) => s + l.qty * l.unitPrice, 0);
     return {
-      cart, count, subtotal, addToCart, updateQty,
+      cart, count, subtotal, addToCart, updateQty, clearCart,
       wishlist, toggleWish,
       authMode, openAuth: setAuthMode, closeAuth: () => setAuthMode(null),
       cartOpen, openCart: () => setCartOpen(true), closeCart: () => setCartOpen(false),
       toast, notify,
     };
-  }, [cart, wishlist, authMode, cartOpen, toast, addToCart, toggleWish, notify]);
+  }, [cart, wishlist, authMode, cartOpen, toast, addToCart, toggleWish, notify, clearCart]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }

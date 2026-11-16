@@ -9,6 +9,8 @@ import Toast from './components/Toast.jsx';
 import Home from './pages/Home.jsx';
 import ProductDetail from './pages/ProductDetail.jsx';
 import NotFound from './pages/NotFound.jsx';
+import Shop from './pages/Shop.jsx';
+import Checkout from './pages/Checkout.jsx';
 
 function ScrollManager() {
   const { pathname, hash } = useLocation();
@@ -31,7 +33,9 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<Shop />} />
           <Route path="/product/:slug" element={<ProductDetail />} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

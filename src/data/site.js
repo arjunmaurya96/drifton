@@ -21,11 +21,11 @@ export const business = {
 
 // Footer social links ('#' = dummy). Set url to '' to hide an icon.
 export const socials = [
-  { id: 'instagram', label: 'Instagram', url: '#' },
-  { id: 'facebook', label: 'Facebook', url: '#' },
-  { id: 'youtube', label: 'YouTube', url: '#' },
-  { id: 'x', label: 'X (Twitter)', url: '#' },
-  { id: 'linkedin', label: 'LinkedIn', url: '#' },
-  { id: 'whatsapp', label: 'WhatsApp', url: '#' },
-  { id: 'pinterest', label: 'Pinterest', url: '#' },
+  { id: 'instagram', color: 'linear-gradient(45deg,#F58529,#DD2A7B 50%,#8134AF 75%,#515BD4)', label: 'Instagram', url: '#' },
+  { id: 'facebook', color: '#1877F2', label: 'Facebook', url: '#' },
+  { id: 'youtube', color: '#FF0000', label: 'YouTube', url: '#' },
+  { id: 'x', color: '#000000', label: 'X (Twitter)', url: '#' },
+  { id: 'linkedin', color: '#0A66C2', label: 'LinkedIn', url: '#' },
+  { id: 'whatsapp', color: '#25D366', label: 'WhatsApp', url: '#' },
+  { id: 'pinterest', color: '#E60023', label: 'Pinterest', url: '#' },
 ];
