@@ -94,11 +94,13 @@ export const products = [
 // modelPhoto: photo on the left. Slides alternate girl / boy:
 //   public/assets/images/models/model-girl.jpg and model-boy.jpg (until model-boy.jpg is added, the girl photo is shown).
 // cutout: transparent PNG of just the product (public/assets/images/cutouts/).
+// rightImage: product photo shown on the right (soft-faded edges). Put one per slide in
+//   public/assets/images/hero-products/ (e.g. range-palash.jpg). If empty, the cutout is shown.
 // Ingredients are DUMMY — confirm the real key ingredients for each variant with the client.
 // icon: 'gem' | 'flower' | 'leaf' | 'drop' | 'hex' | 'sprig'
 export const bannerSlides = [
   {
-    productId: 'palash', modelPhoto: '/assets/images/models/model-girl.jpg', modelPos: '58% center', cutout: '/assets/images/cutouts/palash.png',
+    productId: 'palash', modelPhoto: '/assets/images/models/model-girl.jpg', modelPos: '58% center', cutout: '/assets/images/cutouts/palash.png', rightImage: '/assets/images/hero-products/range-crystal.jpg',
     bgFrom: '#FFF3E2', bgTo: '#FFC98A', glow: '#FFB45E', dark: false, accent: '#C2571A',
     serif: 'Crystal deo', line: 'that keeps you fresh 24/7',
     ingredients: [
@@ -107,7 +109,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'charcoal', modelPhoto: '/assets/images/models/model-boy.jpg', modelPos: '55% center', cutout: '/assets/images/cutouts/charcoal.png',
+    productId: 'charcoal', modelPhoto: '/assets/images/models/model-boy.jpg', modelPos: '55% center', cutout: '/assets/images/cutouts/charcoal.png', rightImage: '/assets/images/hero-products/range-crystal.jpg',
     bgFrom: '#4A5163', bgTo: '#161A23', glow: '#8C97B3', dark: true, accent: '#7BE0A6',
     serif: 'Deep clean', line: 'for your busiest days',
     ingredients: [
@@ -116,7 +118,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'rose', modelPhoto: '/assets/images/models/model-girls.jpg', modelPos: 'center 30%', cutout: '/assets/images/cutouts/rose.png',
+    productId: 'rose', modelPhoto: '/assets/images/models/model-girls.jpg', modelPos: 'center 30%', cutout: '/assets/images/cutouts/rose.png', rightImage: '/assets/images/hero-products/range-crystal.jpg',
     bgFrom: '#FFF0F4', bgTo: '#F7B5CA', glow: '#F08AAE', dark: false, accent: '#B0305D',
     serif: 'Soft & fresh', line: 'with a touch of rose',
     ingredients: [
@@ -125,7 +127,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'lavender', modelPhoto: '/assets/images/models/model-couple.jpg', modelPos: '62% center', cutout: '/assets/images/cutouts/crystal.png',
+    productId: 'lavender', modelPhoto: '/assets/images/models/model-couple.jpg', modelPos: '62% center', cutout: '/assets/images/cutouts/crystal.png', rightImage: '/assets/images/hero-products/range-crystal.jpg',
     bgFrom: '#EEF7FF', bgTo: '#A9D3F5', glow: '#7FBDF0', dark: false, accent: '#1C6FB8',
     serif: 'Pure & clear', line: 'natural mineral freshness',
     ingredients: [
