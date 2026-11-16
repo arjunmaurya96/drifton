@@ -32,7 +32,7 @@ const byId = (id) => products.find((p) => p.id === id);
 // Know more ingredients
 // ---------------------------------------------------------------------
 const glossary = {
-  'Natural potassium alum': 'A naturally occurring mineral salt — the crystal at the heart of every DriftOn stick.',
+  'Natural potassium alum': 'A naturally occurring mineral salt — the crystal at the heart of every DriftOn roll on.',
   Glycerine: 'Helps the crystal glide smoothly on damp skin.',
   'Palash extract': 'Extract of the bright orange Palash flower, long used in Indian traditions.',
   'Rose extract': 'A classic, gentle floral extract.',
@@ -52,7 +52,7 @@ const gyan = [
 
 function IngredientGyan() {
   return (
-    <section aria-labelledby="gyan" className="mt-6 rounded-2xl bg-navy-900 p-5 text-white sm:p-10">
+    <section aria-labelledby="gyan" className="rounded-2xl bg-navy-900 p-5 text-white sm:p-10">
       <span className="text-xs font-bold uppercase tracking-[2px] text-mint">Ingredient gyan</span>
       <h2 id="gyan" className="mt-2 font-serif text-[32px] font-normal leading-tight sm:text-[44px]">Good to <span className="text-mint">know</span></h2>
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -76,32 +76,46 @@ const ingredientOrder = ['natural', 'palash', 'charcoal', 'rose'];
 export function Ingredients() {
   return (
     <>
-      <PageHead eyebrow="Know more" title="What's" accent="inside" text="Every DriftOn roll on starts with natural potassium alum and glycerine. Here is the full ingredient list of each one." />
-      <div className="container-wide flex flex-col gap-5 py-10 sm:gap-6 sm:py-14">
-        {ingredientOrder.map(byId).map((p, k) => (
-          // zig-zag: image left on 1st & 3rd, image right on 2nd & 4th
-          <section key={p.id} className={`grid grid-cols-1 overflow-hidden rounded-2xl border border-line bg-white ${k % 2 ? 'md:grid-cols-[minmax(0,1fr)_340px] lg:grid-cols-[minmax(0,1fr)_400px]' : 'md:grid-cols-[340px_minmax(0,1fr)] lg:grid-cols-[400px_minmax(0,1fr)]'}`}>
-            <div className={`flex items-center justify-center ${k % 2 ? 'md:order-2' : ''}`} style={{ background: p.bg }}>
-              {/* ingredient image — all four are the same size (1194 × 1280) */}
-              <img src={`/assets/images/ingredients/${p.id}.webp`} alt={`${p.name} ingredients`} loading="lazy" decoding="async" className="aspect-[1194/1280] w-full object-cover" />
-            </div>
-            <div className="flex flex-col justify-center gap-4 p-5 sm:p-8">
-              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: p.accent }}>{p.tag}</span>
-              <h2 className="text-[24px] font-semibold sm:text-[30px]">{p.name}</h2>
-              <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3">
-                {p.ingredients.map((n, k) => (
-                  <li key={n} className="flex items-start gap-3 rounded-2xl bg-page p-3.5 sm:p-4">
-                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white font-head text-sm font-bold text-navy-900">{k + 1}</span>
-                    <span><b className="block font-semibold">{n}</b><span className="text-sm text-muted-2">{glossary[n]}</span></span>
-                  </li>
-                ))}
-              </ul>
-              <Link to="/#shop" className="btn-navy self-start">View product</Link>
-            </div>
-          </section>
-        ))}
-        <IngredientGyan />
-        <p className="text-sm text-muted-2">Always read the ingredient list printed on the pack before use.</p>
+      {/* slim banner with the products */}
+      <section className="container-wide pt-5 sm:pt-6">
+        <div className="relative flex flex-col overflow-hidden rounded-[24px] bg-[linear-gradient(110deg,#0F1A3C_0%,#1C2E6B_60%,#2E7FA8_100%)] text-white sm:block">
+          <div className="relative z-[2] flex flex-col gap-1.5 px-5 pb-3 pt-6 sm:max-w-[55%] sm:pb-8 sm:gap-2 sm:px-10 sm:py-8 lg:px-14">
+            <span className="text-[11px] font-bold uppercase tracking-[2px] text-mint sm:text-xs">Know more</span>
+            <h1 className="font-serif text-[30px] leading-none sm:text-[44px] lg:text-[52px]">What&apos;s <span className="text-mint">inside</span></h1>
+            <p className="text-[13px] leading-snug text-ondark sm:text-[15.5px]">Every DriftOn roll on starts with natural potassium alum and glycerine. Here is the full ingredient list of each one.</p>
+          </div>
+          <img src="/assets/images/hero-products/all-four.webp" alt="" aria-hidden="true"
+            className="mx-auto h-[110px] w-auto object-contain object-bottom sm:absolute sm:bottom-0 sm:right-8 sm:mx-0 sm:h-[86%] sm:max-w-[42%] lg:right-14" />
+        </div>
+      </section>
+
+      <div className="container-wide py-8 sm:py-12">
+        <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-7 xl:gap-8">
+          {ingredientOrder.map(byId).map((p) => (
+            <li key={p.id} className="flex flex-col overflow-hidden rounded-[24px] bg-white shadow-[0_18px_50px_-18px_rgba(15,26,60,.35)] ring-1 ring-line transition-transform duration-300 hover:-translate-y-1">
+              {/* ingredient image — same size for all four, shown whole */}
+              <img src={`/assets/images/ingredients/${p.id}.webp`} alt={`${p.name} ingredients`} loading="lazy" decoding="async"
+                className="block aspect-[1194/1280] w-full object-cover" style={{ background: p.bg }} />
+              <div className="flex flex-1 flex-col gap-4 p-5 sm:p-7">
+                <div>
+                  <span className="text-[11.5px] font-bold uppercase tracking-[2px]" style={{ color: p.accent }}>{p.tag}</span>
+                  <h2 className="mt-1 text-[24px] font-semibold leading-tight sm:text-[28px]">{p.name}</h2>
+                </div>
+                <ol className="flex flex-col divide-y divide-line rounded-2xl bg-page">
+                  {p.ingredients.map((n, k) => (
+                    <li key={n} className="flex items-start gap-3 px-4 py-3">
+                      <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-white text-[12.5px] font-bold text-navy-900 ring-1 ring-line">{k + 1}</span>
+                      <span className="min-w-0"><b className="block text-[15px] font-semibold">{n}</b><span className="text-[13.5px] leading-snug text-muted-2">{glossary[n]}</span></span>
+                    </li>
+                  ))}
+                </ol>
+                <Link to="/#shop" className="btn-navy mt-auto self-start">View product</Link>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-8"><IngredientGyan /></div>
+        <p className="mt-4 text-sm text-muted-2">Always read the ingredient list printed on the pack before use.</p>
       </div>
     </>
   );
