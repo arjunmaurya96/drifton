@@ -84,10 +84,11 @@ export function Ingredients() {
     <>
       <PageHead eyebrow="Know more" title="What's" accent="inside" text="Every DriftOn stick starts with natural potassium alum and glycerine. Here is the full ingredient list of each one." />
       <div className="container-wide flex flex-col gap-5 py-10 sm:gap-6 sm:py-14">
-        {products.map((p) => (
-          <section key={p.id} className="grid grid-cols-1 overflow-hidden rounded-2xl border border-line bg-white md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-            <div className="h-[460px] sm:h-[560px] md:h-auto md:min-h-[600px]" style={{ background: p.bg }}>
-              <img src={p.scene} alt={p.name} className="h-full w-full object-cover object-[50%_45%]" />
+        {products.map((p, k) => (
+          // zig-zag: image left on 1st & 3rd, image right on 2nd & 4th
+          <section key={p.id} className={`grid grid-cols-1 overflow-hidden rounded-2xl border border-line bg-white ${k % 2 ? 'md:grid-cols-[minmax(0,8fr)_minmax(0,4fr)]' : 'md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]'}`}>
+            <div className={`relative h-[400px] sm:h-[460px] md:h-auto md:min-h-[480px] ${k % 2 ? 'md:order-2' : ''}`} style={{ background: p.bg }}>
+              <img src={p.scene} alt={p.name} className="absolute inset-0 h-full w-full object-cover object-[50%_48%]" />
             </div>
             <div className="flex flex-col justify-center gap-4 p-5 sm:p-10">
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: p.accent }}>{p.tag}</span>
