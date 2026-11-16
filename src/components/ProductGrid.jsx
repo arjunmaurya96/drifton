@@ -25,11 +25,14 @@ export default function ProductGrid() {
   return (
     <section id="shop" className="bg-white pb-16 pt-12 xl:pb-16 xl:pt-10">
       <div className="container-wide">
-        <div className="mb-8 flex flex-col items-center gap-4 text-center sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-5 sm:text-left xl:mb-8 xl:items-center">
-          <h2 className="font-jost text-[40px] font-medium leading-tight tracking-tight text-black sm:text-5xl xl:text-[44px]">Pick your crystal.</h2>
-        </div>
+        <ProductInfoNote className="mb-12 sm:mb-14" />
 
-        <ProductInfoNote className="mb-6" />
+        <div className="mb-8 flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
+          <h2 className="font-jost text-[40px] font-medium leading-tight tracking-tight text-black sm:text-5xl xl:text-[44px]">Pick your variant.</h2>
+          <Link to="/ingredients" className="border-b-[3px] border-black pb-2 font-jost text-[15px] font-semibold uppercase tracking-wide text-black hover:text-black">
+            Shop roll on &amp; more…
+          </Link>
+        </div>
 
         <div className="relative">
           <div ref={track}

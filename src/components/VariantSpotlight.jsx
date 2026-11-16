@@ -64,7 +64,7 @@ export default function VariantSpotlight() {
         <div className="mt-5 flex items-center gap-4">
           <span>
             <b className="block font-jost text-lg font-medium">{center.name}</b>
-            <span className="font-jost text-white/80">{formatINR(center.price)} <span className="text-white/50">· any 2 for ₹800</span></span>
+            <span className="font-jost text-white/80">{formatINR(center.price)} <span className="text-white/50">· 3rd roll on just ₹300</span></span>
           </span>
           <Link to={`/product/${center.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-6 font-jost text-sm font-semibold uppercase tracking-wide text-navy-900 hover:bg-mint hover:text-navy-900">
             Shop now <Arrow size={16} />

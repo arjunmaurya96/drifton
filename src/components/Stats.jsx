@@ -3,8 +3,8 @@ import { Users, Box, Clock, Award } from './Icons.jsx';
 
 // Confirm these numbers with the client before going live.
 const stats = [
-  { value: 5000, suffix: '+', label: 'Happy customers', sub: 'Thank you for trusting Drifton', tint: '#EAF0FF', ink: '#1C2E6B', Icon: Users },
-  { value: 10000, suffix: '+', label: 'Orders delivered', sub: 'Bringing care to your doorstep', tint: '#E5F5EC', ink: '#17703D', Icon: Box },
+  { value: 2700, suffix: '+', label: 'Happy customers', sub: 'Thank you for trusting Drifton', tint: '#EAF0FF', ink: '#1C2E6B', Icon: Users },
+  { value: 3200, suffix: '+', label: 'Orders delivered', sub: 'Bringing care to your doorstep', tint: '#E5F5EC', ink: '#17703D', Icon: Box },
   { value: 98, suffix: '%', label: 'On-time delivery', sub: 'Committed to timely service', tint: '#FFF1E2', ink: '#A3461A', Icon: Clock },
   { value: 100, suffix: '%', label: 'Quality focus', sub: 'Quality is always our priority', tint: '#F0EBFB', ink: '#5B3FA8', Icon: Award },
 ];
@@ -39,7 +39,7 @@ export default function Stats() {
     <section ref={ref} className="pb-10 pt-24">
       <div className="container-x">
         <div className="mb-11 flex flex-col items-center gap-3 text-center">
-          <span className="eyebrow flex items-center gap-2.5 before:h-0.5 before:w-6 before:bg-brand after:h-0.5 after:w-6 after:bg-brand">The Drifton promise</span>
+          <span className="eyebrow flex items-center gap-2.5 before:h-0.5 before:w-6 before:bg-brand after:h-0.5 after:w-6 after:bg-brand"><img src="/assets/images/logo-drifton.webp" alt="DriftOn" className="h-6 w-auto" /> promise</span>
           <h2 className="h2">Why customers <span className="text-brand">choose us</span></h2>
           <p className="max-w-[560px] text-[17px] text-muted">Quality products, reliable service and a shopping experience you can trust.</p>
         </div>

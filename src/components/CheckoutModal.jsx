@@ -149,7 +149,7 @@ export default function CheckoutModal() {
           </div>
           <button className="icon-btn" onClick={closeCheckout} aria-label="Close"><Close /></button>
         </div>
-        {!order && <div className="bg-navy-900 px-4 py-2 text-center text-[12.5px] font-bold uppercase tracking-wide text-mint sm:text-[13px]">Any 2 roll-ons for {formatINR(COMBO_PRICE)} · Free delivery</div>}
+        {!order && <div className="bg-navy-900 px-4 py-2 text-center text-[12.5px] font-bold uppercase tracking-wide text-mint sm:text-[13px]">2 roll ons from ₹750 · 3rd roll on ₹300 · Free delivery</div>}
         {!order && <div className="pt-4"><Stepper step={step - 1} /></div>}
 
         {order ? (

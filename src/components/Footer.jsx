@@ -5,7 +5,7 @@ import { socials, business } from '../data/site.js';
 import SocialIcon from './SocialIcon.jsx';
 import PolicyModal, { policies } from './PolicyModal.jsx';
 
-const OFFER_TEXT = 'Buy 3 Products – Pay for 2 Only';
+const OFFER_TEXT = 'Buy 2, get your 3rd roll on for just ₹300';
 
 const Col = ({ title, children }) => (
   <div className="flex flex-col gap-3 text-[15px]">
@@ -75,6 +75,23 @@ export default function Footer() {
               <button className="btn-primary min-h-11 px-5">Subscribe</button>
             </div>
           </form>
+        </div>
+        {/* Business information (from the Terms & Conditions) */}
+        <div className="mb-8 rounded-2xl border border-[#26366E] p-5 sm:p-6">
+          <h4 className="mb-3 text-[15px] font-semibold text-white">Business information</h4>
+          <dl className="grid grid-cols-1 gap-x-8 gap-y-2 text-[13px] leading-snug sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              ['Legal business name', business.legalName],
+              ['Brand', 'DriftOn™'],
+              ['Registered address', business.address],
+              ['Customer care', <a key="m" href={`mailto:${business.email}`} className="text-white hover:text-mint">{business.email}</a>],
+              ['Manufactured by', business.manufacturer.name],
+              ['Manufacturer address', business.manufacturer.address],
+              ['Licence / registration', business.manufacturer.licence],
+            ].map(([k, v]) => (
+              <div key={k}><dt className="text-[#9AA5C8]">{k}</dt><dd className="break-words text-ondark">{v}</dd></div>
+            ))}
+          </dl>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#26366E] pt-6 text-[13.5px] text-[#9AA5C8]">
           <span>© {new Date().getFullYear()} DriftOn™ · AI Enterprises. All rights reserved.</span>

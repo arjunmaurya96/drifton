@@ -14,7 +14,18 @@ export const DELIVERY_FEE = 50; // DUMMY — charged on single-stick orders only
 export const COMBO_SAVING = UNIT_PRICE * 2 - COMBO_PRICE; // ₹150 per pair
 
 // Price for n sticks with the combo applied to every pair
-export const priceFor = (n) => Math.floor(n / 2) * COMBO_PRICE + (n % 2) * UNIT_PRICE;
+// Cart offers (client):
+//  • Offer 1 — add a Natural Alum Roll On as the 2nd roll on: the pair costs ₹750 (any other pair: ₹800).
+//  • Offer 2 — after 2 roll ons, the 3rd roll on (any variant) costs just ₹300.
+//  Works in sets of 3: [pair + ₹300 third]. A leftover pair = pair price, a leftover single = ₹475.
+export const NATURAL_PAIR_PRICE = 750;
+export const THIRD_PRICE = 300;
+export const priceFor = (n, naturals = 0) => {
+  const sets = Math.floor(n / 3), rest = n % 3;
+  const pairs = sets + (rest === 2 ? 1 : 0);
+  const naturalPairs = Math.min(pairs, naturals);
+  return naturalPairs * NATURAL_PAIR_PRICE + (pairs - naturalPairs) * COMBO_PRICE + sets * THIRD_PRICE + (rest === 1 ? UNIT_PRICE : 0);
+};
 
 // Coupons — DUMMY codes, confirm with the client
 export const coupons = { DRIFTON100: { off: 100, note: '₹100 off (single-stick orders, not with combos)' } };
@@ -173,7 +184,7 @@ export const heroSlides = [
 ];
 
 // Offer shown on the product page
-export const offer = { title: 'Any 2 sticks for ₹800', note: 'Combo price applied automatically in your cart. Free delivery on combos.' };
+export const offer = { title: '2 roll ons for ₹750 · 3rd for just ₹300', note: 'Add a Natural Alum Roll On as your 2nd and pay ₹750 for both. Your 3rd roll on (any variant) is just ₹300. Applied automatically in your cart.' };
 
 export const packs = [
   { id: 1, label: 'Single', note: '+ delivery', multiplier: 1 },
@@ -254,12 +265,13 @@ export const makeLine = (product, qty = 1, pack = packs[0]) => ({
 export const summarize = (lines, couponCode = '') => {
   const sticks = lines.reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
   const full = sticks * UNIT_PRICE;
-  const items = priceFor(sticks);
+  const naturals = lines.filter((l) => l.id === 'natural').reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
+  const items = priceFor(sticks, naturals);
   const comboSaving = full - items;
   const delivery = sticks === 0 || sticks >= 2 ? 0 : DELIVERY_FEE;
   const coupon = coupons[couponCode.trim().toUpperCase()];
   // Client: a combo gets ONE benefit — free delivery OR ₹100 off. Combos get free delivery, so the coupon is not added on top.
   const couponBlocked = Boolean(coupon) && comboSaving > 0;
   const couponOff = coupon && !couponBlocked ? Math.min(coupon.off, items) : 0;
-  return { sticks, full, items, comboSaving, delivery, couponBlocked, coupon: coupon && !couponBlocked ? couponCode.trim().toUpperCase() : '', couponOff, total: items + delivery - couponOff };
+  return { sticks, naturals, full, items, comboSaving, delivery, couponBlocked, coupon: coupon && !couponBlocked ? couponCode.trim().toUpperCase() : '', couponOff, total: items + delivery - couponOff };
 };

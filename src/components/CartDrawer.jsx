@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
 import { TaxNote } from './InfoNote.jsx';
-import { formatINR, products, UNIT_PRICE, COMBO_PRICE, COMBO_SAVING } from '../data/products.js';
+import { formatINR, products, UNIT_PRICE, COMBO_PRICE, NATURAL_PAIR_PRICE, THIRD_PRICE } from '../data/products.js';
 import { Close, Minus, Plus, Bag } from './Icons.jsx';
 
 export function QtyStepper({ value, onChange, size = 'md' }) {
@@ -15,43 +15,61 @@ export function QtyStepper({ value, onChange, size = 'md' }) {
   );
 }
 
-// Two offer cards inside the cart: add another variant, and the automatic 2-for-₹800 combo.
+// Two offer cards inside the cart (client's logic):
+//  1) by default: add a Natural Alum Roll On → both for ₹750
+//  2) once there are 2 roll ons: the 3rd roll on (any variant) for just ₹300
 export function CartOffers({ cart, count, addToCart }) {
-  const inCart = new Set(cart.map((l) => l.id));
-  const suggest = products.find((p) => !inCart.has(p.id)) || products[0];
-  const odd = count % 2 === 1; // one more stick completes a combo
-  const pairs = Math.floor(count / 2);
+  const natural = products.find((p) => p.id === 'natural');
+  const onlyNatural = cart.length > 0 && cart.every((l) => l.id === 'natural');
+  const second = onlyNatural ? products.find((p) => p.id !== 'natural') : natural; // the roll on we suggest as #2
+  const naturals = cart.filter((l) => l.id === 'natural').reduce((s, l) => s + l.qty * (l.sticks || 1), 0);
+  const step = count % 3; // 1 = needs a 2nd, 2 = needs a 3rd, 0 = set complete
+  const pairPrice = naturals > 0 ? NATURAL_PAIR_PRICE : COMBO_PRICE;
+  const tick = <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-brand text-[13px] font-bold text-white">✓</span>;
+
   return (
     <div className="mt-2 flex flex-col gap-3 border-t border-dashed border-line-strong pt-5">
       <span className="text-xs font-bold uppercase tracking-widest text-muted-2">Offers for you</span>
 
-      {/* 1. Add one more variant */}
-      <div className="flex items-center gap-3 rounded-2xl p-3 ring-1 ring-line" style={{ background: `linear-gradient(110deg, ${suggest.bg}, #FFFFFF)` }}>
-        <span className="flex h-[72px] w-12 shrink-0 items-center justify-center"><img src={suggest.image} alt="" className="h-full w-auto object-contain" /></span>
-        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span className="text-[11px] font-bold uppercase tracking-widest text-brand-dark">Add one more variant</span>
-          <b className="truncate font-head text-[15px] font-semibold">{suggest.name}</b>
-          <span className="text-[13px] text-muted-2">{odd ? `Completes a combo · pay ${formatINR(COMBO_PRICE - UNIT_PRICE)}` : formatINR(UNIT_PRICE)}</span>
-        </span>
-        <button onClick={() => addToCart(suggest)} className="min-h-10 shrink-0 rounded-full bg-navy-900 px-4 text-[13px] font-semibold text-white hover:bg-navy-700">+ Add</button>
-      </div>
+      {/* Offer 1: 2nd roll on → ₹750 with Natural */}
+      {step === 1 ? (
+        <div className="flex items-center gap-3 rounded-2xl p-3 ring-1 ring-brand/40" style={{ background: `linear-gradient(110deg, ${second.bg}, #FFFFFF)` }}>
+          <span className="flex h-[72px] w-12 shrink-0 items-center justify-center"><img src={second.image} alt="" className="h-full w-auto object-contain" /></span>
+          <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-brand-dark">Offer 1 · 2 roll ons for {formatINR(NATURAL_PAIR_PRICE)}</span>
+            <b className="truncate font-head text-[15px] font-semibold">Add {second.name}</b>
+            <span className="text-[13px] text-muted-2">Pay only {formatINR(NATURAL_PAIR_PRICE - UNIT_PRICE)} for it · save {formatINR(UNIT_PRICE * 2 - NATURAL_PAIR_PRICE)} + free delivery</span>
+          </span>
+          <button onClick={() => addToCart(second)} className="min-h-10 shrink-0 rounded-full bg-navy-900 px-4 text-[13px] font-semibold text-white hover:bg-navy-700">+ Add</button>
+        </div>
+      ) : (
+        <div className="flex items-center gap-3 rounded-2xl bg-mint-soft px-4 py-3 text-[14px] font-semibold text-brand-dark">
+          {tick} 2 roll ons for {formatINR(pairPrice)} applied · free delivery
+        </div>
+      )}
 
-      {/* 2. Combo: any 2 sticks for ₹800 */}
-      <div className="flex flex-col gap-2.5 rounded-2xl bg-navy-900 p-4 text-white">
+      {/* Offer 2: 3rd roll on for ₹300 */}
+      <div className={`flex flex-col gap-3 rounded-2xl p-4 text-white ${step === 1 ? 'bg-navy-900/55' : 'bg-navy-900'}`}>
         <div className="flex items-center justify-between gap-3">
           <span className="min-w-0">
-            <span className="block text-[11px] font-bold uppercase tracking-widest text-mint">Combo · any 2 for {formatINR(COMBO_PRICE)}</span>
+            <span className="block text-[11px] font-bold uppercase tracking-widest text-mint">Offer 2 · 3rd roll on</span>
             <b className="font-head text-[15px] font-semibold">
-              {odd ? `Add 1 more stick & save ${formatINR(COMBO_SAVING)}` : `Combo applied${pairs > 1 ? ` ×${pairs}` : ''}! You save ${formatINR(pairs * COMBO_SAVING)}`}
+              {step === 0 ? `Unlocked! Your 3rd roll on is just ${formatINR(THIRD_PRICE)}` : step === 2 ? `Add a 3rd roll on for just ${formatINR(THIRD_PRICE)}` : `Unlocks after your 2nd roll on`}
             </b>
           </span>
-          <span className="shrink-0 font-serif text-3xl leading-none text-mint">{odd ? 1 : 2}/2</span>
+          <span className="shrink-0 font-serif text-3xl leading-none text-mint">{formatINR(THIRD_PRICE)}</span>
         </div>
-        <span className="block h-2 overflow-hidden rounded-full bg-white/15"><i className="block h-full rounded-full bg-mint transition-all duration-500" style={{ width: odd ? '50%' : '100%' }} /></span>
-        {odd && (
-          <button onClick={() => addToCart(suggest)} className="self-start rounded-full bg-white px-4 py-2 text-[13px] font-semibold text-navy-900 hover:bg-mint">
-            Add {suggest.short}
-          </button>
+        {step === 2 && (
+          <div className="grid grid-cols-4 gap-2">
+            {products.map((p) => (
+              <button key={p.id} onClick={() => addToCart(p)} aria-label={`Add ${p.name} for ${formatINR(THIRD_PRICE)}`}
+                className="flex flex-col items-center gap-1 rounded-xl bg-white/10 p-2 text-[12px] font-semibold hover:bg-white/20">
+                <img src={p.image} alt="" className="h-12 w-auto object-contain" />
+                {p.short}
+                <span className="rounded-full bg-mint px-2 py-0.5 text-[11px] text-navy-900">+ Add</span>
+              </button>
+            ))}
+          </div>
         )}
       </div>
     </div>
@@ -62,7 +80,7 @@ export function PriceRows({ s, className = '' }) {
   return (
     <div className={`flex flex-col gap-1.5 text-[14.5px] ${className}`}>
       <div className="flex justify-between text-muted"><span>{s.sticks} {s.sticks === 1 ? 'stick' : 'sticks'} × {formatINR(UNIT_PRICE)}</span><span>{formatINR(s.full)}</span></div>
-      {s.comboSaving > 0 && <div className="flex justify-between font-semibold text-brand-dark"><span>Combo price (2 for {formatINR(COMBO_PRICE)})</span><span>−{formatINR(s.comboSaving)}</span></div>}
+      {s.comboSaving > 0 && <div className="flex justify-between font-semibold text-brand-dark"><span>Offer discount</span><span>−{formatINR(s.comboSaving)}</span></div>}
       {s.couponOff > 0 && <div className="flex justify-between font-semibold text-brand-dark"><span>Coupon {s.coupon}</span><span>−{formatINR(s.couponOff)}</span></div>}
       <div className="flex justify-between text-muted"><span>Delivery</span><span>{s.delivery ? formatINR(s.delivery) : <b className="text-brand-dark">Free</b>}</span></div>
     </div>

@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { sampleReviews, getProductById } from '../data/products.js';
+import { socials } from '../data/site.js';
+import SocialIcon from './SocialIcon.jsx';
 import { ChevronLeft, ChevronRight, Quote, Star } from './Icons.jsx';
+
+const insta = socials.find((x) => x.id === 'instagram');
 
 export function Stars({ value = 5, size = 19 }) {
   return (
@@ -24,7 +28,8 @@ export default function Reviews() {
         <div className="mb-11 flex flex-wrap items-end justify-between gap-5">
           <div className="flex flex-col gap-3">
             <span className="eyebrow">Reviews</span>
-            <h2 className="h2">What our <span className="text-brand">community</span> says</h2>
+            <h2 className="h2">Join our <span className="text-brand">community</span></h2>
+            <p className="max-w-[520px] text-[16px] text-muted">Real words from people who switched to DriftOn.</p>
           </div>
           <div className="flex gap-2">
             <button className="icon-btn-outline size-12" onClick={() => setStart((start + n - 1) % n)} aria-label="Previous reviews"><ChevronLeft /></button>
@@ -58,6 +63,22 @@ export default function Reviews() {
               </article>
             );
           })}
+        </div>
+
+        {/* Instagram: follow & get a discount */}
+        <div className="mt-10 grid grid-cols-1 items-center gap-6 overflow-hidden rounded-[28px] bg-[linear-gradient(120deg,#FFF1E6_0%,#FDE7F1_50%,#EEE9FF_100%)] p-6 sm:p-9 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-10">
+          <span className="flex size-16 items-center justify-center rounded-2xl text-white shadow-lg sm:size-20" style={{ background: insta.color }}>
+            <SocialIcon id="instagram" size={34} />
+          </span>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-[12px] font-bold uppercase tracking-[2px] text-[#C13584]">Instagram exclusive</span>
+            <h3 className="font-head text-[24px] font-bold leading-tight text-navy-900 sm:text-[30px]">Follow us &amp; unlock a special discount</h3>
+            <p className="text-[15px] leading-relaxed text-muted">Follow DriftOn on Instagram, then send us a DM — we will share your follower-only discount code for your next order. Plus tips, new launches and giveaways.</p>
+          </div>
+          <a href={insta.url} target="_blank" rel="noreferrer"
+            className="inline-flex min-h-[52px] items-center justify-center gap-2.5 rounded-full px-7 text-[15px] font-semibold text-white shadow-md transition hover:opacity-90" style={{ background: insta.color }}>
+            <SocialIcon id="instagram" size={20} /> Follow on Instagram
+          </a>
         </div>
       </div>
     </section>
