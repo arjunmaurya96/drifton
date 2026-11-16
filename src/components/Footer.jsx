@@ -46,7 +46,7 @@ export default function Footer() {
     </div>
     <footer id="footer" className="bg-navy-900 pb-8 pt-[72px] text-ondark">
       <div className="container-x">
-        <div className="mb-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1.4fr]">
+        <div className="mb-10 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1.4fr]">
           <div className="flex flex-col gap-4">
             <Link to="/" aria-label="DriftOn home" className="self-start"><img loading="lazy" decoding="async" src="/assets/images/logo-drifton-white.webp" alt="DriftOn" className="h-11 w-auto sm:h-12" /></Link>
             <span className="max-w-[300px] text-[14.5px] leading-relaxed">Natural crystal deodorants by AI Enterprises.</span>
@@ -76,22 +76,21 @@ export default function Footer() {
             </div>
           </form>
         </div>
-        {/* Business information (from the Terms & Conditions) */}
-        <div className="mb-8 rounded-2xl border border-[#26366E] p-5 sm:p-6">
-          <h4 className="mb-3 text-[15px] font-semibold text-white">Business information</h4>
-          <dl className="grid grid-cols-1 gap-x-8 gap-y-2 text-[13px] leading-snug sm:grid-cols-2 lg:grid-cols-3">
+        {/* Business information (from the Terms & Conditions) — small legal lines, like a normal footer */}
+        <div className="grid grid-cols-1 gap-x-10 gap-y-3 border-t border-[#26366E] py-6 text-[13px] leading-relaxed text-[#9AA5C8] md:grid-cols-[auto_minmax(0,1fr)]">
+          <h4 className="text-[13px] font-semibold uppercase tracking-[1.5px] text-white">Business information</h4>
+          <p className="flex flex-wrap gap-x-2 gap-y-1">
             {[
-              ['Legal business name', business.legalName],
-              ['Brand', 'DriftOn™'],
-              ['Registered address', business.address],
-              ['Customer care', <a key="m" href={`mailto:${business.email}`} className="text-white hover:text-mint">{business.email}</a>],
-              ['Manufactured by', business.manufacturer.name],
-              ['Manufacturer address', business.manufacturer.address],
-              ['Licence / registration', business.manufacturer.licence],
-            ].map(([k, v]) => (
-              <div key={k}><dt className="text-[#9AA5C8]">{k}</dt><dd className="break-words text-ondark">{v}</dd></div>
+              <>Owned &amp; operated by <span className="text-ondark">{business.legalName}</span></>,
+              <>Brand: <span className="text-ondark">DriftOn™</span></>,
+              <>Registered office: <span className="text-ondark">{business.address}</span></>,
+              <>Manufactured by: <span className="text-ondark">{business.manufacturer.name}, {business.manufacturer.address}</span></>,
+              <>Licence: <span className="text-ondark">{business.manufacturer.licence}</span></>,
+              <>Customer care: <a href={`mailto:${business.email}`} className="text-ondark hover:text-mint">{business.email}</a></>,
+            ].map((x, k, all) => (
+              <span key={k}>{x}{k < all.length - 1 && <span className="ml-2 text-[#4A5A8E]">|</span>}</span>
             ))}
-          </dl>
+          </p>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#26366E] pt-6 text-[13.5px] text-[#9AA5C8]">
           <span>© {new Date().getFullYear()} DriftOn™ · AI Enterprises. All rights reserved.</span>
