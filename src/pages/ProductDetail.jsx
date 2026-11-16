@@ -10,18 +10,15 @@ import Faq from '../components/product/Faq.jsx';
 import StickyBuyBar from '../components/product/StickyBuyBar.jsx';
 import { QtyStepper } from '../components/CartDrawer.jsx';
 import { Stars } from '../components/Reviews.jsx';
-import { ShowerScene, RinseScene, ApplyScene } from '../components/StepIllustrations.jsx';
 import NotFound from './NotFound.jsx';
 import { Heart, Pin, Truck, Shield, Return, Gem, CheckCircle, Drop, Clock, Box, Leaf, Sparkle } from '../components/Icons.jsx';
 
 const loveIcons = { gem: () => <Gem size={30} />, check: () => <CheckCircle size={28} />, drop: () => <Drop size={28} />, clock: () => <Clock size={28} />, box: () => <Box size={28} />, leaf: () => <Leaf size={28} /> };
-const stepScenes = [ShowerScene, RinseScene, ApplyScene];
 const toc = [
   ['description', 'Description'],
   ['ingredients', 'Ingredients'],
   ['works', 'How does it work'],
   ['details', 'Product details'],
-  ['use', 'How to use'],
   ['care', 'Care instructions'],
   ['info', 'Product information'],
 ];
@@ -244,24 +241,6 @@ export default function ProductDetail() {
           </Block>
 
           <Block id="details" title="Product details"><Table rows={productInfo.details} /></Block>
-
-          <Block id="use" title="How to use">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              {productInfo.howToUse.map((s, i) => {
-                const Scene = stepScenes[i];
-                return (
-                  <div key={s.title} className="overflow-hidden rounded-3xl border border-line bg-page">
-                    <div className="aspect-[10/9] overflow-hidden"><Scene /></div>
-                    <div className="flex flex-col gap-1.5 p-5">
-                      <span className="text-xs font-bold uppercase tracking-widest text-brand">Step {i + 1}</span>
-                      <b className="font-head text-lg font-semibold">{s.title}</b>
-                      <p className="text-[14.5px] text-muted">{s.text}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </Block>
 
           <Block id="care" title="Care instructions">
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
