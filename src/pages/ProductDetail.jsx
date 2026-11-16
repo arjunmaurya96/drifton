@@ -61,6 +61,7 @@ export default function ProductDetail() {
   const media = useMemo(() => {
     if (!product) return [];
     const imgs = [
+      { type: 'image', src: product.scene, cover: true },
       { type: 'image', src: product.image },
       { type: 'image', src: product.image, pos: 'center 20%', scale: 1.7 },
       { type: 'image', src: product.image, pos: 'center 85%', scale: 1.5 },

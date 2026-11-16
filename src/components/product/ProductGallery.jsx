@@ -17,6 +17,8 @@ function Media({ m, big = false, name = '' }) {
           <span className="absolute inset-0 flex items-center justify-center bg-navy-900/30 text-white"><Play size={22} /></span>
         </span>
       )
+    ) : m.cover ? (
+      <img src={m.src} alt={big ? name : ''} className="h-full w-full object-cover" style={{ objectPosition: m.pos || '50% 45%' }} />
     ) : (
       <img src={m.src} alt={big ? name : ''} className={`h-full w-full object-contain ${big ? 'p-8 sm:p-12' : 'p-2'}`} style={{ objectPosition: m.pos || 'center', transform: `scale(${m.scale || 1})` }} />
     )

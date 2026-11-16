@@ -49,9 +49,9 @@ export default function HeroBanner() {
 
       <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 lg:items-center lg:justify-end lg:pb-14">
         {/* Right: this slide's product big in the middle, its other variants smaller around it (no text, no base) */}
-        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[54%] w-full items-end justify-center sm:h-[56%] lg:h-full lg:w-[50%] lg:items-center">
+        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[54%] w-full items-end justify-center sm:h-[56%] lg:h-full lg:w-[58%] lg:items-center">
           <img src={slide.rightImage || slide.cutout} alt={`${product.name} and other Drifton variants`}
-            className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(80svh,820px)]" style={{ animationDelay: '150ms' }} />
+            className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(76svh,780px)]" style={{ animationDelay: '150ms' }} />
         </Link>
       </div>
 

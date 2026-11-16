@@ -40,9 +40,9 @@ export function Combo() {
           const ps = c.items.map(byId);
           return (
             <article key={c.id} className="flex flex-col overflow-hidden rounded-2xl border border-line bg-white">
-              <div className="relative flex h-[280px] items-center justify-center gap-[6%] px-6 sm:h-[320px]" style={{ background: `linear-gradient(120deg, ${ps[0].bg}, ${ps[1].bg})` }}>
+              <div className="relative grid h-[340px] grid-cols-2 sm:h-[400px]">
                 {ps.map((p) => (
-                  <img key={p.id} src={p.image} alt={p.name} className="h-[74%] w-auto max-w-[42%] object-contain" />
+                  <img key={p.id} src={p.scene} alt={p.name} className="h-full w-full object-cover object-[50%_45%]" style={{ background: p.bg }} />
                 ))}
                 <span className="absolute left-4 top-4 rounded-full bg-navy-900 px-3 py-1.5 text-xs font-bold text-white">Save {formatINR(COMBO_SAVING)}</span>
               </div>
@@ -88,8 +88,8 @@ export function Ingredients() {
       <div className="container-x flex flex-col gap-5 py-10 sm:gap-6 sm:py-14">
         {products.map((p) => (
           <section key={p.id} className="grid grid-cols-1 overflow-hidden rounded-2xl border border-line bg-white md:grid-cols-[260px_1fr]">
-            <div className="flex h-[240px] items-center justify-center md:h-auto md:min-h-[300px]" style={{ background: p.bg }}>
-              <img src={p.image} alt={p.name} className="h-[200px] w-auto object-contain md:h-[240px]" />
+            <div className="h-[340px] md:h-auto md:min-h-[380px]" style={{ background: p.bg }}>
+              <img src={p.scene} alt={p.name} className="h-full w-full object-cover object-[50%_45%]" />
             </div>
             <div className="flex flex-col gap-4 p-5 sm:p-8">
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: p.accent }}>{p.tag}</span>
@@ -143,7 +143,7 @@ export function CheckIngredient() {
             const ok = hit.length === 0;
             return (
               <li key={p.id} className={`flex flex-col overflow-hidden rounded-2xl border-2 bg-white transition ${ok ? 'border-brand' : 'border-line opacity-70'}`}>
-                <div className="flex h-[200px] items-center justify-center sm:h-[220px]" style={{ background: p.bg }}><img src={p.image} alt={p.name} className="h-[170px] w-auto object-contain sm:h-[185px]" /></div>
+                <div className="h-[220px] sm:h-[280px]" style={{ background: p.bg }}><img src={p.scene} alt={p.name} className="h-full w-full object-cover object-[50%_45%]" /></div>
                 <div className="flex flex-col gap-2 p-3.5 sm:p-5">
                   <span className={`flex items-center gap-1.5 text-[13px] font-bold sm:text-sm ${ok ? 'text-brand-dark' : 'text-[#C0392B]'}`}>{ok ? <><Check size={16} /> Good match</> : `Contains ${hit.join(', ')}`}</span>
                   <b className="font-head text-[15px] font-semibold sm:text-lg">{p.name}</b>
