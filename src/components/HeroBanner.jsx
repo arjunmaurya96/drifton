@@ -38,6 +38,17 @@ export default function HeroBanner() {
           style={{ background: `radial-gradient(42% 60% at 82% 50%, ${s.glow}AA 0%, transparent 70%), linear-gradient(110deg, ${s.bgFrom} 0%, ${s.bgTo} 100%)` }} />
       ))}
 
+      {/* Campaign slide: the client's photo across the whole hero (no text) */}
+      {slide.full && (
+        <Link key={`f-${i}`} to={url} aria-label={`View ${product.name}`} className="absolute inset-0 z-[3] block animate-fade-in">
+          {/* soft blurred copy fills the sides, the full photo sits on top — nothing gets cut */}
+          <img src={slide.full} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl" />
+          <img src={slide.full} alt="DriftOn Rose and Charcoal Alum Roll On campaign" fetchpriority="high"
+            className="relative mx-auto h-full w-auto max-w-full object-contain lg:h-[calc(100svh-118px)] [-webkit-mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent)] [mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent)]" />
+        </Link>
+      )}
+
+      {!slide.full && <>
       {/* Left: model photo, fading into the background colour */}
       {/* Mobile/tablet: photo across the top, fading down. Desktop: photo on the left, fading right. */}
       <div key={`m-${i}`} aria-hidden="true"
@@ -54,6 +65,7 @@ export default function HeroBanner() {
             className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(76svh,780px)]" style={{ animationDelay: '150ms' }} />
         </Link>
       </div>
+      </>}
 
       {/* Controls */}
       <div className="absolute inset-x-0 bottom-6 z-[5]">

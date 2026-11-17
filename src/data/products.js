@@ -139,6 +139,11 @@ export const products = [
 // Ingredients from the client's list.
 // icon: 'gem' | 'flower' | 'leaf' | 'drop' | 'hex' | 'sprig'
 export const bannerSlides = [
+  // Campaign photo from the client — shown full width, no text on top
+  {
+    productId: 'charcoal', full: '/assets/images/hero-campaign.webp',
+    bgFrom: '#EFE7DE', bgTo: '#E0DAEC', glow: '#FFFFFF', dark: false, accent: '#1C2E6B',
+  },
   {
     productId: 'palash', modelPhoto: '/assets/images/models/model-girl.webp', modelPos: '58% center', cutout: '/assets/images/cutouts/palash.webp', rightImage: '/assets/images/hero-products/range-palash.webp',
     bgFrom: '#FFF3E2', bgTo: '#FFC98A', glow: '#FFB45E', dark: false, accent: '#C2571A',
