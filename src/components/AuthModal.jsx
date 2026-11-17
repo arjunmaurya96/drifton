@@ -213,10 +213,10 @@ export default function AuthModal() {
 
           <button
             type="submit"
-            disabled={busy}
+            disabled={formBusy || googleBusy}
             className="btn-primary mt-1 min-h-[48px] w-full rounded-2xl text-[15px] font-semibold disabled:opacity-60"
           >
-            {busy ? 'Please wait…' : isSignup ? 'Create Account' : 'Log In to DriftOn'}
+            {formBusy ? 'Please wait…' : isSignup ? 'Create Account' : 'Log In to DriftOn'}
           </button>
         </form>
 
