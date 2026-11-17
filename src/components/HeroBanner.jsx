@@ -52,7 +52,7 @@ export default function HeroBanner() {
       {/* Left: model photo, fading into the background colour */}
       {/* Mobile/tablet: photo across the top, fading down. Desktop: photo on the left, fading right. */}
       <div key={`m-${i}`} aria-hidden="true"
-        className="absolute inset-x-0 top-[96px] h-[52%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] lg:inset-y-0 lg:top-0 lg:right-auto lg:h-full lg:w-[50%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_62%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_62%,transparent_100%)]">
+        className="absolute inset-x-0 top-[96px] h-[52%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] lg:inset-y-0 lg:top-[118px] lg:right-auto lg:h-full lg:w-[50%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_62%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_62%,transparent_100%)]">
         <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined} className="h-full w-full object-cover" style={{ objectPosition: slide.modelPos || '58% center' }}
           // if a photo is missing (e.g. model-boy.jpg not added yet), fall back to the girl photo
           onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />

@@ -141,7 +141,7 @@ export const products = [
 export const bannerSlides = [
   // Campaign photo from the client on the left, products on the right
   {
-    productId: 'rose', modelPhoto: '/assets/images/hero-campaign.webp', modelPos: '50% center', cutout: '/assets/images/cutouts/rose.webp', rightImage: '/assets/images/hero-products/range-rose.webp',
+    productId: 'rose', modelPhoto: '/assets/images/hero-campaign.webp', modelPos: '50% 0%', cutout: '/assets/images/cutouts/rose.webp', rightImage: '/assets/images/hero-products/range-rose.webp',
     bgFrom: '#F3E9F3', bgTo: '#F7B9D0', glow: '#FF9CC2', dark: false, accent: '#A02E54',
   },
   {
