@@ -18,15 +18,26 @@ const fb = async () => {
 };
 
 export const ORDER_PREFIX = 'JSR-drifton-';
+export const DEMO_ADMIN_KEY = 'drifton_admin_demo_v2'; // demo admin data in this browser
 export const FIRST_ORDER_NO = 41; // first order = JSR-drifton-0041
 export const formatOrderId = (n) => `${ORDER_PREFIX}${String(n).padStart(4, '0')}`;
 
 // Save a new order and give it the next number (JSR-drifton-0041, 0042 …)
 export async function saveOrder(order) {
   if (!firebaseReady) {
-    // DEMO: number kept in this browser only
+    // DEMO: number kept in this browser only. If the demo admin panel was opened in this browser,
+    // the order is also added there (so you can test the panel + new-order alert without Firebase).
     let n = FIRST_ORDER_NO;
-    try { n = Number(localStorage.getItem('drifton_demo_order_no')) || FIRST_ORDER_NO; localStorage.setItem('drifton_demo_order_no', String(n + 1)); } catch { /* ignore */ }
+    try {
+      const admin = JSON.parse(localStorage.getItem(DEMO_ADMIN_KEY) || 'null');
+      const maxAdmin = admin?.orders?.reduce((m, o) => Math.max(m, Number(String(o.id).replace(ORDER_PREFIX, '')) || 0), 0) || 0;
+      n = Math.max(Number(localStorage.getItem('drifton_demo_order_no')) || FIRST_ORDER_NO, maxAdmin + 1);
+      localStorage.setItem('drifton_demo_order_no', String(n + 1));
+      if (admin?.orders) {
+        admin.orders.unshift({ ...order, id: formatOrderId(n), no: n, customerId: order.phone, city: '', status: 'New', tracking: '', date: new Date().toISOString() });
+        localStorage.setItem(DEMO_ADMIN_KEY, JSON.stringify(admin));
+      }
+    } catch { /* ignore */ }
     return { id: formatOrderId(n), demo: true };
   }
   const { db, doc, runTransaction, serverTimestamp } = await fb();

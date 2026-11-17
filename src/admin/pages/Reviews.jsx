@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAdmin } from '../store.jsx';
-import { Badge, Btn, Card, Empty, Icon, PageHeader, Toolbar, fmtDate } from '../ui.jsx';
+import { Badge, Btn, Card, Empty, Icon, PageHeader, Toolbar, fmtDate, Help } from '../ui.jsx';
 
 export default function Reviews() {
   const { data, update } = useAdmin();
@@ -13,6 +13,7 @@ export default function Reviews() {
   return (
     <>
       <PageHeader title="Reviews" sub={`Average rating ${avg} ★ from published reviews. Approve new reviews before they show on the site.`} />
+      <Help>New reviews wait as <b>Pending</b>. Click <b>Publish</b> to show a review on the website, or <b>Hide</b> to keep it private.</Help>
       <Card className="overflow-hidden">
         <Toolbar q={q} setQ={setQ} placeholder="Search reviews…" chips={chips} active={tab} setActive={setTab} />
         {list.length === 0 ? <Empty text="No reviews here." /> : (

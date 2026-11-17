@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAdmin } from '../store.jsx';
 import { ORDER_STATUSES } from '../data.js';
-import { Badge, Btn, Card, Drawer, Empty, Field, Icon, PageHeader, Toolbar, fmtDateTime, inputCls, inr } from '../ui.jsx';
+import { Badge, Btn, Card, Check, Drawer, Empty, Field, Help, Icon, PageHeader, STATUS_COLOR, Toolbar, fmtDateTime, inputCls, inr } from '../ui.jsx';
+import { printInvoices } from '../invoice.js';
 
 const csv = (rows) => {
   const head = ['Order', 'Date', 'Customer', 'Phone', 'City', 'Items', 'Total', 'Payment', 'Status', 'Tracking'];
@@ -11,10 +12,14 @@ const csv = (rows) => {
 };
 
 export default function Orders() {
-  const { data, update } = useAdmin();
+  const { data, update, notify } = useAdmin();
   const [params] = useSearchParams();
   const [q, setQ] = useState(params.get('q') || '');
-  const [tab, setTab] = useState('all');
+  const [tab, setTab] = useState(params.get('tab') || 'all');
+  const [sel, setSel] = useState(() => new Set());
+  // links from the dashboard (?tab=New) also work when you are already on this page
+  useEffect(() => { if (params.get('tab')) setTab(params.get('tab')); if (params.get('q') != null) setQ(params.get('q')); }, [params]);
+  useEffect(() => setSel(new Set()), [tab, q]);
   const [openId, setOpenId] = useState(null);
   const [tracking, setTracking] = useState('');
 
@@ -22,7 +27,19 @@ export default function Orders() {
     (tab === 'all' || o.status === tab) &&
     (!q || `${o.id} ${o.customer} ${o.phone} ${o.city}`.toLowerCase().includes(q.toLowerCase()))), [data.orders, q, tab]);
   const order = data.orders.find((o) => o.id === openId);
-  const chips = [['all', 'All', data.orders.length], ...ORDER_STATUSES.map((s) => [s, s, data.orders.filter((o) => o.status === s).length])];
+  const chips = [['all', 'All', data.orders.length], ...ORDER_STATUSES.map((s) => [s, s, data.orders.filter((o) => o.status === s).length, STATUS_COLOR[s]])];
+
+  // bulk selection
+  const toggle = (id, on) => setSel((cur) => { const n = new Set(cur); if (on) n.add(id); else n.delete(id); return n; });
+  const allOn = list.length > 0 && list.every((o) => sel.has(o.id));
+  const someOn = list.some((o) => sel.has(o.id));
+  const picked = data.orders.filter((o) => sel.has(o.id));
+  const bulk = (status) => {
+    picked.forEach((o) => update('orders', o.id, { status }));
+    notify(`${picked.length} order${picked.length > 1 ? 's' : ''} marked ${status}`);
+    setSel(new Set());
+  };
+  const print = (orders) => { if (!printInvoices(orders, data.settings)) notify('Please allow pop-ups to print'); };
 
   const exportCsv = () => {
     const url = URL.createObjectURL(new Blob([csv(list)], { type: 'text/csv' }));
@@ -33,24 +50,46 @@ export default function Orders() {
 
   return (
     <>
-      <PageHeader title="Orders" sub="Track, pack and ship every order.">
+      <PageHeader title="Orders" sub="Every order from the website. Pack it, ship it, and mark it delivered.">
         <Btn variant="ghost" onClick={exportCsv}><Icon.download size={18} /> Export CSV</Btn>
       </PageHeader>
 
+      <Help>
+        Order steps: <b style={{ color: STATUS_COLOR.New }}>New</b> → <b style={{ color: STATUS_COLOR.Packed }}>Packed</b> → <b style={{ color: STATUS_COLOR.Shipped }}>Shipped</b> → <b style={{ color: STATUS_COLOR.Delivered }}>Delivered</b>.
+        Tick the boxes to update many orders at once or print their invoices. Click an order to see full details.
+      </Help>
+
       <Card className="overflow-hidden">
         <Toolbar q={q} setQ={setQ} placeholder="Search order ID, name, phone, city…" chips={chips} active={tab} setActive={setTab} />
-        {list.length === 0 ? <Empty text="No orders match your search." /> : (
+
+        {/* bulk action bar */}
+        {sel.size > 0 && (
+          <div className="sticky top-16 z-20 flex flex-wrap items-center gap-2 border-b border-[#E6E9F2] bg-[#0F1A3C] px-4 py-2.5 text-white">
+            <b className="mr-1 text-[14px]">{sel.size} selected</b>
+            <button onClick={() => bulk('Packed')} className="rounded-lg bg-white/10 px-3 py-1.5 text-[13px] font-semibold hover:bg-white/20">Mark Packed</button>
+            <button onClick={() => bulk('Shipped')} className="rounded-lg bg-white/10 px-3 py-1.5 text-[13px] font-semibold hover:bg-white/20">Mark Shipped</button>
+            <button onClick={() => bulk('Delivered')} className="rounded-lg bg-white/10 px-3 py-1.5 text-[13px] font-semibold hover:bg-white/20">Mark Delivered</button>
+            <button onClick={() => print(picked)} className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-[13px] font-semibold text-navy-900 hover:bg-[#E8ECF5]"><Icon.print size={15} /> Print invoices</button>
+            <button onClick={() => setSel(new Set())} className="ml-auto rounded-lg px-2 py-1.5 text-[13px] text-[#C9D1EA] hover:text-white">Clear</button>
+          </div>
+        )}
+
+        {list.length === 0 ? (
+          <Empty icon={Icon.orders} text={q ? 'No orders match your search.' : tab === 'all' ? 'No orders yet' : `No ${tab} orders`}
+            sub={q ? 'Try a different name, phone number or order ID.' : 'New orders from the website will show up here automatically.'} />
+        ) : (
           <>
             {/* desktop table */}
             <div className="hidden overflow-x-auto md:block">
               <table className="w-full text-left text-[14px]">
                 <thead className="bg-[#F8F9FC] text-[12px] uppercase tracking-wider text-muted-2">
-                  <tr><th className="px-5 py-3 font-semibold">Order</th><th className="px-3 py-3 font-semibold">Customer</th><th className="px-3 py-3 font-semibold">Items</th><th className="px-3 py-3 font-semibold">Total</th><th className="px-3 py-3 font-semibold">Payment</th><th className="px-3 py-3 font-semibold">Status</th><th className="px-5 py-3" /></tr>
+                  <tr><th className="w-10 py-3 pl-5"><Check checked={allOn} indeterminate={!allOn && someOn} onChange={(v) => setSel(v ? new Set(list.map((o) => o.id)) : new Set())} label="Select all" /></th><th className="px-3 py-3 font-semibold">Order</th><th className="px-3 py-3 font-semibold">Customer</th><th className="px-3 py-3 font-semibold">Items</th><th className="px-3 py-3 font-semibold">Total</th><th className="px-3 py-3 font-semibold">Payment</th><th className="px-3 py-3 font-semibold">Status</th><th className="px-5 py-3" /></tr>
                 </thead>
                 <tbody>
                   {list.map((o) => (
-                    <tr key={o.id} onClick={() => open(o)} className="cursor-pointer border-t border-[#EEF0F5] transition hover:bg-[#FAFBFD]">
-                      <td className="px-5 py-3.5"><b>#{o.id}</b><span className="block text-[12px] text-muted-2">{fmtDateTime(o.date)}</span></td>
+                    <tr key={o.id} onClick={() => open(o)} className={`cursor-pointer border-t border-[#EEF0F5] transition hover:bg-[#FAFBFD] ${sel.has(o.id) ? 'bg-[#F1F5FF]' : ''}`}>
+                      <td className="py-3.5 pl-5"><Check checked={sel.has(o.id)} onChange={(v) => toggle(o.id, v)} label={`Select ${o.id}`} /></td>
+                      <td className="px-3 py-3.5"><b>#{o.id}</b><span className="block text-[12px] text-muted-2">{fmtDateTime(o.date)}</span></td>
                       <td className="px-3 py-3.5"><b className="block font-semibold text-navy-900">{o.customer}</b><span className="block text-[12px] text-muted-2">{o.phone} {o.city ? `· ${o.city}` : ''}</span></td>
                       <td className="px-3 py-3.5 text-muted">{o.sticks} roll on{o.sticks > 1 ? 's' : ''}</td>
                       <td className="px-3 py-3.5 font-semibold">{inr(o.total)}</td>
@@ -63,16 +102,24 @@ export default function Orders() {
               </table>
             </div>
             {/* mobile cards */}
-            <ul className="flex flex-col divide-y divide-[#EEF0F5] md:hidden">
+            <ul className="flex flex-col gap-2.5 bg-[#F6F7FB] p-3 md:hidden">
               {list.map((o) => (
-                <li key={o.id}>
-                  <button onClick={() => open(o)} className="flex w-full items-center gap-3 px-4 py-3.5 text-left">
-                    <span className="min-w-0 flex-1">
-                      <b className="block text-[14.5px]">#{o.id} · {inr(o.total)}</b>
-                      <span className="block truncate text-[13px] text-muted-2">{o.customer} · {o.city} · {fmtDateTime(o.date)}</span>
-                    </span>
-                    <Badge>{o.status}</Badge>
-                  </button>
+                <li key={o.id} className={`rounded-2xl border bg-white ${sel.has(o.id) ? 'border-navy-700' : 'border-[#E6E9F2]'}`} style={{ borderLeft: `4px solid ${STATUS_COLOR[o.status]}` }}>
+                  <div className="flex items-start gap-3 p-3.5">
+                    <span className="pt-0.5"><Check checked={sel.has(o.id)} onChange={(v) => toggle(o.id, v)} label={`Select ${o.id}`} /></span>
+                    <button onClick={() => open(o)} className="min-w-0 flex-1 text-left">
+                      <span className="flex items-center justify-between gap-2"><b className="text-[14.5px]">#{o.id}</b><Badge>{o.status}</Badge></span>
+                      <b className="mt-1 block text-[15px]">{o.customer}</b>
+                      <span className="block text-[13px] text-muted-2">{o.phone}{o.city ? ` · ${o.city}` : ''}</span>
+                      <span className="mt-1.5 flex items-center justify-between text-[13px]"><span className="text-muted">{o.sticks} roll on{o.sticks > 1 ? 's' : ''} · {o.payment}</span><b className="text-[15px]">{inr(o.total)}</b></span>
+                    </button>
+                  </div>
+                  {next[o.status] && (
+                    <button onClick={() => update('orders', o.id, { status: next[o.status] }, `Order marked ${next[o.status]}`)}
+                      className="flex min-h-11 w-full items-center justify-center gap-1.5 border-t border-[#EEF0F5] text-[14px] font-semibold text-navy-900 active:bg-[#F3F5FA]">
+                      Mark as {next[o.status]} <Icon.arrow size={16} />
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -84,7 +131,7 @@ export default function Orders() {
         footer={order && (
           <>
             {next[order.status] && <Btn variant="green" onClick={() => update('orders', order.id, { status: next[order.status], tracking: next[order.status] === 'Shipped' && !tracking ? `EK${Date.now().toString().slice(-10)}` : tracking }, `Order marked ${next[order.status]}`)}>Mark as {next[order.status]}</Btn>}
-            <Btn variant="ghost" onClick={() => window.print()}><Icon.print size={18} /> Print invoice</Btn>
+            <Btn variant="ghost" onClick={() => print(order)}><Icon.print size={18} /> Print invoice</Btn>
             {order.status !== 'Cancelled' && order.status !== 'Delivered' && <Btn variant="danger" onClick={() => update('orders', order.id, { status: 'Cancelled' }, 'Order cancelled')}>Cancel</Btn>}
           </>
         )}>

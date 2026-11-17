@@ -9,6 +9,12 @@ export const ago = (iso) => {
   return h < 1 ? 'just now' : h < 24 ? `${h}h ago` : `${Math.round(h / 24)}d ago`;
 };
 
+// stock at or below this number shows a "Low stock" warning
+export const LOW_STOCK = 20;
+
+// colour of each order status (tabs, dots, charts)
+export const STATUS_COLOR = { New: '#3B5BDB', Packed: '#F59F00', Shipped: '#7950F2', Delivered: '#1F9254', Cancelled: '#E5484D' };
+
 // ---------- icons ----------
 const I = ({ size = 20, children }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>
@@ -41,6 +47,11 @@ export const Icon = {
   download: (p) => <I {...p}><path d="M12 4v11M7 10l5 5 5-5M5 20h14" /></I>,
   check: (p) => <I {...p}><path d="M5 12.5l4.5 4.5L19 7.5" /></I>,
   eye: (p) => <I {...p}><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></I>,
+  alert: (p) => <I {...p}><path d="M12 3l9.5 17h-19z" /><path d="M12 10v4M12 17.5v.01" /></I>,
+  info: (p) => <I {...p}><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 7.5v.01" /></I>,
+  sound: (p) => <I {...p}><path d="M4 9v6h4l5 4V5L8 9z" /><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" /></I>,
+  mute: (p) => <I {...p}><path d="M4 9v6h4l5 4V5L8 9z" /><path d="M17 9l5 6M22 9l-5 6" /></I>,
+  arrow: (p) => <I {...p}><path d="M5 12h14M13 6l6 6-6 6" /></I>,
   eyeOff: (p) => <I {...p}><path d="M3 3l18 18M10.6 6.1A10 10 0 0 1 12 6c6.5 0 10 6 10 6a17 17 0 0 1-3.2 3.9M6.1 7.6C3.6 9.4 2 12 2 12s3.5 6 10 6a9.6 9.6 0 0 0 4.4-1" /></I>,
 };
 
@@ -117,9 +128,10 @@ export function Toolbar({ q, setQ, placeholder, chips, active, setActive }) {
       </label>
       {chips && (
         <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] lg:mx-0 lg:px-0">
-          {chips.map(([k, label, n]) => (
+          {chips.map(([k, label, n, color]) => (
             <button key={k} type="button" onClick={() => setActive(k)}
               className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold transition ${active === k ? 'bg-navy-900 text-white' : 'bg-[#F3F5FA] text-navy-500 hover:bg-[#E8ECF5]'}`}>
+              {color && <span className="size-2 rounded-full" style={{ background: active === k ? '#fff' : color }} />}
               {label}{n != null && <span className={`rounded-full px-1.5 text-[11px] ${active === k ? 'bg-white/20' : 'bg-white'}`}>{n}</span>}
             </button>
           ))}
@@ -129,8 +141,33 @@ export function Toolbar({ q, setQ, placeholder, chips, active, setActive }) {
   );
 }
 
-export function Empty({ text = 'Nothing here yet.' }) {
-  return <div className="px-6 py-16 text-center text-[14.5px] text-muted-2">{text}</div>;
+export function Empty({ text = 'Nothing here yet.', sub, icon: Ico = Icon.inbox, children }) {
+  return (
+    <div className="flex flex-col items-center gap-2 px-6 py-14 text-center">
+      <span className="mb-1 flex size-14 items-center justify-center rounded-2xl bg-[#F3F5FA] text-muted-2"><Ico size={26} /></span>
+      <b className="text-[15px] text-navy-900">{text}</b>
+      {sub && <p className="max-w-[360px] text-[13.5px] text-muted-2">{sub}</p>}
+      {children}
+    </div>
+  );
+}
+
+// one-line explanation at the top of a page / section
+export function Help({ children }) {
+  return (
+    <p className="mb-4 flex items-start gap-2 rounded-xl bg-[#F1F5FF] px-3.5 py-2.5 text-[13px] leading-relaxed text-[#2A3A6B]">
+      <span className="mt-px shrink-0 text-[#3B5BDB]"><Icon.info size={17} /></span><span>{children}</span>
+    </p>
+  );
+}
+
+// checkbox used for bulk selection
+export function Check({ checked, onChange, label, indeterminate = false }) {
+  return (
+    <input type="checkbox" aria-label={label} checked={checked} ref={(el) => el && (el.indeterminate = indeterminate)}
+      onClick={(e) => e.stopPropagation()} onChange={(e) => onChange(e.target.checked)}
+      className="size-[18px] cursor-pointer rounded accent-[#0F1A3C]" />
+  );
 }
 
 // right-side panel for details / editing

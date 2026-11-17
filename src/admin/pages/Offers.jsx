@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAdmin } from '../store.jsx';
-import { Badge, Btn, Card, Drawer, Field, Icon, PageHeader, Toggle, inputCls } from '../ui.jsx';
+import { Badge, Btn, Card, Drawer, Empty, Field, Help, Icon, PageHeader, Toggle, inputCls } from '../ui.jsx';
 
 export default function Offers() {
   const { data, update, add, remove } = useAdmin();
@@ -17,6 +17,7 @@ export default function Offers() {
   return (
     <>
       <PageHeader title="Offers & coupons" sub="Change cart offers and discount codes without touching code." />
+      <Help>Turn a switch <b>off</b> to stop that offer on the website. To change an amount, type the new number and click outside the box — it saves by itself.</Help>
 
       <h2 className="mb-3 font-head text-[17px] font-bold">Cart offers</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -44,7 +45,22 @@ export default function Offers() {
         <Btn variant="green" onClick={() => setForm({ code: '', off: '', note: '' })}><Icon.plus size={18} /> New coupon</Btn>
       </div>
       <Card className="overflow-hidden">
-        <div className="overflow-x-auto">
+        {data.coupons.length === 0 && <Empty icon={Icon.tag} text="No coupon codes yet" sub="Click “New coupon” to create a discount code customers can use at checkout." />}
+        {/* mobile cards */}
+        <ul className="flex flex-col divide-y divide-[#EEF0F5] md:hidden">
+          {data.coupons.map((c) => (
+            <li key={c.code} className="flex items-center gap-3 p-4">
+              <span className="min-w-0 flex-1">
+                <span className="rounded-lg border border-dashed border-navy-700/40 bg-[#F3F5FA] px-2.5 py-1 font-mono text-[13px] font-bold">{c.code}</span>
+                <b className="ml-2 text-[14px]">₹{c.off} off</b>
+                <span className="mt-1.5 block truncate text-[12.5px] text-muted-2">{c.note} · used {c.uses} times</span>
+              </span>
+              <Toggle checked={c.active} onChange={(v) => update('coupons', c.code, { active: v }, `${c.code} ${v ? 'active' : 'paused'}`)} label={`${c.code} active`} />
+              <button onClick={() => setForm({ ...c, off: String(c.off) })} aria-label={`Edit ${c.code}`} className="flex size-10 items-center justify-center rounded-lg text-muted-2 hover:bg-[#F3F5FA]"><Icon.edit size={17} /></button>
+            </li>
+          ))}
+        </ul>
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[640px] text-left text-[14px]">
             <thead className="bg-[#F8F9FC] text-[12px] uppercase tracking-wider text-muted-2"><tr><th className="px-5 py-3 font-semibold">Code</th><th className="px-3 py-3 font-semibold">Discount</th><th className="px-3 py-3 font-semibold">Note</th><th className="px-3 py-3 font-semibold">Used</th><th className="px-3 py-3 font-semibold">Status</th><th className="px-5 py-3" /></tr></thead>
             <tbody>

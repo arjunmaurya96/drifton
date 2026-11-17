@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAdmin } from '../store.jsx';
-import { Badge, Btn, Card, Drawer, Field, Icon, PageHeader, Toggle, inputCls, inr } from '../ui.jsx';
+import { Badge, Btn, Card, Drawer, Field, Help, Icon, LOW_STOCK, PageHeader, Toggle, inputCls, inr } from '../ui.jsx';
 
 export default function Products() {
   const { data, update } = useAdmin();
@@ -10,9 +10,20 @@ export default function Products() {
   return (
     <>
       <PageHeader title="Products" sub="Price, stock and visibility of each roll on." />
+      {(() => {
+        const low = data.products.filter((p) => p.active && p.stock <= LOW_STOCK);
+        return low.length > 0 ? (
+          <div className="mb-4 flex items-start gap-3 rounded-2xl border border-[#F5C2C2] bg-[#FDF2F2] p-4 text-[#8F1D1D]">
+            <span className="mt-0.5 shrink-0"><Icon.alert size={20} /></span>
+            <div className="text-[13.5px]"><b className="block text-[14.5px]">Low stock — please refill soon</b>
+              {low.map((p) => `${p.name}: ${p.stock} left`).join(' · ')}</div>
+          </div>
+        ) : null;
+      })()}
+      <Help>Click <b>Edit</b> to change a price or stock. Turn <b>Visible</b> off to hide a roll on from the website (for example when it is out of stock). Stock of {LOW_STOCK} or less shows a red warning.</Help>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {data.products.map((p) => {
-          const low = p.stock < 25;
+          const low = p.stock <= LOW_STOCK;
           return (
             <Card key={p.id} className="flex flex-col overflow-hidden">
               <div className="relative flex h-[200px] items-center justify-center" style={{ background: `linear-gradient(180deg, ${p.bg}, #fff)` }}>
@@ -23,7 +34,7 @@ export default function Products() {
                 <div><b className="block font-head text-[16px]">{p.name}</b><span className="text-[12.5px] text-muted-2">{p.tag}</span></div>
                 <div className="grid grid-cols-2 gap-2 text-[13px]">
                   <div className="rounded-xl bg-[#F6F7FB] p-2.5"><span className="text-muted-2">Price</span><b className="block text-[16px]">{inr(p.price)}</b></div>
-                  <div className={`rounded-xl p-2.5 ${low ? 'bg-[#FFF4E5]' : 'bg-[#F6F7FB]'}`}><span className={low ? 'text-[#9A5A00]' : 'text-muted-2'}>{low ? 'Low stock' : 'In stock'}</span><b className="block text-[16px]">{p.stock}</b></div>
+                  <div className={`rounded-xl p-2.5 ${low ? 'bg-[#FDECEC] ring-1 ring-[#F5C2C2]' : 'bg-[#F6F7FB]'}`}><span className={low ? 'font-semibold text-[#B42318]' : 'text-muted-2'}>{p.stock === 0 ? 'Out of stock' : low ? 'Low stock' : 'In stock'}</span><b className="block text-[16px]">{p.stock}</b></div>
                 </div>
                 <div className="mt-auto flex items-center justify-between gap-2 pt-1">
                   <label className="flex items-center gap-2 text-[13px] font-medium text-muted">

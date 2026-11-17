@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { collection, doc, onSnapshot, orderBy, query, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db, firebaseReady } from '../lib/firebase.js';
 import { initialData, defaultConfig } from './data.js';
+import { DEMO_ADMIN_KEY } from '../lib/api.js';
 
 // =====================================================================
 //  Admin data store
@@ -10,7 +11,7 @@ import { initialData, defaultConfig } from './data.js';
 // =====================================================================
 export const LIVE = firebaseReady;
 
-const KEY = 'drifton_admin_demo_v2';
+const KEY = DEMO_ADMIN_KEY;
 const loadDemo = () => {
   try { const v = JSON.parse(localStorage.getItem(KEY)); if (v && v.orders) return v; } catch { /* ignore */ }
   return initialData;
@@ -60,6 +61,14 @@ export function AdminStore({ children }) {
 
   useEffect(() => { if (!LIVE) try { localStorage.setItem(KEY, JSON.stringify(demo)); } catch { /* ignore */ } }, [demo]);
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 2200); return () => clearTimeout(t); }, [toast]);
+
+  // demo: orders placed on the website in another tab show up here
+  useEffect(() => {
+    if (LIVE) return undefined;
+    const onStorage = (e) => { if (e.key === KEY && e.newValue) try { setDemo(JSON.parse(e.newValue)); } catch { /* ignore */ } };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   // live listeners
   useEffect(() => {
