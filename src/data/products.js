@@ -34,11 +34,11 @@ export const priceFor = (n, naturals = 0) => {
 // Coupons — DUMMY codes, confirm with the client
 export const coupons = { DRIFTON100: { off: 100, note: '₹100 off (single-stick orders, not with combos)' } };
 
-// The real combos from the client (each = 2 sticks for ₹800)
+// The real combos from the client (each = 2 roll ons for ₹800)
 export const combos = [
-  { id: 'rose-palash', name: 'Rose + Palash', items: ['rose', 'palash'], tag: 'Floral pair' },
-  { id: 'charcoal-rose', name: 'Charcoal + Rose', items: ['charcoal', 'rose'], tag: 'Fresh + floral' },
-  { id: 'natural-rose', name: 'Natural + Rose', items: ['natural', 'rose'], tag: 'Pure + floral' },
+  { id: 'rose-palash', name: 'DriftOn™ Rose + Palash Roll On', items: ['rose', 'palash'], tag: 'Floral pair' },
+  { id: 'charcoal-rose', name: 'DriftOn™ Charcoal + Rose Roll On', items: ['charcoal', 'rose'], tag: 'Fresh + floral' },
+  { id: 'natural-rose', name: 'DriftOn™ Natural + Rose Roll On', items: ['natural', 'rose'], tag: 'Pure + floral' },
 ];
 
 export const products = [
@@ -46,7 +46,7 @@ export const products = [
     id: 'palash',
     scene: `${IMG}/scenes/palash.webp`, // product photo with its natural ingredient (phitku style)
     slug: 'palash-alum-stick',
-    name: 'Palash Alum Roll On',
+    name: 'DriftOn™ Palash Alum Roll On',
     short: 'Palash',
     tag: 'Floral · Bestseller',
     badge: 'Bestseller',
@@ -68,7 +68,7 @@ export const products = [
     id: 'charcoal',
     scene: `${IMG}/scenes/charcoal.webp`, // product photo with its natural ingredient (phitku style)
     slug: 'charcoal-alum-stick',
-    name: 'Charcoal Alum Roll On',
+    name: 'DriftOn™ Charcoal Alum Roll On',
     short: 'Charcoal',
     tag: 'Detox · Fresh',
     badge: 'New',
@@ -90,7 +90,7 @@ export const products = [
     id: 'rose',
     scene: `${IMG}/scenes/rose.webp`, // product photo with its natural ingredient (phitku style)
     slug: 'rose-alum-stick',
-    name: 'Rose Alum Roll On',
+    name: 'DriftOn™ Rose Alum Roll On',
     short: 'Rose',
     tag: 'Floral · Gentle',
     badge: 'Popular',
@@ -112,7 +112,7 @@ export const products = [
     id: 'natural',
     scene: `${IMG}/scenes/natural.webp`, // product photo with its natural ingredient (phitku style)
     slug: 'natural-alum-stick',
-    name: 'Natural Alum Roll On',
+    name: 'DriftOn™ Natural Alum Roll On',
     short: 'Natural',
     tag: 'Pure · Fragrance free',
     badge: 'Pure',
@@ -151,7 +151,7 @@ export const bannerSlides = [
   {
     productId: 'palash', modelPhoto: '/assets/images/models/model-girl.webp', modelPos: '58% center', cutout: '/assets/images/cutouts/palash.webp', rightImage: '/assets/images/hero-products/range-palash.webp',
     bgFrom: '#FFF3E2', bgTo: '#FFC98A', glow: '#FFB45E', dark: false, accent: '#C2571A',
-    serif: 'Crystal deo', line: 'that keeps you fresh 24/7',
+    serif: 'Crystal Roll On', line: 'that keeps you fresh 24/7',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Glycerine', icon: 'drop' },
       { name: 'Palash Extract', icon: 'flower' }, { name: 'Fragrance', icon: 'sprig' },
@@ -176,8 +176,8 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'natural', modelPhoto: '/assets/images/models/model-couple.webp', modelPos: '62% center', cutout: '/assets/images/cutouts/crystal.webp', rightImage: '/assets/images/hero-products/range-natural.webp',
-    bgFrom: '#EEF7FF', bgTo: '#A9D3F5', glow: '#7FBDF0', dark: false, accent: '#1C6FB8',
+    productId: 'natural', modelPhoto: '/assets/images/models/model-palash-wink.jpg', modelPos: '50% 20%', cutout: '/assets/images/cutouts/crystal.webp', rightImage: '/assets/images/hero-products/range-natural.webp',
+    bgFrom: '#FFF8F0', bgTo: '#FCECD8', glow: '#FFF2E0', dark: false, accent: '#1C6FB8',
     serif: 'Pure & clear', line: 'natural mineral freshness',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Glycerine', icon: 'drop' },
@@ -187,9 +187,9 @@ export const bannerSlides = [
 
 // Hero video slides (no longer used on the home page; product videos are still shown in the product gallery).
 export const heroSlides = [
-  { productId: 'palash', eyebrow: 'Natural Crystal Deodorant', title: 'Stay fresh.', highlight: 'Naturally.', text: 'Drifton alum crystal sticks keep odour away with one simple glide. Four botanical variants, one clean routine.' },
+  { productId: 'palash', eyebrow: 'Natural Crystal Roll On', title: 'Stay fresh.', highlight: 'Naturally.', text: 'Drifton alum crystal roll ons keep odour away with one simple glide. Four botanical variants, one clean routine.' },
   { productId: 'charcoal', eyebrow: 'New · Charcoal Alum', title: 'Deep clean.', highlight: 'All day fresh.', text: 'Activated charcoal meets natural alum crystal. Made for active days and long commutes.' },
-  { productId: 'rose', eyebrow: 'Floral · Gentle care', title: 'Soft as a', highlight: 'rose.', text: 'A gentle rose-infused crystal stick that glides on clear, with no white marks.' },
+  { productId: 'rose', eyebrow: 'Floral · Gentle care', title: 'Soft as a', highlight: 'rose.', text: 'A gentle rose-infused crystal roll on that glides on clear, with no white marks.' },
 ];
 
 // Offer shown on the product page
@@ -206,7 +206,7 @@ export const productInfo = {
     { title: 'Natural alum crystal', icon: 'gem' },
     { title: 'No white marks', icon: 'check' },
     { title: 'Glides on clear', icon: 'drop' },
-    { title: 'Long lasting stick', icon: 'clock' },
+    { title: 'Long lasting roll on', icon: 'clock' },
     { title: 'Travel friendly', icon: 'box' },
     { title: 'Botanical blends', icon: 'leaf' },
   ],
@@ -218,7 +218,7 @@ export const productInfo = {
     ['Colour', 'Clear crystal with botanical tint'],
     ['Height', '[HEIGHT]'],
     ['Weight', '[NET WEIGHT]'],
-    ['Structure', 'Solid crystal stick with twist base'],
+    ['Structure', 'Solid crystal roll on with twist base'],
     ['Texture', 'Smooth, glides when wet'],
     ['Shelf life', '[SHELF LIFE]'],
     ['Special features', 'No white marks, travel friendly'],
@@ -229,25 +229,25 @@ export const productInfo = {
     { title: 'Apply evenly', text: 'Glide it gently over the underarm a few times and let it dry.' },
   ],
   care: [
-    { title: 'Dry the stick', text: 'Pat the crystal dry with a towel after every use.' },
+    { title: 'Dry the roll on', text: 'Pat the crystal dry with a towel after every use.' },
     { title: 'Keep it dry', text: 'Store it away from running water between uses.' },
     { title: 'Store securely', text: 'Put the cap back on and keep it upright.' },
-    { title: 'Avoid cross-use', text: 'Use one stick per person for hygiene.' },
+    { title: 'Avoid cross-use', text: 'Use one roll on per person for hygiene.' },
     { title: 'Use regularly', text: 'Apply daily for the best everyday freshness.' },
   ],
   legal: [
     ['Marketed by', 'AI Enterprises, Block-O, No. 28, Balraj Khanna Marg, West Patel Nagar, New Delhi – 110008'],
     ['Manufactured by', '[MANUFACTURER NAME & ADDRESS]'],
-    ['Price', '₹475 per stick · any 2 for ₹800'],
+    ['Price', '₹475 per roll on · any 2 for ₹800'],
     ['Country of origin', '[COUNTRY]'],
     ['Net quantity', '[NET WEIGHT]'],
     ['Best before', '[EXPIRY DETAILS]'],
   ],
   faqs: [
-    { q: 'Is the Drifton stick just alum?', a: 'The base is a natural alum crystal. Every stick is natural potassium alum with glycerine. Palash, Rose and Charcoal also have their own extract and fragrance; the Natural stick has nothing else added.' },
+    { q: 'Is the Drifton roll on just alum?', a: 'The base is a natural alum crystal. Every roll on is natural potassium alum with glycerine. Palash, Rose and Charcoal also have their own extract and fragrance; the Natural roll on has nothing else added.' },
     { q: 'Is it suitable for sensitive skin?', a: 'Alum crystal is generally gentle, but everyone’s skin is different. Do a small patch test first and stop using it if you notice irritation.' },
-    { q: 'How long does one stick last?', a: 'With normal daily use a crystal stick lasts a long time. [Add the client’s tested duration here.]' },
-    { q: 'Does it stop sweat or only odour?', a: 'An alum deodorant is designed to help with odour. It is not an antiperspirant, so you may still sweat normally.' },
+    { q: 'How long does one roll on last?', a: 'With normal daily use a crystal roll on lasts a long time. [Add the client’s tested duration here.]' },
+    { q: 'Does it stop sweat or only odour?', a: 'An alum roll on is designed to help with odour. It is not an antiperspirant, so you may still sweat normally.' },
   ],
 };
 
@@ -256,7 +256,7 @@ export const sampleReviews = [
   { rating: 5, title: 'Fresh and light', text: 'Feels very light and fresh. No white marks on my clothes at all.', productId: 'palash' },
   { rating: 5, title: 'Great for gym days', text: 'I use it before workouts. Quick to apply and easy to carry.', productId: 'charcoal' },
   { rating: 4, title: 'Lovely smell', text: 'Gentle on skin and the rose note is soft, not overpowering.', productId: 'rose' },
-  { rating: 5, title: 'Good value', text: 'One stick lasts a long time. Will buy again.', productId: 'natural' },
+  { rating: 5, title: 'Good value', text: 'One roll on lasts a long time. Will buy again.', productId: 'natural' },
   { rating: 4, title: 'Takes a day to get used to', text: 'You have to wet it first, but once you get the habit it works well.', productId: 'palash' },
 ];
 

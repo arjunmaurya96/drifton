@@ -18,6 +18,7 @@ const NotFound = lazy(() => import('./pages/NotFound.jsx'));
 const Ingredients = lazy(() => import('./pages/InfoPages.jsx').then((m) => ({ default: m.Ingredients })));
 const Terms = lazy(() => import('./pages/InfoPages.jsx').then((m) => ({ default: m.Terms })));
 const Contact = lazy(() => import('./pages/InfoPages.jsx').then((m) => ({ default: m.Contact })));
+const Profile = lazy(() => import('./pages/Profile.jsx'));
 
 const AdminApp = lazy(() => import('./admin/AdminApp.jsx')); // admin panel: loaded only on /admin
 
@@ -37,14 +38,16 @@ function ScrollManager() {
   const { pathname, hash } = useLocation();
   useEffect(() => {
     if (hash) {
-      // wait until the section exists (pages load lazily), then glide to it
+      const targetId = decodeURIComponent(hash.slice(1));
       let tries = 0;
       const t = setInterval(() => {
-        const el = document.getElementById(hash.slice(1));
+        const el = document.getElementById(targetId) ||
+                   document.querySelector(`[data-product-id="${targetId}"]`) ||
+                   document.querySelector(`[data-slug="${targetId}"]`) ||
+                   (targetId.startsWith('product-') ? document.getElementById(targetId.replace('product-', '')) : null);
         if (el || ++tries > 40) {
           clearInterval(t);
           el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          // the mobile menu closes while scrolling (page shifts up) — correct the position once it has settled
           if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 650);
         }
       }, 50);
@@ -103,6 +106,8 @@ export default function App() {
           <Route path="/terms" element={<Terms />} />
           <Route path="/track" element={<GoTo url={business.trackUrl} />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/account" element={<Navigate to="/profile" replace />} />
           <Route path="/product/:slug" element={<ProductDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

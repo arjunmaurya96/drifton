@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useAdmin } from '../store.jsx';
 import { ORDER_STATUSES } from '../data.js';
 import { Badge, Btn, Card, Drawer, Empty, Field, Icon, PageHeader, Toolbar, fmtDateTime, inputCls, inr } from '../ui.jsx';
+import InvoiceModal from '../components/InvoiceModal.jsx';
 
 const csv = (rows) => {
   const head = ['Order', 'Date', 'Customer', 'Phone', 'City', 'Items', 'Total', 'Payment', 'Status', 'Tracking'];
@@ -17,6 +18,7 @@ export default function Orders() {
   const [tab, setTab] = useState('all');
   const [openId, setOpenId] = useState(null);
   const [tracking, setTracking] = useState('');
+  const [invoiceOrder, setInvoiceOrder] = useState(null);
 
   const list = useMemo(() => data.orders.filter((o) =>
     (tab === 'all' || o.status === tab) &&
@@ -56,7 +58,17 @@ export default function Orders() {
                       <td className="px-3 py-3.5 font-semibold">{inr(o.total)}</td>
                       <td className="px-3 py-3.5 text-muted">{o.payment}</td>
                       <td className="px-3 py-3.5"><Badge>{o.status}</Badge></td>
-                      <td className="px-5 py-3.5 text-right text-[13px] font-semibold text-navy-700">View →</td>
+                      <td className="px-5 py-3.5 text-right whitespace-nowrap">
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setInvoiceOrder(o); }}
+                          title="View / Print Tax Invoice"
+                          className="mr-2 inline-flex items-center gap-1.5 rounded-lg border border-[#CCD4E5] bg-white px-2.5 py-1 text-xs font-semibold text-navy-900 transition hover:border-navy-900 hover:bg-[#F3F5FA]"
+                        >
+                          <Icon.print size={13} /> Invoice
+                        </button>
+                        <span className="text-[13px] font-semibold text-navy-700">View →</span>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -84,7 +96,7 @@ export default function Orders() {
         footer={order && (
           <>
             {next[order.status] && <Btn variant="green" onClick={() => update('orders', order.id, { status: next[order.status], tracking: next[order.status] === 'Shipped' && !tracking ? `EK${Date.now().toString().slice(-10)}` : tracking }, `Order marked ${next[order.status]}`)}>Mark as {next[order.status]}</Btn>}
-            <Btn variant="ghost" onClick={() => window.print()}><Icon.print size={18} /> Print invoice</Btn>
+            <Btn variant="ghost" onClick={() => setInvoiceOrder(order)}><Icon.print size={18} /> Print invoice</Btn>
             {order.status !== 'Cancelled' && order.status !== 'Delivered' && <Btn variant="danger" onClick={() => update('orders', order.id, { status: 'Cancelled' }, 'Order cancelled')}>Cancel</Btn>}
           </>
         )}>
@@ -164,6 +176,15 @@ export default function Orders() {
           </div>
         )}
       </Drawer>
+
+      {/* Professional Tax Invoice Modal */}
+      <InvoiceModal
+        order={invoiceOrder}
+        settings={data.settings}
+        products={data.products}
+        open={!!invoiceOrder}
+        onClose={() => setInvoiceOrder(null)}
+      />
     </>
   );
 }

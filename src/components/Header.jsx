@@ -60,7 +60,7 @@ function useHideOnScroll() {
 }
 
 export default function Header() {
-  const { count, openAuth, openCart, wishlist } = useStore();
+  const { count, openAuth, openCart, wishlist, user, userProfile, logout } = useStore();
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const hidden = useHideOnScroll() && !open && !searchOpen;
@@ -101,8 +101,31 @@ export default function Header() {
             <Badge n={count} />
           </button>
           <span className="mx-2 hidden h-6 w-px bg-[#E0E4EF] sm:block" />
-          <button onClick={() => openAuth('login')} className="hidden min-h-11 rounded-full px-4 text-[15px] font-semibold text-navy-700 hover:bg-[#EEF1F8] sm:block xl:hidden 2xl:block">Log in</button>
-          <button onClick={() => openAuth('signup')} className="min-h-10 whitespace-nowrap rounded-full bg-navy-700 px-3 text-[14px] sm:min-h-11 sm:px-4 sm:text-[15px] font-semibold text-white transition-colors hover:bg-brand sm:px-5">Sign up</button>
+
+          {user ? (
+            <Link
+              to="/profile"
+              className="flex items-center gap-2 rounded-full border border-line-strong bg-[#F8F9FC] py-1 pl-1 pr-3 hover:bg-[#EEF1F8] transition"
+              title="My Account & Orders"
+            >
+              {user.photoURL ? (
+                <img src={user.photoURL} alt="" className="size-8 rounded-full object-cover" />
+              ) : (
+                <span className="flex size-8 items-center justify-center rounded-full bg-navy-900 text-xs font-bold text-white">
+                  {(user.displayName || userProfile.name || user.email || 'U')[0].toUpperCase()}
+                </span>
+              )}
+              <span className="hidden text-[13.5px] font-semibold text-navy-900 sm:inline max-w-[100px] truncate">
+                {user.displayName?.split(' ')[0] || userProfile.name?.split(' ')[0] || 'Account'}
+              </span>
+            </Link>
+          ) : (
+            <>
+              <button onClick={() => openAuth('login')} className="hidden min-h-11 rounded-full px-4 text-[15px] font-semibold text-navy-700 hover:bg-[#EEF1F8] sm:block xl:hidden 2xl:block">Log in</button>
+              <button onClick={() => openAuth('signup')} className="min-h-10 whitespace-nowrap rounded-full bg-navy-700 px-3 text-[14px] sm:min-h-11 sm:px-4 sm:text-[15px] font-semibold text-white transition-colors hover:bg-brand sm:px-5">Sign up</button>
+            </>
+          )}
+
           <button className="icon-btn xl:hidden" aria-label="Menu" aria-expanded={open} onClick={() => setOpen(!open)}>
             {open ? <Close /> : <Menu />}
           </button>
@@ -117,6 +140,23 @@ export default function Header() {
               <NavLink l={l} onClick={() => setOpen(false)} className="block py-3 font-semibold text-navy-900" />
             </span>
           ))}
+
+          {user ? (
+            <div className="border-t border-line pt-3 mt-1 pb-4">
+              <Link to="/profile" onClick={() => setOpen(false)} className="block py-2.5 font-bold text-brand">
+                👤 My Account & Orders ({user.email})
+              </Link>
+              <button onClick={() => { logout(); setOpen(false); }} className="block py-2 text-left font-semibold text-red-600">
+                Log Out
+              </button>
+            </div>
+          ) : (
+            <div className="flex gap-2 py-4 border-t border-line mt-2">
+              <button onClick={() => { openAuth('login'); setOpen(false); }} className="btn-line flex-1 min-h-10 text-sm">Log in</button>
+              <button onClick={() => { openAuth('signup'); setOpen(false); }} className="btn-primary flex-1 min-h-10 text-sm">Sign up</button>
+            </div>
+          )}
+
           <span className="h-4 shrink-0" />
         </nav>
       </div>

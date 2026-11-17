@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useAdmin } from '../store.jsx';
 import { ORDER_STATUSES } from '../data.js';
 import { Badge, Btn, Card, Drawer, Empty, Field, Icon, PageHeader, Toolbar, fmtDate, fmtDateTime, inr, inputCls } from '../ui.jsx';
+import InvoiceModal from '../components/InvoiceModal.jsx';
 
 export default function Customers() {
   const { data, update } = useAdmin();
@@ -9,6 +10,7 @@ export default function Customers() {
   const [tab, setTab] = useState('all');
   const [openId, setOpenId] = useState(null);
   const [trackingMap, setTrackingMap] = useState({});
+  const [invoiceOrder, setInvoiceOrder] = useState(null);
 
   // Aggregate customers with their full orders
   const rows = useMemo(() => {
@@ -97,7 +99,7 @@ export default function Customers() {
     <>
       <PageHeader
         title="Users & Customer Details"
-        sub="Sabhi registered customers aur unke saare orders ki complete details yahan dekhein."
+        sub="View all registered customers and complete details of their orders."
       />
 
       {/* Overview Stats */}
@@ -108,9 +110,9 @@ export default function Customers() {
           <span className="text-[12px] text-muted-2">DriftOn store buyers</span>
         </Card>
         <Card className="p-4 sm:p-5">
-          <span className="text-[12.5px] font-medium text-muted-2 sm:text-[13px]">Repeat Buyers (Bar-bar lene wale)</span>
+          <span className="text-[12.5px] font-medium text-muted-2 sm:text-[13px]">Repeat Buyers (Multiple Orders)</span>
           <b className="mt-2 block font-head text-[22px] font-bold text-brand sm:text-[26px]">{repeatCount}</b>
-          <span className="text-[12px] text-muted-2">2 ya zyada orders wale</span>
+          <span className="text-[12px] text-muted-2">2 or more orders placed</span>
         </Card>
         <Card className="p-4 sm:p-5">
           <span className="text-[12.5px] font-medium text-muted-2 sm:text-[13px]">Total Orders Placed</span>
@@ -136,7 +138,7 @@ export default function Customers() {
         />
 
         {rows.length === 0 ? (
-          <Empty text="Koi user ya customer nahi mila. Search query badal kar dekhein." />
+          <Empty text="No customers or users found. Try adjusting your search query." />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] text-left text-[14px]">
@@ -189,7 +191,7 @@ export default function Customers() {
                     <td className="px-3 py-4">
                       <div className="flex items-center gap-1.5">
                         <span className="font-semibold text-navy-900">{r.count}</span>
-                        <span className="text-xs text-muted-2">order{r.count !== 1 ? 's' : ''} ({r.totalSticks} sticks)</span>
+                        <span className="text-xs text-muted-2">order{r.count !== 1 ? 's' : ''} ({r.totalSticks} roll ons)</span>
                       </div>
                     </td>
 
@@ -298,7 +300,7 @@ export default function Customers() {
                 <b className="mt-1 block font-head text-[20px] font-bold text-[#17703D]">{inr(selected.spent)}</b>
               </Card>
               <Card className="p-3 text-center">
-                <span className="block text-[11px] font-semibold uppercase text-muted-2">Total Sticks</span>
+                <span className="block text-[11px] font-semibold uppercase text-muted-2">Total Roll Ons</span>
                 <b className="mt-1 block font-head text-[20px] font-bold">{selected.totalSticks}</b>
               </Card>
               <Card className="p-3 text-center">
@@ -317,7 +319,7 @@ export default function Customers() {
               </div>
 
               {selected.orders.length === 0 ? (
-                <p className="rounded-2xl bg-page p-6 text-center text-sm text-muted">Is customer ne abhi tak koi order place nahi kiya hai.</p>
+                <p className="rounded-2xl bg-page p-6 text-center text-sm text-muted">No orders placed by this customer yet.</p>
               ) : (
                 <div className="flex flex-col gap-4">
                   {selected.orders.map((o) => {
@@ -334,8 +336,16 @@ export default function Customers() {
                             <span className="text-[12px] text-muted-2">{fmtDateTime(o.date)}</span>
                           </div>
 
-                          {/* Inline Status Changer */}
+                          {/* Quick Actions: Print Invoice & Status */}
                           <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setInvoiceOrder(o)}
+                              className="inline-flex items-center gap-1.5 rounded-lg border border-[#CCD4E5] bg-white px-2.5 py-1 text-xs font-semibold text-navy-900 transition hover:border-navy-900 hover:bg-[#F3F5FA]"
+                              title="Print Professional Tax Invoice"
+                            >
+                              <Icon.print size={13} /> Invoice
+                            </button>
                             <span className="text-xs font-semibold text-muted-2">Status:</span>
                             <select
                               value={o.status}
@@ -365,7 +375,7 @@ export default function Customers() {
                                     </span>
                                     <div className="min-w-0">
                                       <b className="block truncate text-[13.5px] font-semibold text-navy-900">{it.name}</b>
-                                      <span className="text-[12px] text-muted-2">Qty: {it.qty} {it.qty === 1 ? 'stick' : 'sticks'}</span>
+                                      <span className="text-[12px] text-muted-2">Qty: {it.qty} {it.qty === 1 ? 'roll on' : 'roll ons'}</span>
                                     </div>
                                   </div>
                                   <span className="text-[13px] font-bold text-navy-900">× {it.qty}</span>
@@ -450,6 +460,15 @@ export default function Customers() {
           </div>
         )}
       </Drawer>
+
+      {/* Professional Tax Invoice Modal */}
+      <InvoiceModal
+        order={invoiceOrder}
+        settings={data.settings}
+        products={data.products}
+        open={!!invoiceOrder}
+        onClose={() => setInvoiceOrder(null)}
+      />
     </>
   );
 }

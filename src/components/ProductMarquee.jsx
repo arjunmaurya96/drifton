@@ -10,7 +10,7 @@ const items = [
   { name: 'Natural', product: natural },
   { name: 'Natural Crystal Alum', product: palash },
   { name: 'No White Marks', product: charcoal },
-  { name: 'Long Lasting Stick', product: natural },
+  { name: 'Long Lasting Roll On', product: natural },
 ];
 
 export default function ProductMarquee({ dark = false }) {

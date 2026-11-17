@@ -76,7 +76,7 @@ function OtpBoxes({ value, onChange }) {
 }
 
 export default function CheckoutModal() {
-  const { checkoutOpen, closeCheckout, cart, updateQty, addToCart, clearCart } = useStore();
+  const { checkoutOpen, closeCheckout, cart, updateQty, addToCart, clearCart, user, userProfile, recordUserOrder, loginWithGoogle, openAuth } = useStore();
   const [step, setStep] = useState(1);
   const [code, setCode] = useState('');
   const [applied, setApplied] = useState('');
@@ -96,16 +96,37 @@ export default function CheckoutModal() {
   const closeRef = useRef(closeCheckout);
   closeRef.current = closeCheckout;
 
-  // reset when the popup opens, lock page scroll, Esc to close
+  // reset or prefill when the popup opens, lock page scroll, Esc to close
   useEffect(() => {
     if (!checkoutOpen) return;
-    setStep(1); setErr(''); setOrder(null); setOtpSent(false); setOtp(''); setVerified(false); setMethod('upi');
-    setAuthProvider(''); setGoogleLoading(false);
+    setErr('');
+    setOrder(null);
+    setMethod('upi');
+    setGoogleLoading(false);
+
+    if (user) {
+      setD({
+        name: userProfile.name || user.displayName || '',
+        email: user.email || '',
+        phone: userProfile.phone || user.phoneNumber || '',
+        address: userProfile.address || '',
+        pin: userProfile.pin || '',
+      });
+      setVerified(true);
+      setStep(2);
+    } else {
+      setStep(1);
+      setVerified(false);
+      setOtpSent(false);
+      setOtp('');
+      setAuthProvider('');
+    }
+
     const onKey = (e) => e.key === 'Escape' && closeRef.current();
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
     return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
-  }, [checkoutOpen]);
+  }, [checkoutOpen, user, userProfile]);
 
   useEffect(() => {
     if (timer <= 0) return;
@@ -201,17 +222,39 @@ export default function CheckoutModal() {
 
   const pay = async () => {
     setErr('');
+    if (!user) {
+      setStep(1);
+      return setErr('Login is required. Please sign in or create an account to make payment.');
+    }
     if (!d.name.trim() || !d.address.trim() || !/^\d{6}$/.test(d.pin)) {
       return setErr('Please add your name, full address and 6-digit pincode.');
     }
     setBusy(true);
-    const r = await createPayment({ amount: total, method });
-    if (!r.ok) { setBusy(false); return setErr('Payment failed. Please try again.'); }
+    const r = await createPayment({
+      amount: total,
+      method,
+      customer: {
+        name: d.name.trim(),
+        email: d.email.trim().toLowerCase(),
+        phone: d.phone,
+        address: d.address.trim(),
+        pin: d.pin,
+      },
+    });
+    if (!r.ok) {
+      setBusy(false);
+      return setErr(r.error || 'Payment failed or was cancelled. Please try again.');
+    }
 
     // save the order in the database with verified email + mobile number
     let saved;
     try {
+      const paymentLabel = method === 'cod' ? 'Cash on Delivery' : `Razorpay (${(r.paymentMethod || method).toUpperCase()})`;
+      const paymentStatus = method === 'cod' ? 'Pay on delivery' : 'Paid (Razorpay Test)';
+
       saved = await saveOrder({
+        userId: user?.uid || null,
+        customerId: user?.uid || null,
         customer: d.name.trim(),
         email: d.email.trim().toLowerCase(),
         phone: d.phone,
@@ -225,9 +268,29 @@ export default function CheckoutModal() {
         couponOff: sum.couponOff,
         codFee: fee,
         total,
-        payment: method === 'cod' ? 'COD' : method === 'upi' ? 'UPI' : method === 'card' ? 'Card' : 'Net banking',
-        paymentStatus: method === 'cod' ? 'Pay on delivery' : 'Paid (demo)',
+        payment: paymentLabel,
+        paymentStatus,
+        razorpayPaymentId: r.razorpay_payment_id || null,
+        razorpayOrderId: r.razorpay_order_id || null,
         source: 'Quick checkout',
+      });
+
+      // Record in user's profile order list
+      recordUserOrder({
+        id: saved.id,
+        date: new Date().toISOString(),
+        customer: d.name.trim(),
+        email: d.email.trim().toLowerCase(),
+        phone: d.phone,
+        address: d.address.trim(),
+        pin: d.pin,
+        items: cart.map((l) => ({ id: l.id, name: l.name, qty: l.qty * (l.sticks || 1) })),
+        sticks: sum.sticks,
+        total,
+        payment: paymentLabel,
+        paymentStatus,
+        status: 'New',
+        tracking: '',
       });
     } catch {
       setBusy(false);
@@ -258,9 +321,15 @@ export default function CheckoutModal() {
         {order ? (
           <div className="flex flex-col items-center gap-4 border-t border-line px-6 py-12 text-center">
             <span className="flex size-16 items-center justify-center rounded-full bg-mint-soft text-brand"><CheckCircle size={36} /></span>
-            <p className="text-[17px] text-muted">Thank you, {d.name}! Order <b className="text-navy-900">{order.orderId}</b> of {formatINR(order.amount)} ({order.sticks} {order.sticks === 1 ? 'stick' : 'sticks'}) is confirmed.</p>
+            <p className="text-[17px] text-muted">Thank you, {d.name}! Order <b className="text-navy-900">{order.orderId}</b> of {formatINR(order.amount)} ({order.sticks} {order.sticks === 1 ? 'roll on' : 'roll ons'}) is confirmed.</p>
             <p className="text-xs text-muted-2">Confirmation & tracking details will be sent to <b>{d.email}</b> and <b>+91 {d.phone}</b>.</p>
-            <span className="rounded-full bg-page px-4 py-1.5 text-sm text-muted-2">Demo order — no real payment was taken</span>
+            {order.razorpay_payment_id ? (
+              <span className="rounded-full bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-800 border border-emerald-200">
+                Razorpay Payment Verified: <b className="font-mono">{order.razorpay_payment_id}</b>
+              </span>
+            ) : (
+              <span className="rounded-full bg-page px-4 py-1.5 text-sm text-muted-2">Payment Mode: {order.payment || 'Cash on Delivery'}</span>
+            )}
             <div className="flex flex-wrap justify-center gap-2.5">
               <a href={business.trackUrl} target="_blank" rel="noreferrer" className="btn-line">Track on Ekart</a>
               <button onClick={closeCheckout} className="btn-navy">Continue shopping</button>
@@ -278,7 +347,7 @@ export default function CheckoutModal() {
                   </summary>
                   <div className="flex flex-col gap-5 border-t border-line p-4">
                   {cart.length === 0 ? (
-                    <p className="rounded-2xl bg-page p-5 text-center text-muted">Your bag is empty. Add a stick below.</p>
+                    <p className="rounded-2xl bg-page p-5 text-center text-muted">Your bag is empty. Add a roll on below.</p>
                   ) : (
                     <ul className="flex flex-col gap-3">
                       {cart.map((l) => (
@@ -342,7 +411,7 @@ export default function CheckoutModal() {
                         <span>Google Verified: {d.email} {d.name ? `(${d.name})` : ''}</span>
                       </div>
                       <p className="text-[13px] text-[#15803D]">
-                        Delivery updates ke liye apna 10-digit mobile number enter karein:
+                        Please enter your 10-digit mobile number for courier delivery updates:
                       </p>
                       <div className="flex items-center rounded-xl border-[1.5px] border-line-strong bg-white focus-within:border-navy-700 focus-within:ring-4 focus-within:ring-blue-soft">
                         <span className="flex shrink-0 items-center gap-2 whitespace-nowrap border-r border-line px-3.5 text-[14px] font-semibold">🇮🇳 +91</span>

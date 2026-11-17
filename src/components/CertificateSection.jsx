@@ -14,7 +14,7 @@ export default function CertificateSection() {
           <div className="flex flex-col justify-center gap-6 px-6 py-12 sm:px-14 sm:py-16">
             <span className="eyebrow">Safety &amp; quality</span>
             <h2 className="h2">Tested with care, so you can <span className="text-brand">wear it with confidence.</span></h2>
-            <p className="text-[17px] leading-loose text-muted">At Drifton, trust comes first. Our crystal deodorants go through skin testing so you can enjoy natural freshness without worrying about irritation.</p>
+            <p className="text-[17px] leading-loose text-muted">At Drifton, trust comes first. Our crystal roll ons go through skin testing so you can enjoy natural freshness without worrying about irritation.</p>
             <div className="flex flex-wrap gap-2.5">
               {chips.map((c) => (
                 <span key={c} className="inline-flex items-center gap-2 rounded-full bg-mint-soft px-3.5 py-2 text-sm font-semibold text-brand-dark"><Check size={16} sw={2.4} />{c}</span>
@@ -34,7 +34,7 @@ export default function CertificateSection() {
                 <span className="-mt-2 text-[11px] font-semibold uppercase tracking-[2.5px] text-muted-2">of conformity</span>
                 <span className="border-b-2 border-brand pb-1 font-head text-[19px] font-bold text-brand">DERMATOLOGICALLY TESTED</span>
                 <span className="rounded-[10px] border-[1.5px] border-navy-700 px-4 py-3.5 text-[12.5px] leading-relaxed text-navy-500">
-                  This is to certify that <strong>DRIFTON CRYSTAL DEODORANT</strong>, supplied by <strong>AI Enterprises</strong>, was tested for skin irritation as per [STANDARD] by [TESTING LAB].
+                  This is to certify that <strong>DRIFTON CRYSTAL ROLL ON</strong>, supplied by <strong>AI Enterprises</strong>, was tested for skin irritation as per [STANDARD] by [TESTING LAB].
                 </span>
                 <span className="text-xs font-bold text-navy-700">DATE OF CERTIFICATION: [DATE]</span>
                 <span className="mt-1.5 flex w-full justify-between gap-5 text-[11px] text-muted-2">

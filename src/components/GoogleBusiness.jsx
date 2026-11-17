@@ -13,7 +13,7 @@ const G = () => (
 /** "Find us on Google" — Google Business Profile card + live Google Map. */
 export default function GoogleBusiness() {
   const hasRating = business.rating != null;
-  const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(business.mapQuery)}&output=embed`;
+  const mapSrc = business.mapEmbedUrl || `https://www.google.com/maps?q=${encodeURIComponent(business.mapQuery)}&output=embed`;
 
   return (
     <section id="google" className="pb-20 pt-8 sm:pb-24 sm:pt-10">
@@ -41,19 +41,37 @@ export default function GoogleBusiness() {
             </div>
 
             <ul className="flex flex-col gap-3 text-[15px] text-navy-500">
-              <li className="flex items-start gap-3"><span className="mt-0.5 text-brand"><Pin /></span>{business.address}</li>
+              <li className="flex items-start gap-3"><span className="mt-0.5 text-brand"><Pin /></span><a href={business.mapsUrl} target="_blank" rel="noreferrer" className="text-navy-900 hover:text-brand hover:underline">{business.address}</a></li>
               <li className="flex items-start gap-3"><span className="mt-0.5 text-brand"><Clock size={18} /></span>{business.hours}</li>
               <li className="flex items-start gap-3 break-all"><span className="mt-0.5 font-bold text-brand">✉</span><a href={`mailto:${business.email}`} className="text-navy-900 hover:text-brand hover:underline">{business.email}</a></li>
             </ul>
 
             <div className="flex flex-wrap gap-3">
               <a href={business.reviewUrl} target="_blank" rel="noreferrer" className="btn-navy">Write a review</a>
-              <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.mapQuery)}`} target="_blank" rel="noreferrer" className="btn-line">Get directions</a>
-              <a href={business.profileUrl} target="_blank" rel="noreferrer" className="btn-line">View on Google</a>
+              <a href={business.mapsUrl} target="_blank" rel="noreferrer" className="btn-line">Get directions</a>
+              <a href={business.profileUrl} target="_blank" rel="noreferrer" className="btn-line">View on Google Maps</a>
             </div>
           </div>
-          <iframe title="Drifton on Google Maps" src={mapSrc} loading="lazy" referrerPolicy="no-referrer-when-downgrade"
-            className="h-[360px] w-full border-0 lg:h-full lg:min-h-[460px]" />
+          <a
+            href={business.mapsUrl}
+            target="_blank"
+            rel="noreferrer"
+            title="Click anywhere to open DriftOn in Google Maps"
+            className="group relative block h-[360px] w-full cursor-pointer overflow-hidden lg:h-full lg:min-h-[460px]"
+          >
+            <iframe
+              title="Drifton on Google Maps"
+              src={mapSrc}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="pointer-events-none h-full w-full border-0"
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-navy-900/0 transition-colors group-hover:bg-navy-900/15">
+              <span className="flex items-center gap-1.5 rounded-full bg-white/95 px-4 py-2 text-xs font-bold text-navy-900 shadow-lg opacity-0 transition-opacity group-hover:opacity-100">
+                📍 Click to open in Google Maps ↗
+              </span>
+            </div>
+          </a>
         </div>
       </div>
     </section>

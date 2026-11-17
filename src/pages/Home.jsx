@@ -13,11 +13,11 @@ export default function Home() {
   return (
     <>
       <HeroBanner />
+      <ProductMarquee />
       <VariantSpotlight />
       <ProductGrid />
       <HowToUse />
       <WhyDrifton />
-      <ProductMarquee />
       <Stats />
       <ReferEarn />
       <GoogleBusiness />

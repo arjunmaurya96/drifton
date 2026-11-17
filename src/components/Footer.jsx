@@ -49,7 +49,7 @@ export default function Footer() {
         <div className="mb-10 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1.4fr]">
           <div className="flex flex-col gap-4">
             <Link to="/" aria-label="DriftOn home" className="self-start"><img loading="lazy" decoding="async" src="/assets/images/logo-drifton-white.webp" alt="DriftOn" className="h-11 w-auto sm:h-12" /></Link>
-            <span className="max-w-[300px] text-[14.5px] leading-relaxed">Natural crystal deodorants by AI Enterprises.</span>
+            <span className="max-w-[300px] text-[14.5px] leading-relaxed">Natural crystal roll ons by AI Enterprises.</span>
             <span className="text-[14.5px] leading-relaxed">Customer care: <a href={`mailto:${business.email}`} className="font-semibold text-white underline-offset-4 hover:text-mint hover:underline">{business.email}</a></span>
           </div>
           <Col title="Shop">
@@ -61,6 +61,7 @@ export default function Footer() {
           <Col title="Help">
             <a href={business.trackUrl} target="_blank" rel="noreferrer" className={fl}>Track order</a>
             <Link to="/contact" className={fl}>Contact us</Link>
+            <a href={business.mapsUrl} target="_blank" rel="noreferrer" className={fl}>Store location (Maps)</a>
           </Col>
           <Col title="Policies">
             {Object.entries(policies).map(([id, x]) => (
@@ -83,7 +84,7 @@ export default function Footer() {
             {[
               <>Owned &amp; operated by <span className="text-ondark">{business.legalName}</span></>,
               <>Brand: <span className="text-ondark">DriftOn™</span></>,
-              <>Registered office: <span className="text-ondark">{business.address}</span></>,
+              <>Registered office: <a href={business.mapsUrl} target="_blank" rel="noreferrer" className="text-ondark hover:text-mint hover:underline">{business.address}</a></>,
               <>Manufactured by: <span className="text-ondark">{business.manufacturer.name}, {business.manufacturer.address}</span></>,
               <>Licence: <span className="text-ondark">{business.manufacturer.licence}</span></>,
               <>Customer care: <a href={`mailto:${business.email}`} className="text-ondark hover:text-mint">{business.email}</a></>,

@@ -113,7 +113,7 @@ export default function ProductDetail() {
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <b className="font-head text-4xl font-bold">{formatINR(unit)}</b>
               {pack.multiplier > 1 ? <s className="text-lg text-[#6B7493]">{formatINR(UNIT_PRICE * pack.multiplier)}</s> : <span className="text-[15px] font-semibold text-muted">+ delivery</span>}
-              <span className="w-full text-[13.5px] text-muted-2">{pack.multiplier > 1 ? 'Free delivery on combos' : `Delivery ${formatINR(DELIVERY_FEE)}, free on any 2 sticks`}</span>
+              <span className="w-full text-[13.5px] text-muted-2">{pack.multiplier > 1 ? 'Free delivery on combos' : `Delivery ${formatINR(DELIVERY_FEE)}, free on any 2 roll ons`}</span>
               <TaxNote className="mt-2 w-full" />
             </div>
 

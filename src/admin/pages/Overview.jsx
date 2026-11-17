@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAdmin } from '../store.jsx';
 import { AreaChart, Badge, Card, Icon, PageHeader, ago, inr } from '../ui.jsx';
 import { TOPIC_LABEL } from '../data.js';
+import InvoiceModal from '../components/InvoiceModal.jsx';
 
 const DAY = 86400000;
 
@@ -12,6 +13,7 @@ export default function Overview() {
   const [customStart, setCustomStart] = useState('');
   const [customEnd, setCustomEnd] = useState('');
   const [searchVal, setSearchVal] = useState('');
+  const [invoiceOrder, setInvoiceOrder] = useState(null);
   const navigate = useNavigate();
 
   // Filter orders based on selected timeframe
@@ -325,15 +327,25 @@ export default function Overview() {
                     <b className="font-head text-[15px] font-bold text-emerald-700">{inr(o.total)}</b>
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        update('orders', o.id, { status: 'Packed' }, `Order #${o.id} marked as Packed!`);
-                      }}
-                      className="rounded-lg bg-navy-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-navy-700 transition"
-                    >
-                      Mark as Packed
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          update('orders', o.id, { status: 'Packed' }, `Order #${o.id} marked as Packed!`);
+                        }}
+                        className="rounded-lg bg-navy-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-navy-700 transition"
+                      >
+                        Mark as Packed
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setInvoiceOrder(o)}
+                        className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-navy-900 hover:bg-slate-50 transition"
+                        title="Print Tax Invoice"
+                      >
+                        <Icon.print size={12} /> Invoice
+                      </button>
+                    </div>
                     <Link
                       to={`/admin/customers?q=${encodeURIComponent(o.phone || o.customer)}`}
                       className="text-xs font-semibold text-navy-700 hover:text-brand underline"
@@ -443,12 +455,12 @@ export default function Overview() {
           <AreaChart points={s.days} />
         </Card>
 
-        {/* Product Card with Click to Product Page */}
+        {/* Product Card with Click to Home Page Product */}
         <Card className="p-5 shadow-sm border border-slate-200">
           <div className="mb-3.5 flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
               <h2 className="text-[15px] font-bold text-slate-900">Products & Best Sellers</h2>
-              <p className="text-xs text-slate-500">Click any card to preview live store page</p>
+              <p className="text-xs text-slate-500">Click any product to view live on Home Page</p>
             </div>
             <span className="text-[11px] font-semibold text-slate-500">Units Sold</span>
           </div>
@@ -457,11 +469,11 @@ export default function Overview() {
             {data.products.map((p) => (
               <li key={p.id}>
                 <a
-                  href={`/product/${p.slug}`}
+                  href={`/#${p.id}`}
                   target="_blank"
                   rel="noreferrer"
-                  onClick={() => notify(`Opening live product page for ${p.name}`)}
-                  title={`Click to open live ${p.name} page`}
+                  onClick={() => notify(`Opening Home Page for ${p.name}`)}
+                  title={`Click to view ${p.name} on Home Page`}
                   className="group flex items-center gap-3 rounded-xl border border-slate-200/80 p-2.5 transition-all hover:border-slate-400 hover:bg-slate-50 hover:shadow-sm"
                 >
                   <span
@@ -484,8 +496,8 @@ export default function Overview() {
                       />
                     </span>
                     <div className="mt-1 flex items-center justify-between text-[11px] text-slate-500">
-                      <span>{inr(p.price)} per stick</span>
-                      <span className="text-indigo-600 font-medium group-hover:underline">View in store →</span>
+                      <span>{inr(p.price)} per roll on</span>
+                      <span className="text-brand font-semibold group-hover:underline">View on Home Page →</span>
                     </div>
                   </div>
                 </a>
@@ -613,6 +625,15 @@ export default function Overview() {
           </Card>
         </div>
       </div>
+
+      {/* Professional Tax Invoice Modal */}
+      <InvoiceModal
+        order={invoiceOrder}
+        settings={data.settings}
+        products={data.products}
+        open={!!invoiceOrder}
+        onClose={() => setInvoiceOrder(null)}
+      />
     </div>
   );
 }

@@ -79,7 +79,7 @@ export function CartOffers({ cart, count, addToCart }) {
 export function PriceRows({ s, className = '' }) {
   return (
     <div className={`flex flex-col gap-1.5 text-[14.5px] ${className}`}>
-      <div className="flex justify-between text-muted"><span>{s.sticks} {s.sticks === 1 ? 'stick' : 'sticks'} × {formatINR(UNIT_PRICE)}</span><span>{formatINR(s.full)}</span></div>
+      <div className="flex justify-between text-muted"><span>{s.sticks} {s.sticks === 1 ? 'roll on' : 'roll ons'} × {formatINR(UNIT_PRICE)}</span><span>{formatINR(s.full)}</span></div>
       {s.comboSaving > 0 && <div className="flex justify-between font-semibold text-brand-dark"><span>Offer discount</span><span>−{formatINR(s.comboSaving)}</span></div>}
       {s.couponOff > 0 && <div className="flex justify-between font-semibold text-brand-dark"><span>Coupon {s.coupon}</span><span>−{formatINR(s.couponOff)}</span></div>}
       <div className="flex justify-between text-muted"><span>Delivery</span><span>{s.delivery ? formatINR(s.delivery) : <b className="text-brand-dark">Free</b>}</span></div>

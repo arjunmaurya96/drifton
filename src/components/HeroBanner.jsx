@@ -31,7 +31,7 @@ export default function HeroBanner() {
 
   return (
     <section id="top" aria-label="Featured products" aria-roledescription="carousel"
-      className="relative h-[100svh] min-h-[640px] overflow-hidden">
+      className="relative h-[100svh] min-h-[720px] lg:min-h-[780px] overflow-hidden">
       {/* Product-colour backgrounds (cross-fade) */}
       {bannerSlides.map((s, k) => (
         <div key={k} aria-hidden="true" className={`absolute inset-0 transition-opacity duration-1000 ${k === i ? 'opacity-100' : 'opacity-0'}`}
@@ -58,11 +58,11 @@ export default function HeroBanner() {
           onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
       </div>
 
-      <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 pt-[110px] lg:items-center lg:justify-end lg:pb-14 lg:pt-[118px]">
+      <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 pt-[110px] lg:items-center lg:justify-end lg:pb-16 lg:pt-[135px]">
         {/* Right: this slide's product big in the middle, its other variants smaller around it (no text, no base) */}
-        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[54%] w-full items-end justify-center sm:h-[56%] lg:h-full lg:w-[58%] lg:items-center">
+        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[62%] w-full items-end justify-center sm:h-[66%] lg:h-full lg:w-[62%] xl:w-[64%] lg:items-center lg:justify-center lg:pr-8 xl:pr-14">
           <img src={slide.rightImage || slide.cutout} alt={`${product.name} and other Drifton variants`}
-            className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(calc(100svh-250px),780px)]" style={{ animationDelay: '150ms' }} />
+            className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(calc(100svh-170px),860px)]" style={{ animationDelay: '150ms' }} />
         </Link>
       </div>
       </>}

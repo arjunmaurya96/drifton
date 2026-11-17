@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Arrow, Gem, Flask, Leaf, Flower } from './Icons.jsx';
 
 const cards = [
-  { title: 'Ancient alum. Modern you.', text: 'Made from mineral alum, trusted for generations and shaped into a stick for easy daily use.', tint: '#E3ECFF', ink: '#1C2E6B', Icon: Gem },
+  { title: 'Ancient alum. Modern you.', text: 'Made from mineral alum, trusted for generations and shaped into a roll on for easy daily use.', tint: '#E3ECFF', ink: '#1C2E6B', Icon: Gem },
   { title: 'Clean & simple.', text: 'A short, simple formula built around one hero mineral and botanical extracts.', tint: '#DCEBFB', ink: '#1C4E8A', Icon: Flask },
   { title: 'Kind to nature.', text: 'Plant-inspired blends with a mineral at the core, made with care.', tint: '#E1F3E7', ink: '#17703D', Icon: () => <Leaf size={42} sw={1.4} /> },
   { title: 'Gentle care. Daily comfort.', text: 'Glides on clear with no white marks, and feels light on skin all day.', tint: '#FFEBD9', ink: '#A3461A', Icon: Flower },

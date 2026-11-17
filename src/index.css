@@ -19,6 +19,7 @@
 
   --font-head: "Outfit", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
+  --font-poppins: "Poppins", system-ui, sans-serif;
   --font-serif: "DM Serif Display", Georgia, serif;
   --font-display: "Anton", "Bebas Neue", Impact, sans-serif;
   --font-jost: "Jost", "Outfit", system-ui, sans-serif;
@@ -76,3 +77,25 @@
 @utility icon-btn-outline { @apply icon-btn border-[1.5px] border-solid border-line-strong; }
 @utility lift { @apply transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_44px_-26px_rgba(15,26,60,.3)]; }
 @utility card { @apply bg-white border border-solid border-line rounded-3xl; }
+
+/* ===== Print Styles for DriftOn Professional Tax Invoice ===== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+  
+  html, body {
+    background: #ffffff !important;
+    color: #0F1A3C !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Ensure colors and borders render in print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

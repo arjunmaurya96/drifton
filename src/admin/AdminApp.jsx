@@ -205,7 +205,7 @@ function useLiveAuth() {
 export default function AdminApp() {
   const liveAuth = useLiveAuth();
   const [demoAuthed, setDemoAuthed] = useState(isAuthed);
-  useEffect(() => { document.title = 'DriftOn Admin'; return () => { document.title = 'Drifton – Natural Crystal Deodorant'; }; }, []);
+  useEffect(() => { document.title = 'DriftOn Admin'; return () => { document.title = 'Drifton – Natural Crystal Roll On'; }; }, []);
   const login = () => { if (LIVE) return; try { sessionStorage.setItem(AUTH_KEY, '1'); } catch { /* ignore */ } setDemoAuthed(true); };
   const logout = () => { if (LIVE) { signOut(auth); return; } try { sessionStorage.removeItem(AUTH_KEY); } catch { /* ignore */ } setDemoAuthed(false); };
   if (!liveAuth.ready) return <div className="flex min-h-svh items-center justify-center bg-[#F6F7FB] text-[14px] text-muted-2">Loading…</div>;

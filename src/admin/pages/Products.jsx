@@ -14,13 +14,43 @@ export default function Products() {
         {data.products.map((p) => {
           const low = p.stock < 25;
           return (
-            <Card key={p.id} className="flex flex-col overflow-hidden">
-              <div className="relative flex h-[200px] items-center justify-center" style={{ background: `linear-gradient(180deg, ${p.bg}, #fff)` }}>
-                <img src={p.image} alt="" className="h-[86%] w-auto object-contain" />
+            <Card key={p.id} className="group flex flex-col overflow-hidden transition hover:shadow-md">
+              <a
+                href={`/#${p.id}`}
+                target="_blank"
+                rel="noreferrer"
+                title={`View ${p.name} on Home Page`}
+                className="relative flex h-[200px] items-center justify-center transition group-hover:opacity-95"
+                style={{ background: `linear-gradient(180deg, ${p.bg}, #fff)` }}
+              >
+                <img src={p.image} alt="" className="h-[86%] w-auto object-contain transition group-hover:scale-105" />
                 <span className="absolute left-3 top-3"><Badge tone={p.active ? 'Active' : 'Inactive'}>{p.active ? 'Live on site' : 'Hidden'}</Badge></span>
-              </div>
+                <span className="absolute right-3 top-3 rounded-full bg-white/90 p-1.5 text-navy-900 shadow-sm opacity-0 group-hover:opacity-100 transition">
+                  <Icon.external size={14} />
+                </span>
+              </a>
               <div className="flex flex-1 flex-col gap-3 p-4">
-                <div><b className="block font-head text-[16px]">{p.name}</b><span className="text-[12.5px] text-muted-2">{p.tag}</span></div>
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <a
+                      href={`/#${p.id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block font-head text-[16px] font-bold text-navy-900 hover:text-brand"
+                    >
+                      {p.name} ↗
+                    </a>
+                    <span className="text-[12.5px] text-muted-2">{p.tag}</span>
+                  </div>
+                  <a
+                    href={`/#${p.id}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="shrink-0 text-xs font-semibold text-brand hover:underline"
+                  >
+                    View on Home →
+                  </a>
+                </div>
                 <div className="grid grid-cols-2 gap-2 text-[13px]">
                   <div className="rounded-xl bg-[#F6F7FB] p-2.5"><span className="text-muted-2">Price</span><b className="block text-[16px]">{inr(p.price)}</b></div>
                   <div className={`rounded-xl p-2.5 ${low ? 'bg-[#FFF4E5]' : 'bg-[#F6F7FB]'}`}><span className={low ? 'text-[#9A5A00]' : 'text-muted-2'}>{low ? 'Low stock' : 'In stock'}</span><b className="block text-[16px]">{p.stock}</b></div>

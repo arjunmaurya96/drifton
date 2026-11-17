@@ -225,7 +225,7 @@ export function Contact() {
   const cards = [
     { Icon: Mail, title: 'Email us', value: business.email, href: `mailto:${business.email}`, note: 'We reply within 24 hours' },
     { Icon: Clock, title: 'Working hours', value: business.hours, note: 'Closed on public holidays' },
-    { Icon: Pin, title: 'Registered office', value: business.address, href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.mapQuery)}`, note: 'Get directions' },
+    { Icon: Pin, title: 'Registered office', value: business.address, href: business.mapsUrl, note: 'Get directions on Google Maps' },
   ];
 
   return (
@@ -325,11 +325,32 @@ export function Contact() {
 
         <aside className="flex flex-col gap-5">
           <div className="overflow-hidden rounded-[28px] border border-line bg-white shadow-[0_24px_60px_-30px_rgba(15,26,60,.35)]">
-            <iframe title="DriftOn office on Google Maps" src={`https://www.google.com/maps?q=${encodeURIComponent(business.mapQuery)}&output=embed`}
-              className="h-[240px] w-full border-0 sm:h-[280px]" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+            <a
+              href="https://maps.app.goo.gl/ea8hYYkU7zMWvenP9"
+              target="_blank"
+              rel="noreferrer"
+              title="Click anywhere to open in Google Maps"
+              className="group relative block cursor-pointer overflow-hidden"
+            >
+              <iframe
+                title="DriftOn office on Google Maps"
+                src={business.mapEmbedUrl || `https://www.google.com/maps?q=${encodeURIComponent(business.mapQuery)}&output=embed`}
+                className="pointer-events-none h-[240px] w-full border-0 sm:h-[280px]"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-navy-900/0 transition-colors group-hover:bg-navy-900/15">
+                <span className="rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-bold text-navy-900 shadow-lg opacity-0 transition-opacity group-hover:opacity-100 flex items-center gap-1.5">
+                  📍 Click to open in Google Maps ↗
+                </span>
+              </div>
+            </a>
             <div className="flex flex-col gap-1 p-5 sm:p-6">
               <b className="font-head text-[17px]">{business.name}</b>
               <p className="text-[14px] text-muted">{business.address}</p>
+              <a href="https://maps.app.goo.gl/ea8hYYkU7zMWvenP9" target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-navy-900 hover:text-brand hover:underline">
+                📍 Open in Google Maps →
+              </a>
             </div>
           </div>
           <div className="relative overflow-hidden rounded-[28px] bg-navy-900 p-6 text-white sm:p-7">
