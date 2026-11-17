@@ -8,23 +8,27 @@ const VID = '/assets/videos';
 // ===== Pricing (from the client) =====
 // One stick ₹475 + delivery. Any 2 sticks = combo ₹800 (applied automatically in the cart).
 // DELIVERY_FEE is a PLACEHOLDER — confirm the real delivery charge with the client.
-export const UNIT_PRICE = 475;
-export const COMBO_PRICE = 800;
-export const DELIVERY_FEE = 50; // DUMMY — charged on single-stick orders only; combos ship free
-export const COMBO_SAVING = UNIT_PRICE * 2 - COMBO_PRICE; // ₹150 per pair
+export let UNIT_PRICE = 475;
+export let COMBO_PRICE = 800;
+export let DELIVERY_FEE = 50; // DUMMY — charged on single-stick orders only; combos ship free
+export let COMBO_SAVING = UNIT_PRICE * 2 - COMBO_PRICE; // ₹150 per pair
 
 // Price for n sticks with the combo applied to every pair
 // Cart offers (client):
 //  • Offer 1 — add a Natural Alum Roll On as the 2nd roll on: the pair costs ₹750 (any other pair: ₹800).
 //  • Offer 2 — after 2 roll ons, the 3rd roll on (any variant) costs just ₹300.
 //  Works in sets of 3: [pair + ₹300 third]. A leftover pair = pair price, a leftover single = ₹475.
-export const NATURAL_PAIR_PRICE = 750;
-export const THIRD_PRICE = 300;
+export let NATURAL_PAIR_PRICE = 750;
+// which offers are switched on (admin panel → Offers & coupons)
+export const OFFERS_ON = { naturalPair: true, anyPair: true, third: true, delivery: true };
+export let THIRD_PRICE = 300;
 export const priceFor = (n, naturals = 0) => {
   const sets = Math.floor(n / 3), rest = n % 3;
   const pairs = sets + (rest === 2 ? 1 : 0);
-  const naturalPairs = Math.min(pairs, naturals);
-  return naturalPairs * NATURAL_PAIR_PRICE + (pairs - naturalPairs) * COMBO_PRICE + sets * THIRD_PRICE + (rest === 1 ? UNIT_PRICE : 0);
+  const naturalPairs = OFFERS_ON.naturalPair ? Math.min(pairs, naturals) : 0;
+  const pairPrice = OFFERS_ON.anyPair ? COMBO_PRICE : UNIT_PRICE * 2;
+  const third = OFFERS_ON.third ? THIRD_PRICE : UNIT_PRICE;
+  return naturalPairs * NATURAL_PAIR_PRICE + (pairs - naturalPairs) * pairPrice + sets * third + (rest === 1 ? UNIT_PRICE : 0);
 };
 
 // Coupons — DUMMY codes, confirm with the client
@@ -273,10 +277,42 @@ export const summarize = (lines, couponCode = '') => {
   const naturals = lines.filter((l) => l.id === 'natural').reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
   const items = priceFor(sticks, naturals);
   const comboSaving = full - items;
-  const delivery = sticks === 0 || sticks >= 2 ? 0 : DELIVERY_FEE;
+  const delivery = sticks === 0 || sticks >= 2 || !OFFERS_ON.delivery ? 0 : DELIVERY_FEE;
   const coupon = coupons[couponCode.trim().toUpperCase()];
   // Client: a combo gets ONE benefit — free delivery OR ₹100 off. Combos get free delivery, so the coupon is not added on top.
   const couponBlocked = Boolean(coupon) && comboSaving > 0;
   const couponOff = coupon && !couponBlocked ? Math.min(coupon.off, items) : 0;
   return { sticks, naturals, full, items, comboSaving, delivery, couponBlocked, coupon: coupon && !couponBlocked ? couponCode.trim().toUpperCase() : '', couponOff, total: items + delivery - couponOff };
 };
+
+// =====================================================================
+//  Values saved from the admin panel (Firestore config/store) override the
+//  built-in ones above. Called once when the site starts.
+// =====================================================================
+export function applyStoreConfig(cfg) {
+  if (!cfg) return;
+  const o = Object.fromEntries((cfg.offers || []).map((x) => [x.id, x]));
+  if (o['natural-pair']) { NATURAL_PAIR_PRICE = Number(o['natural-pair'].value) || NATURAL_PAIR_PRICE; OFFERS_ON.naturalPair = o['natural-pair'].active !== false; }
+  if (o['any-pair']) { COMBO_PRICE = Number(o['any-pair'].value) || COMBO_PRICE; OFFERS_ON.anyPair = o['any-pair'].active !== false; }
+  if (o.third) { THIRD_PRICE = Number(o.third.value) || THIRD_PRICE; OFFERS_ON.third = o.third.active !== false; }
+  if (o.delivery) { DELIVERY_FEE = Number(o.delivery.value) || 0; OFFERS_ON.delivery = o.delivery.active !== false; }
+  if (cfg.products) {
+    const first = cfg.products.find((p) => Number(p.price));
+    if (first) UNIT_PRICE = Number(first.price);
+    cfg.products.forEach((cp) => {
+      const p = products.find((x) => x.id === cp.id);
+      if (!p) return;
+      if (Number(cp.price)) p.price = Number(cp.price);
+      if (cp.name) p.name = cp.name;
+      if (cp.tag) p.tag = cp.tag;
+      if (Array.isArray(cp.ingredients) && cp.ingredients.length) p.ingredients = cp.ingredients;
+      p.stock = cp.stock;
+      p.hidden = cp.active === false;
+    });
+  }
+  COMBO_SAVING = UNIT_PRICE * 2 - COMBO_PRICE;
+  if (cfg.coupons) {
+    Object.keys(coupons).forEach((k) => delete coupons[k]);
+    cfg.coupons.filter((c) => c.active).forEach((c) => { coupons[c.code] = { off: Number(c.off) || 0, note: c.note || '' }; });
+  }
+}

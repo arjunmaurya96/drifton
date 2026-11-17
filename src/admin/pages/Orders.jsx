@@ -111,7 +111,7 @@ export default function Orders() {
             <section className="rounded-2xl border border-[#EEF0F5] p-4">
               <h3 className="mb-2 text-[12px] font-bold uppercase tracking-wider text-muted-2">Customer</h3>
               <b className="text-[15px]">{order.customer}</b>
-              <p className="text-[13.5px] text-muted">{order.address}</p>
+              <p className="text-[13.5px] text-muted">{order.address}{order.pin && ` — ${order.pin}`}</p>
               <div className="mt-3 flex gap-2">
                 <a href={`tel:${order.phone}`} className="inline-flex items-center gap-1.5 rounded-lg bg-[#F3F5FA] px-3 py-1.5 text-[13px] font-semibold"><Icon.phone size={15} /> {order.phone}</a>
                 <a href={`https://wa.me/91${order.phone}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-[#E5F5EC] px-3 py-1.5 text-[13px] font-semibold text-[#17703D]">WhatsApp</a>
@@ -135,6 +135,8 @@ export default function Orders() {
               <dl className="mt-4 flex flex-col gap-1.5 border-t border-[#EEF0F5] pt-3 text-[14px]">
                 <div className="flex justify-between text-muted"><dt>Subtotal ({order.sticks} roll ons, offers applied)</dt><dd>{inr(order.subtotal)}</dd></div>
                 <div className="flex justify-between text-muted"><dt>Delivery</dt><dd>{order.delivery ? inr(order.delivery) : 'Free'}</dd></div>
+                {order.couponOff > 0 && <div className="flex justify-between text-muted"><dt>Coupon {order.coupon}</dt><dd>− {inr(order.couponOff)}</dd></div>}
+                {order.codFee > 0 && <div className="flex justify-between text-muted"><dt>COD fee</dt><dd>{inr(order.codFee)}</dd></div>}
                 <div className="flex justify-between text-[16px] font-bold"><dt>Total · {order.payment}</dt><dd>{inr(order.total)}</dd></div>
               </dl>
             </section>

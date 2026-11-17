@@ -1,0 +1,54 @@
+rules_version = '2';
+// DriftOn — Firestore security rules
+// Deploy: Firebase console → Firestore Database → Rules → paste this → Publish
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // admin list — an admin can check only their own entry; add admins from the Firebase console
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // website prices / offers / settings — everyone reads, only admins change
+    match /config/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // order number counter — the website can only add 1 at a time
+    match /counters/orders {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['next']) && request.resource.data.next == 42;
+      allow update: if request.resource.data.keys().hasOnly(['next']) && request.resource.data.next == resource.data.next + 1;
+      allow delete: if false;
+    }
+
+    // orders — customers can place a new order; only admins can see or change orders
+    match /orders/{orderId} {
+      allow create: if request.resource.data.status == 'New'
+                    && request.resource.data.total is number
+                    && request.resource.data.phone is string
+                    && orderId == request.resource.data.id;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // contact page messages
+    match /enquiries/{id} {
+      allow create: if request.resource.data.status == 'New'
+                    && request.resource.data.name is string
+                    && request.resource.data.msg is string;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // reviews — public sees only published ones
+    match /reviews/{id} {
+      allow read: if resource.data.status == 'Published' || isAdmin();
+      allow write: if isAdmin();
+    }
+  }
+}

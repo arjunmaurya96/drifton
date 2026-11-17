@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
 import { formatINR, summarize, coupons } from '../data/products.js';
 import { createPayment } from '../lib/payment.js';
+import { saveOrder } from '../lib/api.js';
 import { QtyStepper, PriceRows } from './CartDrawer.jsx';
 import { Close, Lock, CheckCircle, Shield, Truck } from './Icons.jsx';
 
@@ -59,9 +60,23 @@ export default function BuyNowModal() {
     }
     setBusy(true);
     const r = await createPayment({ amount: total, method });
+    if (!r.ok) { setBusy(false); return setErr('Payment failed. Please try again.'); }
+    // save the order in the database → gets the next order number (JSR-drifton-0041 …)
+    let saved;
+    try {
+      saved = await saveOrder({
+        customer: d.name.trim(), phone: d.phone, address: d.address.trim(), pin: d.pin,
+        items: lines.map((l) => ({ id: l.id, name: l.name, qty: l.qty * (l.sticks || 1) })),
+        sticks: sum.sticks, subtotal: sum.items, delivery: sum.delivery, coupon: sum.coupon || '', couponOff: sum.couponOff,
+        codFee: fee, total, payment: method === 'cod' ? 'COD' : method === 'upi' ? 'UPI' : method === 'card' ? 'Card' : 'Net banking',
+        paymentStatus: method === 'cod' ? 'Pay on delivery' : 'Paid (demo)', source: buy.fromCart ? 'Cart' : 'Buy now',
+      });
+    } catch {
+      setBusy(false);
+      return setErr('Could not place the order. Please check your internet and try again.');
+    }
     setBusy(false);
-    if (!r.ok) return setErr('Payment failed. Please try again.');
-    setOrder(r);
+    setOrder({ ...r, orderId: saved.id });
     if (buy.fromCart) clearCart();
   };
 
@@ -77,7 +92,7 @@ export default function BuyNowModal() {
         {order ? (
           <div className="flex flex-col items-center gap-4 px-6 py-10 text-center">
             <span className="flex size-16 items-center justify-center rounded-full bg-mint-soft text-brand"><CheckCircle size={36} /></span>
-            <p className="text-[17px] text-muted">Thank you, {d.name}! Order <b className="text-navy-900">#{order.orderId}</b> of {formatINR(order.amount)} is confirmed.</p>
+            <p className="text-[17px] text-muted">Thank you, {d.name}! Order <b className="text-navy-900">{order.orderId}</b> of {formatINR(order.amount)} is confirmed.</p>
             <span className="rounded-full bg-page px-4 py-1.5 text-sm text-muted-2">Demo order — no real payment was taken</span>
             <Link to="/#shop" onClick={closeBuy} className="btn-navy">Continue shopping</Link>
           </div>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
 import { products, formatINR, summarize, coupons, UNIT_PRICE, COMBO_PRICE } from '../data/products.js';
 import { createPayment } from '../lib/payment.js';
+import { saveOrder } from '../lib/api.js';
 import { business } from '../data/site.js';
 import { QtyStepper, PriceRows, CartOffers } from './CartDrawer.jsx';
 import { Close, Lock, CheckCircle, Shield, Truck, Plus, Trash, ChevronLeft } from './Icons.jsx';
@@ -129,9 +130,23 @@ export default function CheckoutModal() {
     if (!d.name.trim() || !d.address.trim() || !/^\d{6}$/.test(d.pin)) return setErr('Please add your name, full address and 6-digit pincode.');
     setBusy(true);
     const r = await createPayment({ amount: total, method });
+    if (!r.ok) { setBusy(false); return setErr('Payment failed. Please try again.'); }
+    // save the order in the database → gets the next order number (JSR-drifton-0041 …)
+    let saved;
+    try {
+      saved = await saveOrder({
+        customer: d.name.trim(), phone: d.phone, address: d.address.trim(), pin: d.pin,
+        items: cart.map((l) => ({ id: l.id, name: l.name, qty: l.qty * (l.sticks || 1) })),
+        sticks: sum.sticks, subtotal: sum.items, delivery: sum.delivery, coupon: sum.coupon || '', couponOff: sum.couponOff,
+        codFee: fee, total, payment: method === 'cod' ? 'COD' : method === 'upi' ? 'UPI' : method === 'card' ? 'Card' : 'Net banking',
+        paymentStatus: method === 'cod' ? 'Pay on delivery' : 'Paid (demo)', source: 'Quick checkout',
+      });
+    } catch {
+      setBusy(false);
+      return setErr('Could not place the order. Please check your internet and try again.');
+    }
     setBusy(false);
-    if (!r.ok) return setErr('Payment failed. Please try again.');
-    setOrder({ ...r, sticks: sum.sticks });
+    setOrder({ ...r, orderId: saved.id, sticks: sum.sticks });
     clearCart();
   };
 
@@ -155,7 +170,7 @@ export default function CheckoutModal() {
         {order ? (
           <div className="flex flex-col items-center gap-4 border-t border-line px-6 py-12 text-center">
             <span className="flex size-16 items-center justify-center rounded-full bg-mint-soft text-brand"><CheckCircle size={36} /></span>
-            <p className="text-[17px] text-muted">Thank you, {d.name}! Order <b className="text-navy-900">#{order.orderId}</b> of {formatINR(order.amount)} ({order.sticks} {order.sticks === 1 ? 'stick' : 'sticks'}) is confirmed.</p>
+            <p className="text-[17px] text-muted">Thank you, {d.name}! Order <b className="text-navy-900">{order.orderId}</b> of {formatINR(order.amount)} ({order.sticks} {order.sticks === 1 ? 'stick' : 'sticks'}) is confirmed.</p>
             <span className="rounded-full bg-page px-4 py-1.5 text-sm text-muted-2">Demo order — no real payment was taken</span>
             <div className="flex flex-wrap justify-center gap-2.5">
               <a href={business.trackUrl} target="_blank" rel="noreferrer" className="btn-line">Track on Ekart</a>
@@ -198,7 +213,7 @@ export default function CheckoutModal() {
                   <div>
                     <span className="mb-2.5 block text-sm font-bold">Add more variants</span>
                     <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-                      {products.map((p) => {
+                      {products.filter((p) => !p.hidden).map((p) => {
                         const n = qtyOf(p.id);
                         return (
                           <div key={p.id} className={`flex flex-col items-center gap-1.5 rounded-2xl border-[1.5px] p-3 text-center ${n ? 'border-navy-700' : 'border-line'}`} style={{ background: `linear-gradient(180deg, ${p.bg}, #fff 85%)` }}>

@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { AdminStore, useAdmin } from './store.jsx';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../lib/firebase.js';
+import { AdminStore, useAdmin, LIVE } from './store.jsx';
 import { Icon, inputCls } from './ui.jsx';
 import Overview from './pages/Overview.jsx';
 import Orders from './pages/Orders.jsx';
@@ -11,20 +14,34 @@ import Enquiries from './pages/Enquiries.jsx';
 import Reviews from './pages/Reviews.jsx';
 import Settings from './pages/Settings.jsx';
 
-// DEMO login — replace with real authentication when the database is connected.
+// Login: Firebase email/password (LIVE) — the user must also have a doc in admins/{uid}.
+// Without Firebase keys the panel runs in DEMO mode with the demo login below.
 const DEMO = { email: 'admin@drifton.in', password: 'drifton123' };
 const AUTH_KEY = 'drifton_admin_auth';
 const isAuthed = () => { try { return sessionStorage.getItem(AUTH_KEY) === '1'; } catch { return false; } };
 
-function Login({ onLogin }) {
-  const [email, setEmail] = useState(DEMO.email);
+function Login({ onLogin, notice }) {
+  const [email, setEmail] = useState(LIVE ? '' : DEMO.email);
+  const [busy, setBusy] = useState(false);
   const [pw, setPw] = useState('');
   const [show, setShow] = useState(false);
   const [err, setErr] = useState('');
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    if (email.trim().toLowerCase() === DEMO.email && pw === DEMO.password) onLogin();
-    else setErr('Wrong email or password.');
+    setErr('');
+    if (!LIVE) {
+      if (email.trim().toLowerCase() === DEMO.email && pw === DEMO.password) onLogin();
+      else setErr('Wrong email or password.');
+      return;
+    }
+    setBusy(true);
+    try {
+      await signInWithEmailAndPassword(auth, email.trim(), pw);
+      onLogin();
+    } catch {
+      setErr('Wrong email or password.');
+    }
+    setBusy(false);
   };
   return (
     <div className="grid min-h-svh grid-cols-1 bg-[#F6F7FB] lg:grid-cols-2">
@@ -49,9 +66,9 @@ function Login({ onLogin }) {
                 <input className={`${inputCls} pr-11`} type={show ? 'text' : 'password'} value={pw} onChange={(e) => setPw(e.target.value)} autoComplete="current-password" />
                 <button type="button" onClick={() => setShow(!show)} aria-label={show ? 'Hide password' : 'Show password'} className="absolute right-2 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-lg text-muted-2 hover:bg-[#F3F5FA]">{show ? <Icon.eyeOff size={18} /> : <Icon.eye size={18} />}</button>
               </span></label>
-            {err && <p role="alert" className="text-[13px] font-semibold text-[#B42318]">{err}</p>}
-            <button className="mt-1 min-h-12 rounded-xl bg-navy-900 text-[15px] font-semibold text-white hover:bg-navy-700">Sign in</button>
-            <p className="rounded-xl bg-[#FFF4E5] px-3.5 py-2.5 text-[12.5px] text-[#8A4B00]">Demo login — email <b>{DEMO.email}</b>, password <b>{DEMO.password}</b></p>
+            {(err || notice) && <p role="alert" className="text-[13px] font-semibold text-[#B42318]">{err || notice}</p>}
+            <button disabled={busy} className="mt-1 min-h-12 rounded-xl bg-navy-900 text-[15px] font-semibold text-white hover:bg-navy-700 disabled:opacity-60">{busy ? 'Signing in…' : 'Sign in'}</button>
+            {!LIVE && <p className="rounded-xl bg-[#FFF4E5] px-3.5 py-2.5 text-[12.5px] text-[#8A4B00]">Demo login — email <b>{DEMO.email}</b>, password <b>{DEMO.password}</b></p>}
             <Link to="/" className="text-center text-[13px] font-semibold text-navy-700 hover:underline">← Back to website</Link>
           </div>
         </form>
@@ -61,7 +78,7 @@ function Login({ onLogin }) {
 }
 
 function Shell({ onLogout }) {
-  const { data, toast } = useAdmin();
+  const { data, toast, reset } = useAdmin();
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -134,9 +151,17 @@ function Shell({ onLogout }) {
         </header>
 
         <main className="mx-auto max-w-[1400px] p-4 sm:p-6 lg:p-8">
-          <div className="mb-5 rounded-xl border border-[#FFE2B8] bg-[#FFF8EC] px-4 py-2.5 text-[13px] text-[#8A4B00]">
-            <b>Design preview:</b> this dashboard shows demo data. It will show real orders once the database is connected.
-          </div>
+          {!LIVE && (
+            <div className="mb-5 rounded-xl border border-[#FFE2B8] bg-[#FFF8EC] px-4 py-2.5 text-[13px] text-[#8A4B00]">
+              <b>Demo mode:</b> Firebase keys are not added yet, so this dashboard shows demo data.
+            </div>
+          )}
+          {LIVE && !data.configSaved && (
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#BFD3FF] bg-[#EEF3FF] px-4 py-2.5 text-[13px] text-[#1E3A8A]">
+              <span><b>First time setup:</b> publish the default prices, offers and settings to the database.</span>
+              <button onClick={reset} className="rounded-lg bg-navy-900 px-3 py-1.5 text-[13px] font-semibold text-white">Publish defaults</button>
+            </div>
+          )}
           <Routes>
             <Route index element={<Overview />} />
             <Route path="orders" element={<Orders />} />
@@ -159,10 +184,32 @@ function Shell({ onLogout }) {
   );
 }
 
+// LIVE: watch the Firebase session and check the admins/{uid} document
+function useLiveAuth() {
+  const [state, setState] = useState({ ready: !LIVE, authed: false, error: '' });
+  useEffect(() => {
+    if (!LIVE) return undefined;
+    return onAuthStateChanged(auth, async (user) => {
+      if (!user) return setState({ ready: true, authed: false, error: '' });
+      try {
+        const ok = (await getDoc(doc(db, 'admins', user.uid))).exists();
+        if (ok) return setState({ ready: true, authed: true, error: '' });
+      } catch { /* not allowed */ }
+      await signOut(auth);
+      setState({ ready: true, authed: false, error: 'This account is not an admin.' });
+    });
+  }, []);
+  return state;
+}
+
 export default function AdminApp() {
-  const [authed, setAuthed] = useState(isAuthed);
+  const liveAuth = useLiveAuth();
+  const [demoAuthed, setDemoAuthed] = useState(isAuthed);
   useEffect(() => { document.title = 'DriftOn Admin'; return () => { document.title = 'Drifton – Natural Crystal Deodorant'; }; }, []);
-  const login = () => { try { sessionStorage.setItem(AUTH_KEY, '1'); } catch { /* ignore */ } setAuthed(true); };
-  const logout = () => { try { sessionStorage.removeItem(AUTH_KEY); } catch { /* ignore */ } setAuthed(false); };
-  return <AdminStore>{authed ? <Shell onLogout={logout} /> : <Login onLogin={login} />}</AdminStore>;
+  const login = () => { if (LIVE) return; try { sessionStorage.setItem(AUTH_KEY, '1'); } catch { /* ignore */ } setDemoAuthed(true); };
+  const logout = () => { if (LIVE) { signOut(auth); return; } try { sessionStorage.removeItem(AUTH_KEY); } catch { /* ignore */ } setDemoAuthed(false); };
+  if (!liveAuth.ready) return <div className="flex min-h-svh items-center justify-center bg-[#F6F7FB] text-[14px] text-muted-2">Loading…</div>;
+  const authed = LIVE ? liveAuth.authed : demoAuthed;
+  // data listeners start only after login (Firestore rules allow admins only)
+  return authed ? <AdminStore><Shell onLogout={logout} /></AdminStore> : <Login onLogin={login} notice={liveAuth.error} />;
 }

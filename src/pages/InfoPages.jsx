@@ -4,6 +4,7 @@ import { products, combos, formatINR, makeLine, UNIT_PRICE, COMBO_PRICE, COMBO_S
 import { termsEffective, termsIntro, termsSections } from '../data/terms.js';
 import { business } from '../data/site.js';
 import { useStore } from '../context/StoreContext.jsx';
+import { saveEnquiry } from '../lib/api.js';
 import { Check, CheckCircle, Pin, Clock, Box, Truck, Mail, Arrow } from '../components/Icons.jsx';
 
 // ---------------------------------------------------------------------
@@ -204,11 +205,20 @@ export function Contact() {
   const [sent, setSent] = useState(false);
   const topic = topics.find((t) => t.id === f.topic);
   const set = (k) => (e) => setF({ ...f, [k]: k === 'phone' ? e.target.value.replace(/\D/g, '') : e.target.value });
-  const send = (e) => {
+  const [sending, setSending] = useState(false);
+  const send = async (e) => {
     e.preventDefault();
+    if (sending) return;
     if (!f.name.trim() || !/\S+@\S+\.\S+/.test(f.email) || !f.msg.trim()) return notify('Please add your name, a valid email and a message');
     if (topic.business && (!f.company.trim() || !f.city.trim() || f.phone.length !== 10)) return notify('Please add your business name, city and 10-digit mobile number');
-    setSent(true); setF(empty); // DEMO — connect to email / CRM
+    setSending(true);
+    try {
+      await saveEnquiry({ topic: f.topic, name: f.name.trim(), email: f.email.trim(), phone: f.phone, order: f.order.trim(), company: f.company.trim(), city: f.city.trim(), msg: f.msg.trim() });
+      setSent(true); setF(empty);
+    } catch {
+      notify('Could not send right now. Please try again or call us.');
+    }
+    setSending(false);
   };
   const input = 'min-h-[52px] w-full rounded-2xl border-[1.5px] border-line bg-page px-4 text-[15px] font-normal text-navy-900 outline-none transition placeholder:text-muted-2 focus:border-navy-700 focus:bg-white focus:ring-4 focus:ring-blue-soft';
   const label = 'flex flex-col gap-1.5 text-[13.5px] font-semibold text-navy-900';
@@ -307,7 +317,7 @@ export function Contact() {
               <label className={label}>Message *<textarea rows={5} className={`${input} py-3`} value={f.msg} onChange={set('msg')} placeholder="Tell us how we can help…" /></label>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <span className="text-[13px] text-muted-2">By sending, you agree to our <Link to="/terms" className="font-semibold text-navy-700 underline">Terms & Conditions</Link>.</span>
-                <button className="btn-primary min-h-[52px] px-8">Send message</button>
+                <button disabled={sending} className="btn-primary min-h-[52px] px-8 disabled:opacity-60">{sending ? 'Sending…' : 'Send message'}</button>
               </div>
             </form>
           )}

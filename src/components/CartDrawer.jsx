@@ -61,7 +61,7 @@ export function CartOffers({ cart, count, addToCart }) {
         </div>
         {step === 2 && (
           <div className="grid grid-cols-4 gap-2">
-            {products.map((p) => (
+            {products.filter((p) => !p.hidden).map((p) => (
               <button key={p.id} onClick={() => addToCart(p)} aria-label={`Add ${p.name} for ${formatINR(THIRD_PRICE)}`}
                 className="flex flex-col items-center gap-1 rounded-xl bg-white/10 p-2 text-[12px] font-semibold hover:bg-white/20">
                 <img src={p.image} alt="" className="h-12 w-auto object-contain" />

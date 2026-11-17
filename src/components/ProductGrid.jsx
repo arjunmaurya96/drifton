@@ -37,7 +37,7 @@ export default function ProductGrid() {
         <div className="relative">
           <div ref={track}
             className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible lg:grid-cols-4 lg:gap-4 [&::-webkit-scrollbar]:hidden">
-            {products.map((p) => (
+            {products.filter((p) => !p.hidden).map((p) => (
               <div key={p.id} className="w-full shrink-0 snap-start sm:w-auto">
                 <ProductCard product={p} quickCheckout className="h-[66svh] min-h-[460px] max-h-[580px] sm:h-[560px] sm:max-h-none lg:h-[520px] xl:h-[600px]" />
               </div>

@@ -1,10 +1,11 @@
 // =====================================================================
-//  ADMIN PANEL — DUMMY DATA (design preview only)
-//  Everything here is generated. When the database is chosen
-//  (Firebase / Google Sheet / own backend), replace this file with real API calls.
+//  ADMIN PANEL — DEMO DATA
+//  Used only when Firebase keys are NOT set (demo mode).
+//  `defaultConfig` is also what "Publish default settings" writes to Firebase.
 // =====================================================================
 import { products, UNIT_PRICE, COMBO_PRICE, NATURAL_PAIR_PRICE, THIRD_PRICE, DELIVERY_FEE, coupons } from '../data/products.js';
 import { business } from '../data/site.js';
+import { formatOrderId, FIRST_ORDER_NO } from '../lib/api.js';
 
 // small deterministic random so the demo looks the same on every reload
 let seed = 7;
@@ -58,7 +59,7 @@ const orders = Array.from({ length: 64 }, (_, i) => {
   let status = daysAgo > 6 ? 'Delivered' : daysAgo > 3 ? pick(['Shipped', 'Delivered']) : daysAgo > 1 ? pick(['Packed', 'Shipped']) : pick(['New', 'New', 'Packed']);
   if (rnd() < 0.05) status = 'Cancelled';
   return {
-    id: `DRF${(240001 + i).toString()}`,
+    id: formatOrderId(FIRST_ORDER_NO + 63 - i),
     customerId: c.id, customer: c.name, phone: c.phone, city: c.city,
     address: `${Math.floor(rnd() * 200) + 1}, Sector ${Math.floor(rnd() * 60) + 1}, ${c.city}`,
     items, ...pr,
@@ -67,12 +68,12 @@ const orders = Array.from({ length: 64 }, (_, i) => {
     tracking: ['Shipped', 'Delivered'].includes(status) ? `EK${Math.floor(1e9 + rnd() * 9e9)}` : '',
     date: new Date(today - daysAgo * DAY - Math.floor(rnd() * 10) * 3600000).toISOString(),
   };
-}).sort((a, b) => b.date.localeCompare(a.date));
+}).sort((a, b) => b.date.localeCompare(a.date)).map((o, i, all) => ({ ...o, id: formatOrderId(FIRST_ORDER_NO + all.length - 1 - i) }));
 
 const enquiries = [
   ['distributor', 'Manoj Agarwal', 'Agarwal Distributors', 'Jaipur', 'We distribute personal care products across Rajasthan. Interested in DriftOn distribution.'],
   ['retailer', 'Sunita Rao', 'Rao Pharmacy', 'Bengaluru', 'Want to stock all 4 variants in our pharmacy. Please share retailer pricing.'],
-  ['order', 'Riya Sharma', '', 'New Delhi', 'When will my order DRF240003 be delivered?'],
+  ['order', 'Riya Sharma', '', 'New Delhi', 'When will my order JSR-drifton-0102 be delivered?'],
   ['product', 'Aman Verma', '', 'Noida', 'Is the Natural roll on safe for sensitive skin?'],
   ['distributor', 'Imran Shaikh', 'Shaikh Traders', 'Mumbai', 'Looking for distributorship for Mumbai suburbs.'],
   ['bulk', 'Kavya Nair', 'FitLife Gyms', 'Pune', 'Need 200 roll ons for our gym members. Bulk price?'],
@@ -121,8 +122,17 @@ export const initialData = {
     storeName: 'DriftOn™', legalName: business.legalName, email: business.email, phone: business.phone || '',
     address: business.address, hours: business.hours,
     announcement: 'Add Natural Roll On: 2 for ₹750 · 3rd roll on just ₹300 · Free delivery',
+    gst: '07ACIFA5199E1Z8',
     manufacturer: business.manufacturer.name, manufacturerAddress: business.manufacturer.address, licence: business.manufacturer.licence,
   },
 };
 
 export const TOPIC_LABEL = { order: 'Order & delivery', returns: 'Returns & refunds', product: 'Product question', distributor: 'Distributor', retailer: 'Retailer', bulk: 'Bulk / wholesale', other: 'Other' };
+
+// website settings that live in Firestore config/store
+export const defaultConfig = () => ({
+  products: initialData.products,
+  offers: initialData.offers,
+  coupons: initialData.coupons.filter((c) => c.active).map(({ code, off, note, active }) => ({ code, off, note, active })),
+  settings: initialData.settings,
+});

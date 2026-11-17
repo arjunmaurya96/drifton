@@ -1,13 +1,14 @@
-import { useState } from 'react';
-import { useAdmin } from '../store.jsx';
+import { useEffect, useState } from 'react';
+import { useAdmin, LIVE } from '../store.jsx';
 import { Btn, Card, Field, PageHeader, inputCls } from '../ui.jsx';
 
 export default function Settings() {
   const { data, saveSettings, reset } = useAdmin();
   const [f, setF] = useState(data.settings);
+  useEffect(() => setF(data.settings), [data.settings]); // live: refresh when the database loads
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const sections = [
-    ['Store', 'Basic details shown across the website.', [['storeName', 'Store name'], ['legalName', 'Legal business name'], ['email', 'Customer care email'], ['phone', 'Customer care phone'], ['hours', 'Working hours'], ['address', 'Registered address', true]]],
+    ['Store', 'Basic details shown across the website.', [['storeName', 'Store name'], ['legalName', 'Legal business name'], ['email', 'Customer care email'], ['phone', 'Customer care phone'], ['gst', 'GSTIN'], ['hours', 'Working hours'], ['address', 'Registered address', true]]],
     ['Announcement bar', 'The thin bar at the very top of the website.', [['announcement', 'Text', true]]],
     ['Manufacturer', 'Shown in the footer and on the Terms page.', [['manufacturer', 'Manufacturer name'], ['licence', 'Licence / registration no.'], ['manufacturerAddress', 'Manufacturer address', true]]],
   ];
@@ -24,15 +25,24 @@ export default function Settings() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {fields.map(([k, label, wide]) => (
                 <Field key={k} label={label} className={wide ? 'sm:col-span-2' : ''}>
-                  {wide ? <textarea rows={2} className={`${inputCls} py-2.5`} value={f[k]} onChange={set(k)} /> : <input className={inputCls} value={f[k]} onChange={set(k)} />}
+                  {wide ? <textarea rows={2} className={`${inputCls} py-2.5`} value={f[k] ?? ''} onChange={set(k)} /> : <input className={inputCls} value={f[k] ?? ''} onChange={set(k)} />}
                 </Field>
               ))}
             </div>
           </Card>
         ))}
         <Card className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-          <div><h2 className="font-head text-[17px] font-bold">Demo data</h2><p className="text-[13.5px] text-muted-2">Undo every change you made in this preview.</p></div>
-          <Btn variant="danger" onClick={() => { reset(); setF(data.settings); }}>Reset demo data</Btn>
+          {LIVE ? (
+            <>
+              <div><h2 className="font-head text-[17px] font-bold">Default settings</h2><p className="text-[13.5px] text-muted-2">Put back the original prices, offers, coupons and text on the website. Orders are not touched.</p></div>
+              <Btn variant="danger" onClick={() => { if (window.confirm('Put back all default prices, offers and settings?')) { reset(); setF(data.settings); } }}>Restore defaults</Btn>
+            </>
+          ) : (
+            <>
+              <div><h2 className="font-head text-[17px] font-bold">Demo data</h2><p className="text-[13.5px] text-muted-2">Undo every change you made in this preview.</p></div>
+              <Btn variant="danger" onClick={() => { reset(); setF(data.settings); }}>Reset demo data</Btn>
+            </>
+          )}
         </Card>
       </div>
     </>

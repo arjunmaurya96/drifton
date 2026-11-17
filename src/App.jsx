@@ -1,6 +1,8 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { business } from './data/site.js';
+import { applyStoreConfig } from './data/products.js';
+import { loadStoreConfig } from './lib/api.js';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import AuthModal from './components/AuthModal.jsx';
@@ -53,8 +55,32 @@ function ScrollManager() {
   return null;
 }
 
+// Prices, offers, coupons and settings saved in the admin panel (Firestore) — loaded once
+function useStoreConfig() {
+  const [, setVer] = useState(0);
+  useEffect(() => {
+    loadStoreConfig().then((cfg) => {
+      if (!cfg) return;
+      applyStoreConfig(cfg);
+      const st = cfg.settings || {};
+      if (st.email) business.email = st.email;
+      if (st.phone) business.phone = st.phone;
+      if (st.address) business.address = st.address;
+      if (st.hours) business.hours = st.hours;
+      if (st.legalName) business.legalName = st.legalName;
+      if (st.announcement) business.announcement = st.announcement;
+      if (st.manufacturer) business.manufacturer.name = st.manufacturer;
+      if (st.manufacturerAddress) business.manufacturer.address = st.manufacturerAddress;
+      if (st.licence) business.manufacturer.licence = st.licence;
+      if (st.gst) business.gst = st.gst;
+      setVer((v) => v + 1); // re-render with the new values
+    });
+  }, []);
+}
+
 export default function App() {
   const { pathname } = useLocation();
+  useStoreConfig();
   if (pathname.startsWith('/admin')) {
     return (
       <Suspense fallback={<PageLoader />}>
