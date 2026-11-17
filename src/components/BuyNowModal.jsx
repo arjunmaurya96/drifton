@@ -21,7 +21,7 @@ export default function BuyNowModal() {
   const { buy, closeBuy, clearCart } = useStore();
   const [lines, setLines] = useState([]);
   const [method, setMethod] = useState('upi');
-  const [d, setD] = useState({ name: '', phone: '', address: '', pin: '' });
+  const [d, setD] = useState({ name: '', email: '', phone: '', address: '', pin: '' });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const [order, setOrder] = useState(null);
@@ -55,8 +55,8 @@ export default function BuyNowModal() {
   const pay = async (e) => {
     e.preventDefault();
     setErr('');
-    if (!d.name.trim() || !/^[6-9]\d{9}$/.test(d.phone) || !d.address.trim() || !/^\d{6}$/.test(d.pin)) {
-      return setErr('Please add your name, 10-digit mobile, address and 6-digit pincode.');
+    if (!d.name.trim() || !d.email.trim() || !/^[6-9]\d{9}$/.test(d.phone) || !d.address.trim() || !/^\d{6}$/.test(d.pin)) {
+      return setErr('Please add your name, valid email, 10-digit mobile, address and 6-digit pincode.');
     }
     setBusy(true);
     const r = await createPayment({ amount: total, method });
@@ -65,7 +65,7 @@ export default function BuyNowModal() {
     let saved;
     try {
       saved = await saveOrder({
-        customer: d.name.trim(), phone: d.phone, address: d.address.trim(), pin: d.pin,
+        customer: d.name.trim(), email: d.email.trim().toLowerCase(), phone: d.phone, address: d.address.trim(), pin: d.pin,
         items: lines.map((l) => ({ id: l.id, name: l.name, qty: l.qty * (l.sticks || 1) })),
         sticks: sum.sticks, subtotal: sum.items, delivery: sum.delivery, coupon: sum.coupon || '', couponOff: sum.couponOff,
         codFee: fee, total, payment: method === 'cod' ? 'COD' : method === 'upi' ? 'UPI' : method === 'card' ? 'Card' : 'Net banking',
@@ -141,9 +141,10 @@ export default function BuyNowModal() {
               <fieldset className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                 <legend className="mb-2.5 text-sm font-bold">Deliver to</legend>
                 <input className={field} placeholder="Full name" aria-label="Full name" value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} />
+                <input className={field} type="email" placeholder="Email address" aria-label="Email address" value={d.email} onChange={(e) => setD({ ...d, email: e.target.value })} />
                 <input className={field} placeholder="Mobile number" aria-label="Mobile number" inputMode="numeric" maxLength={10} value={d.phone} onChange={(e) => setD({ ...d, phone: e.target.value.replace(/\D/g, '') })} />
-                <input className={`${field} sm:col-span-2`} placeholder="House no., street, area, city" aria-label="Address" value={d.address} onChange={(e) => setD({ ...d, address: e.target.value })} />
                 <input className={field} placeholder="Pincode" aria-label="Pincode" inputMode="numeric" maxLength={6} value={d.pin} onChange={(e) => setD({ ...d, pin: e.target.value.replace(/\D/g, '') })} />
+                <input className={`${field} sm:col-span-2`} placeholder="House no., street, area, city" aria-label="Address" value={d.address} onChange={(e) => setD({ ...d, address: e.target.value })} />
               </fieldset>
               {err && <p role="alert" className="text-sm font-semibold text-[#C0392B]">{err}</p>}
             </div>

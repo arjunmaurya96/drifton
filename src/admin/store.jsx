@@ -19,12 +19,32 @@ const loadDemo = () => {
 const CONFIG_LISTS = ['products', 'offers', 'coupons'];
 const toISO = (ts) => (ts?.toDate ? ts.toDate().toISOString() : typeof ts === 'string' ? ts : new Date().toISOString());
 
-// customers are built from orders (one customer per mobile number)
+// customers are built from orders (aggregated by phone or email)
 function customersFrom(orders) {
   const map = new Map();
   [...orders].reverse().forEach((o) => {
-    const key = o.phone || o.customer;
-    if (!map.has(key)) map.set(key, { id: key, name: o.customer, phone: o.phone, email: o.email || '', city: o.city || (o.pin ? `PIN ${o.pin}` : ''), joined: o.date });
+    const key = (o.phone || o.email || o.customer || '').trim();
+    if (!key) return;
+    if (!map.has(key)) {
+      map.set(key, {
+        id: key,
+        name: o.customer || 'Customer',
+        phone: o.phone || '',
+        email: o.email || '',
+        address: o.address || '',
+        pin: o.pin || '',
+        city: o.city || (o.pin ? `PIN ${o.pin}` : ''),
+        joined: o.date || new Date().toISOString(),
+      });
+    } else {
+      const cur = map.get(key);
+      if (o.customer && cur.name === 'Customer') cur.name = o.customer;
+      if (o.email && !cur.email) cur.email = o.email;
+      if (o.phone && !cur.phone) cur.phone = o.phone;
+      if (o.address && !cur.address) cur.address = o.address;
+      if (o.pin && !cur.pin) cur.pin = o.pin;
+      if (o.city && !cur.city) cur.city = o.city;
+    }
   });
   return [...map.values()];
 }
@@ -48,7 +68,7 @@ export function AdminStore({ children }) {
     const watch = (name, map) => onSnapshot(query(collection(db, name), orderBy('createdAt', 'desc')),
       (snap) => setLive((d) => ({ ...d, loading: false, [name]: snap.docs.map((x) => map({ id: x.id, ...x.data() })) })), fail);
     const offs = [
-      watch('orders', (o) => ({ ...o, customerId: o.phone || o.customer, city: o.city || (o.pin ? `PIN ${o.pin}` : ''), date: toISO(o.createdAt) })),
+      watch('orders', (o) => ({ ...o, customerId: (o.phone || o.email || o.customer || '').trim(), city: o.city || (o.pin ? `PIN ${o.pin}` : ''), date: toISO(o.createdAt) })),
       watch('enquiries', (e) => ({ ...e, date: toISO(e.createdAt) })),
       watch('reviews', (r) => ({ ...r, date: toISO(r.createdAt) })),
       onSnapshot(doc(db, 'config', 'store'), (snap) => {

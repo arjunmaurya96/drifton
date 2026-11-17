@@ -4,23 +4,22 @@ import { useStore } from '../context/StoreContext.jsx';
 import { products, formatINR, summarize, coupons, UNIT_PRICE, COMBO_PRICE } from '../data/products.js';
 import { createPayment } from '../lib/payment.js';
 import { saveOrder } from '../lib/api.js';
+import { firebaseReady } from '../lib/firebaseReady.js';
 import { business } from '../data/site.js';
 import { QtyStepper, PriceRows, CartOffers } from './CartDrawer.jsx';
 import { Close, Lock, CheckCircle, Shield, Truck, Plus, Trash, ChevronLeft } from './Icons.jsx';
 
 // =====================================================================
-//  Quick checkout (opens from "Add to cart" on the home page).
-//  Step 1: order summary — quantities, offers, more variants, coupon.
-//  Step 2: mobile number + OTP verification (like phitku / Shiprocket checkout).
-//  Step 3: delivery address + payment.
-//  ⚠ DEMO ONLY: the OTP is not really sent (use 123456) and no money is taken.
-//  To go live, call your backend in sendOtp / verifyOtp / createPayment (e.g. MSG91 / Firebase + Razorpay).
+//  Quick checkout (opens from "Add to cart" or CartDrawer).
+//  Step 1: Account & Mobile — 1-click Google sign-in OR Email with 4-digit OTP.
+//          Mobile number is compulsory for delivery updates.
+//  Step 2: Delivery address & payment method.
 // =====================================================================
-const DEMO_OTP = '123456';
+const DEMO_OTP = '1234';
 const RESEND_AFTER = 30; // seconds
 const COD_FEE = 49; // DUMMY
 
-const steps = ['Mobile', 'Address & pay'];
+const steps = ['Account & Mobile', 'Address & pay'];
 const methods = [
   { id: 'upi', label: 'UPI', note: 'GPay, PhonePe, Paytm' },
   { id: 'card', label: 'Card', note: 'Credit / Debit' },
@@ -28,6 +27,15 @@ const methods = [
   { id: 'cod', label: 'Cash on delivery', note: `+ ${formatINR(COD_FEE)} COD fee` },
 ];
 const field = 'min-h-12 w-full rounded-xl border-[1.5px] border-line-strong bg-white px-4 text-[15px] outline-none transition focus:border-navy-700 focus:ring-4 focus:ring-blue-soft';
+
+const GoogleIcon = ({ size = 20 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z" />
+    <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z" />
+    <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15z" />
+    <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z" />
+  </svg>
+);
 
 function Stepper({ step }) {
   return (
@@ -49,19 +57,19 @@ function OtpBoxes({ value, onChange }) {
   const refs = useRef([]);
   const set = (i, v) => {
     const d = v.replace(/\D/g, '');
-    if (d.length > 1) { onChange(d.slice(0, 6)); refs.current[Math.min(5, d.length)]?.focus(); return; } // paste
-    const arr = value.padEnd(6, ' ').split('');
+    if (d.length > 1) { onChange(d.slice(0, 4)); refs.current[Math.min(3, d.length)]?.focus(); return; } // paste
+    const arr = value.padEnd(4, ' ').split('');
     arr[i] = d || ' ';
     onChange(arr.join('').replace(/\s+$/, ''));
-    if (d && i < 5) refs.current[i + 1]?.focus();
+    if (d && i < 3) refs.current[i + 1]?.focus();
   };
   return (
-    <div className="flex gap-2 sm:gap-3">
-      {Array.from({ length: 6 }).map((_, i) => (
+    <div className="flex justify-center gap-3 sm:gap-4">
+      {Array.from({ length: 4 }).map((_, i) => (
         <input key={i} ref={(el) => (refs.current[i] = el)} inputMode="numeric" autoComplete={i === 0 ? 'one-time-code' : 'off'} aria-label={`OTP digit ${i + 1}`}
           value={(value[i] || '').trim()} onChange={(e) => set(i, e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Backspace' && !(value[i] || '').trim() && i > 0) refs.current[i - 1]?.focus(); }}
-          className="h-12 w-full min-w-0 rounded-xl border-[1.5px] border-line-strong bg-white text-center font-head text-xl font-bold outline-none focus:border-navy-700 focus:ring-4 focus:ring-blue-soft sm:h-14" />
+          className="h-13 w-13 rounded-2xl border-[1.5px] border-line-strong bg-white text-center font-head text-2xl font-bold outline-none focus:border-navy-700 focus:ring-4 focus:ring-blue-soft sm:h-14 sm:w-14" />
       ))}
     </div>
   );
@@ -69,11 +77,13 @@ function OtpBoxes({ value, onChange }) {
 
 export default function CheckoutModal() {
   const { checkoutOpen, closeCheckout, cart, updateQty, addToCart, clearCart } = useStore();
-  const [step, setStep] = useState(1); // opens straight on the mobile-number box (client request)
+  const [step, setStep] = useState(1);
   const [code, setCode] = useState('');
   const [applied, setApplied] = useState('');
   const [codeMsg, setCodeMsg] = useState('');
-  const [d, setD] = useState({ name: '', phone: '', address: '', pin: '' });
+  const [d, setD] = useState({ name: '', email: '', phone: '', address: '', pin: '' });
+  const [authProvider, setAuthProvider] = useState(''); // 'google' | 'email_otp' | ''
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState('');
   const [timer, setTimer] = useState(0);
@@ -86,10 +96,11 @@ export default function CheckoutModal() {
   const closeRef = useRef(closeCheckout);
   closeRef.current = closeCheckout;
 
-  // reset only when the popup opens (not when the cart changes), lock page scroll, Esc to close
+  // reset when the popup opens, lock page scroll, Esc to close
   useEffect(() => {
     if (!checkoutOpen) return;
     setStep(1); setErr(''); setOrder(null); setOtpSent(false); setOtp(''); setVerified(false); setMethod('upi');
+    setAuthProvider(''); setGoogleLoading(false);
     const onKey = (e) => e.key === 'Escape' && closeRef.current();
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
@@ -116,30 +127,107 @@ export default function CheckoutModal() {
     else { setApplied(''); setCodeMsg('This coupon code is not valid.'); }
   };
 
+  // 1-Click Google Sign In
+  const handleGoogleSignIn = async () => {
+    setErr('');
+    setGoogleLoading(true);
+    try {
+      if (firebaseReady) {
+        const { auth } = await import('../lib/firebase.js');
+        const { GoogleAuthProvider, signInWithPopup } = await import('firebase/auth');
+        const provider = new GoogleAuthProvider();
+        const res = await signInWithPopup(auth, provider);
+        const user = res.user;
+        const email = user.email || '';
+        const name = user.displayName || '';
+        setD((prev) => ({ ...prev, email, name: prev.name || name }));
+        setAuthProvider('google');
+        if (/^[6-9]\d{9}$/.test(d.phone.trim())) {
+          setVerified(true);
+          setStep(2);
+        }
+      } else {
+        // DEMO fallback for preview
+        await new Promise((r) => setTimeout(r, 450));
+        setD((prev) => ({
+          ...prev,
+          email: prev.email || 'customer@gmail.com',
+          name: prev.name || 'Demo Customer',
+        }));
+        setAuthProvider('google');
+        if (/^[6-9]\d{9}$/.test(d.phone.trim())) {
+          setVerified(true);
+          setStep(2);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      setErr('Google sign-in was cancelled or failed.');
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const continueWithGooglePhone = () => {
+    setErr('');
+    if (!/^[6-9]\d{9}$/.test(d.phone.trim())) {
+      return setErr('Please enter a valid 10-digit mobile number for delivery updates.');
+    }
+    setVerified(true);
+    setStep(2);
+  };
+
+  // Send 4-digit OTP to Email
   const sendOtp = () => {
     setErr('');
-    if (!/^[6-9]\d{9}$/.test(d.phone)) return setErr('Please enter a valid 10-digit mobile number.');
-    setOtpSent(true); setOtp(''); setTimer(RESEND_AFTER); // DEMO: here you would call your SMS / OTP API
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email.trim());
+    if (!emailValid) return setErr('Please enter a valid email address.');
+    if (!/^[6-9]\d{9}$/.test(d.phone.trim())) return setErr('Please enter a valid 10-digit mobile number for delivery.');
+    setOtpSent(true);
+    setOtp('');
+    setTimer(RESEND_AFTER);
+    setAuthProvider('email_otp');
   };
+
   const verifyOtp = () => {
     setErr('');
-    if (otp === DEMO_OTP) { setVerified(true); setStep(2); } else setErr('Wrong OTP. Please try again.');
+    if (otp === DEMO_OTP) {
+      setVerified(true);
+      setStep(2);
+    } else {
+      setErr(`Wrong 4-digit OTP. Please enter ${DEMO_OTP} (Demo OTP) or try again.`);
+    }
   };
+
   const pay = async () => {
     setErr('');
-    if (!d.name.trim() || !d.address.trim() || !/^\d{6}$/.test(d.pin)) return setErr('Please add your name, full address and 6-digit pincode.');
+    if (!d.name.trim() || !d.address.trim() || !/^\d{6}$/.test(d.pin)) {
+      return setErr('Please add your name, full address and 6-digit pincode.');
+    }
     setBusy(true);
     const r = await createPayment({ amount: total, method });
     if (!r.ok) { setBusy(false); return setErr('Payment failed. Please try again.'); }
-    // save the order in the database → gets the next order number (JSR-drifton-0041 …)
+
+    // save the order in the database with verified email + mobile number
     let saved;
     try {
       saved = await saveOrder({
-        customer: d.name.trim(), phone: d.phone, address: d.address.trim(), pin: d.pin,
+        customer: d.name.trim(),
+        email: d.email.trim().toLowerCase(),
+        phone: d.phone,
+        address: d.address.trim(),
+        pin: d.pin,
         items: cart.map((l) => ({ id: l.id, name: l.name, qty: l.qty * (l.sticks || 1) })),
-        sticks: sum.sticks, subtotal: sum.items, delivery: sum.delivery, coupon: sum.coupon || '', couponOff: sum.couponOff,
-        codFee: fee, total, payment: method === 'cod' ? 'COD' : method === 'upi' ? 'UPI' : method === 'card' ? 'Card' : 'Net banking',
-        paymentStatus: method === 'cod' ? 'Pay on delivery' : 'Paid (demo)', source: 'Quick checkout',
+        sticks: sum.sticks,
+        subtotal: sum.items,
+        delivery: sum.delivery,
+        coupon: sum.coupon || '',
+        couponOff: sum.couponOff,
+        codFee: fee,
+        total,
+        payment: method === 'cod' ? 'COD' : method === 'upi' ? 'UPI' : method === 'card' ? 'Card' : 'Net banking',
+        paymentStatus: method === 'cod' ? 'Pay on delivery' : 'Paid (demo)',
+        source: 'Quick checkout',
       });
     } catch {
       setBusy(false);
@@ -171,6 +259,7 @@ export default function CheckoutModal() {
           <div className="flex flex-col items-center gap-4 border-t border-line px-6 py-12 text-center">
             <span className="flex size-16 items-center justify-center rounded-full bg-mint-soft text-brand"><CheckCircle size={36} /></span>
             <p className="text-[17px] text-muted">Thank you, {d.name}! Order <b className="text-navy-900">{order.orderId}</b> of {formatINR(order.amount)} ({order.sticks} {order.sticks === 1 ? 'stick' : 'sticks'}) is confirmed.</p>
+            <p className="text-xs text-muted-2">Confirmation & tracking details will be sent to <b>{d.email}</b> and <b>+91 {d.phone}</b>.</p>
             <span className="rounded-full bg-page px-4 py-1.5 text-sm text-muted-2">Demo order — no real payment was taken</span>
             <div className="flex flex-wrap justify-center gap-2.5">
               <a href={business.trackUrl} target="_blank" rel="noreferrer" className="btn-line">Track on Ekart</a>
@@ -180,9 +269,9 @@ export default function CheckoutModal() {
         ) : (
           <>
             <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto border-t border-line px-5 py-5 sm:px-7">
-              {/* ---------- order summary (under the mobile box, collapsible) ---------- */}
+              {/* ---------- order summary (collapsible) ---------- */}
               {step === 1 && (
-                <details open={!otpSent} className="order-2 group rounded-2xl border border-line [&_summary::-webkit-details-marker]:hidden">
+                <details open={!otpSent && authProvider !== 'google'} className="order-2 group rounded-2xl border border-line [&_summary::-webkit-details-marker]:hidden">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
                     <b className="font-head text-[16px]">Order summary <span className="font-normal text-muted-2">({sum.sticks} {sum.sticks === 1 ? 'item' : 'items'})</span></b>
                     <span className="flex items-center gap-2 text-[15px] font-semibold">{formatINR(sum.total)}<span className="text-muted-2 transition group-open:rotate-180">⌄</span></span>
@@ -206,7 +295,7 @@ export default function CheckoutModal() {
                     </ul>
                   )}
 
-                  {/* the same 2 offer cards as in the cart */}
+                  {/* offer cards */}
                   {cart.length > 0 && <CartOffers cart={cart} count={sum.sticks} addToCart={(p) => addToCart(p, 1, undefined, true)} />}
 
                   {/* add more variants */}
@@ -242,40 +331,121 @@ export default function CheckoutModal() {
                 </details>
               )}
 
-              {/* ---------- STEP 2: mobile number + OTP ---------- */}
+              {/* ---------- STEP 1: Google login OR Email + Mobile with 4-Digit OTP ---------- */}
               {step === 1 && (
                 <div className="order-1 flex flex-col gap-4 pb-1">
-                  <div className="text-center">
-                    <h3 className="text-[20px] font-semibold">{otpSent ? 'Verify your number' : 'Enter mobile number'}</h3>
-                    <p className="text-[14px] text-muted-2">{otpSent ? `Enter the 6-digit OTP sent to +91 ${d.phone}` : 'Provide your mobile number to continue'}</p>
-                  </div>
-                  {!otpSent ? (
-                    <div className="flex items-center rounded-xl border-[1.5px] border-line-strong bg-white focus-within:border-navy-700 focus-within:ring-4 focus-within:ring-blue-soft">
-                      <span className="flex shrink-0 items-center gap-2 whitespace-nowrap border-r border-line px-4 text-[15px] font-semibold">🇮🇳 +91</span>
-                      <input autoFocus className="min-h-14 w-full min-w-0 rounded-xl bg-transparent px-4 text-[16px] outline-none" placeholder="10-digit mobile number" aria-label="Mobile number" inputMode="numeric" autoComplete="tel-national" maxLength={10}
-                        value={d.phone} onChange={(e) => setD({ ...d, phone: e.target.value.replace(/\D/g, '') })} onKeyDown={(e) => e.key === 'Enter' && sendOtp()} />
+                  {/* Case 1: Google account chosen, now enter mobile number */}
+                  {authProvider === 'google' && !verified ? (
+                    <div className="flex flex-col gap-3 rounded-2xl border border-[#86EFAC] bg-[#F0FDF4] p-4 sm:p-5">
+                      <div className="flex items-center gap-2.5 text-[15px] font-bold text-[#166534]">
+                        <CheckCircle size={20} />
+                        <span>Google Verified: {d.email} {d.name ? `(${d.name})` : ''}</span>
+                      </div>
+                      <p className="text-[13px] text-[#15803D]">
+                        Delivery updates ke liye apna 10-digit mobile number enter karein:
+                      </p>
+                      <div className="flex items-center rounded-xl border-[1.5px] border-line-strong bg-white focus-within:border-navy-700 focus-within:ring-4 focus-within:ring-blue-soft">
+                        <span className="flex shrink-0 items-center gap-2 whitespace-nowrap border-r border-line px-3.5 text-[14px] font-semibold">🇮🇳 +91</span>
+                        <input autoFocus className="min-h-12 w-full min-w-0 rounded-xl bg-transparent px-3.5 text-[15px] outline-none" placeholder="10-digit mobile number" aria-label="Mobile number" inputMode="numeric" autoComplete="tel-national" maxLength={10}
+                          value={d.phone} onChange={(e) => setD({ ...d, phone: e.target.value.replace(/\D/g, '') })} onKeyDown={(e) => e.key === 'Enter' && continueWithGooglePhone()} />
+                      </div>
+                      <div className="flex items-center justify-between pt-1">
+                        <button type="button" onClick={() => setAuthProvider('')} className="text-xs font-semibold text-muted underline">Change account</button>
+                        <button type="button" onClick={continueWithGooglePhone} className="btn-primary min-h-[42px] px-5 text-sm">Continue to Address</button>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="flex flex-col gap-3 rounded-2xl bg-page p-4 sm:p-5">
+                  ) : otpSent ? (
+                    /* Case 2: 4-digit Email OTP sent */
+                    <div className="flex flex-col gap-3.5 rounded-2xl bg-page p-4 sm:p-5">
+                      <div className="text-center">
+                        <h3 className="text-[20px] font-semibold">Verify your Email</h3>
+                        <p className="mt-1 text-[13.5px] text-muted-2">
+                          Enter the 4-digit code sent to <b className="text-navy-900">{d.email}</b>
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-2">
+                          Delivery mobile: <b className="text-navy-900">+91 {d.phone}</b>
+                        </p>
+                      </div>
                       <OtpBoxes value={otp} onChange={setOtp} />
                       <div className="flex flex-wrap items-center justify-between gap-2 text-[13px]">
                         <span className="rounded-full bg-[#FFF4E5] px-3 py-1 font-semibold text-[#8A4B00]">Demo OTP: {DEMO_OTP}</span>
                         <span className="flex gap-3">
-                          <button type="button" onClick={() => { setOtpSent(false); setOtp(''); }} className="font-semibold text-navy-700 underline">Change number</button>
+                          <button type="button" onClick={() => { setOtpSent(false); setOtp(''); }} className="font-semibold text-navy-700 underline">Change details</button>
                           {timer > 0 ? <span className="text-muted-2">Resend in {timer}s</span>
                             : <button type="button" onClick={sendOtp} className="font-semibold text-navy-700 underline">Resend OTP</button>}
                         </span>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Case 3: Initial Screen - Google Button + Email & Mobile inputs */
+                    <div className="flex flex-col gap-3.5">
+                      <div className="text-center">
+                        <h3 className="text-[20px] font-semibold">Sign in to checkout</h3>
+                        <p className="text-[13.5px] text-muted-2">Sign in with Google or verify with 4-digit Email OTP</p>
+                      </div>
+
+                      {/* 1-Click Google Button */}
+                      <button
+                        type="button"
+                        onClick={handleGoogleSignIn}
+                        disabled={googleLoading}
+                        className="flex min-h-[48px] w-full items-center justify-center gap-3 rounded-xl border border-line-strong bg-white px-4 text-[14.5px] font-semibold text-navy-900 shadow-sm transition hover:bg-page hover:border-navy-700 disabled:opacity-50"
+                      >
+                        <GoogleIcon size={19} />
+                        <span>{googleLoading ? 'Connecting Google…' : 'Continue with Google'}</span>
+                      </button>
+
+                      <div className="relative my-1 flex items-center justify-center">
+                        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-line" /></div>
+                        <span className="relative bg-white px-3 text-xs font-semibold uppercase text-muted-2">or continue with email & mobile</span>
+                      </div>
+
+                      {/* Email input */}
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[13px] font-semibold text-navy-900">Email Address <span className="text-red-500">*</span></label>
+                        <input
+                          type="email"
+                          className={field}
+                          placeholder="you@example.com"
+                          aria-label="Email address"
+                          autoComplete="email"
+                          value={d.email}
+                          onChange={(e) => setD({ ...d, email: e.target.value })}
+                        />
+                      </div>
+
+                      {/* Mobile Number input */}
+                      <div className="flex flex-col gap-1">
+                        <label className="text-[13px] font-semibold text-navy-900">Mobile Number (For Courier Delivery) <span className="text-red-500">*</span></label>
+                        <div className="flex items-center rounded-xl border-[1.5px] border-line-strong bg-white focus-within:border-navy-700 focus-within:ring-4 focus-within:ring-blue-soft">
+                          <span className="flex shrink-0 items-center gap-2 whitespace-nowrap border-r border-line px-3.5 text-[14px] font-semibold">🇮🇳 +91</span>
+                          <input
+                            className="min-h-12 w-full min-w-0 rounded-xl bg-transparent px-3.5 text-[15px] outline-none"
+                            placeholder="10-digit mobile number"
+                            aria-label="Mobile number"
+                            inputMode="numeric"
+                            autoComplete="tel-national"
+                            maxLength={10}
+                            value={d.phone}
+                            onChange={(e) => setD({ ...d, phone: e.target.value.replace(/\D/g, '') })}
+                            onKeyDown={(e) => e.key === 'Enter' && sendOtp()}
+                          />
+                        </div>
                       </div>
                     </div>
                   )}
                 </div>
               )}
 
-              {/* ---------- STEP 3: payment ---------- */}
+              {/* ---------- STEP 2: Address & Payment ---------- */}
               {step === 2 && (
                 <>
-                  <div className="flex items-center gap-3 rounded-2xl bg-mint-soft px-4 py-3 text-[14px] font-semibold text-brand-dark">
-                    <CheckCircle size={20} /> Mobile +91 {d.phone} verified
+                  <div className="flex items-center justify-between rounded-2xl bg-mint-soft px-4 py-3 text-[13.5px] font-semibold text-brand-dark">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle size={19} />
+                      <span>Verified: <b>{d.email}</b> · Phone: <b>+91 {d.phone}</b></span>
+                    </div>
+                    <button type="button" onClick={() => { setStep(1); setOtpSent(false); setVerified(false); }} className="text-xs font-semibold text-navy-900 underline">Change</button>
                   </div>
                   <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <legend className="mb-2.5 text-sm font-bold">Delivery address</legend>
@@ -312,9 +482,22 @@ export default function CheckoutModal() {
                 {fee > 0 && <div className="mt-1.5 flex justify-between text-[14.5px] text-muted"><span>COD fee</span><span>{formatINR(fee)}</span></div>}
               </details>
 
-              {step === 1 && (!otpSent
-                ? <button onClick={sendOtp} disabled={!cart.length} className="btn-primary min-h-[52px] w-full text-base">Send OTP</button>
-                : <button onClick={verifyOtp} disabled={otp.length < 6} className="btn-primary min-h-[52px] w-full text-base disabled:opacity-50">Verify & continue</button>)}
+              {step === 1 && (
+                authProvider === 'google' && !verified ? (
+                  <button onClick={continueWithGooglePhone} disabled={!cart.length} className="btn-primary min-h-[52px] w-full text-base">
+                    Continue to Address
+                  </button>
+                ) : !otpSent ? (
+                  <button onClick={sendOtp} disabled={!cart.length} className="btn-primary min-h-[52px] w-full text-base">
+                    Send 4-Digit OTP to Email
+                  </button>
+                ) : (
+                  <button onClick={verifyOtp} disabled={otp.length < 4} className="btn-primary min-h-[52px] w-full text-base disabled:opacity-50">
+                    Verify 4-Digit OTP & Continue
+                  </button>
+                )
+              )}
+
               {step === 2 && (
                 <button onClick={pay} disabled={busy} className="btn-primary min-h-[52px] w-full text-base disabled:opacity-60">
                   <Lock size={18} /> {busy ? 'Processing…' : method === 'cod' ? `Place order · ${formatINR(total)}` : `Pay ${formatINR(total)}`}

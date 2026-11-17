@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAdmin } from '../store.jsx';
 import { ORDER_STATUSES } from '../data.js';
 import { Badge, Btn, Card, Drawer, Empty, Field, Icon, PageHeader, Toolbar, fmtDateTime, inputCls, inr } from '../ui.jsx';
@@ -51,7 +51,7 @@ export default function Orders() {
                   {list.map((o) => (
                     <tr key={o.id} onClick={() => open(o)} className="cursor-pointer border-t border-[#EEF0F5] transition hover:bg-[#FAFBFD]">
                       <td className="px-5 py-3.5"><b>#{o.id}</b><span className="block text-[12px] text-muted-2">{fmtDateTime(o.date)}</span></td>
-                      <td className="px-3 py-3.5">{o.customer}<span className="block text-[12px] text-muted-2">{o.city}</span></td>
+                      <td className="px-3 py-3.5"><b className="block font-semibold text-navy-900">{o.customer}</b><span className="block text-[12px] text-muted-2">{o.phone} {o.city ? `· ${o.city}` : ''}</span></td>
                       <td className="px-3 py-3.5 text-muted">{o.sticks} roll on{o.sticks > 1 ? 's' : ''}</td>
                       <td className="px-3 py-3.5 font-semibold">{inr(o.total)}</td>
                       <td className="px-3 py-3.5 text-muted">{o.payment}</td>
@@ -109,12 +109,19 @@ export default function Orders() {
             {order.status === 'Cancelled' && <p className="rounded-xl bg-[#FDECEC] px-3.5 py-2.5 text-[13.5px] font-semibold text-[#B42318]">This order was cancelled.</p>}
 
             <section className="rounded-2xl border border-[#EEF0F5] p-4">
-              <h3 className="mb-2 text-[12px] font-bold uppercase tracking-wider text-muted-2">Customer</h3>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-[12px] font-bold uppercase tracking-wider text-muted-2">Customer Details</h3>
+                <Link to={`/admin/customers?q=${encodeURIComponent(order.phone || order.customer)}`} className="text-xs font-bold text-navy-900 hover:text-brand">
+                  Full Profile →
+                </Link>
+              </div>
               <b className="text-[15px]">{order.customer}</b>
-              <p className="text-[13.5px] text-muted">{order.address}{order.pin && ` — ${order.pin}`}</p>
-              <div className="mt-3 flex gap-2">
+              {order.email && <p className="text-[12.5px] text-muted-2">{order.email}</p>}
+              <p className="text-[13.5px] text-muted mt-0.5">{order.address}{order.pin && ` — PIN: ${order.pin}`}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
                 <a href={`tel:${order.phone}`} className="inline-flex items-center gap-1.5 rounded-lg bg-[#F3F5FA] px-3 py-1.5 text-[13px] font-semibold"><Icon.phone size={15} /> {order.phone}</a>
-                <a href={`https://wa.me/91${order.phone}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-[#E5F5EC] px-3 py-1.5 text-[13px] font-semibold text-[#17703D]">WhatsApp</a>
+                <a href={`https://wa.me/91${order.phone}?text=Hello%20${encodeURIComponent(order.customer)},%20update%20for%20order%20%23${order.id}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-[#E5F5EC] px-3 py-1.5 text-[13px] font-semibold text-[#17703D]">WhatsApp</a>
+                {order.email && <a href={`mailto:${order.email}`} className="inline-flex items-center gap-1.5 rounded-lg bg-[#F3F5FA] px-3 py-1.5 text-[13px] font-semibold"><Icon.mail size={15} /> Email</a>}
               </div>
             </section>
 

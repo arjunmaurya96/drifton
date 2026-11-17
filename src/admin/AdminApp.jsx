@@ -92,7 +92,7 @@ function Shell({ onLogout }) {
     ['orders', 'Orders', Icon.orders, newOrders],
     ['products', 'Products', Icon.box],
     ['offers', 'Offers & coupons', Icon.tag],
-    ['customers', 'Customers', Icon.users],
+    ['customers', 'Customers & Users', Icon.users],
     ['enquiries', 'Enquiries', Icon.inbox, newEnq],
     ['reviews', 'Reviews', Icon.star, pendingReviews],
     ['settings', 'Settings', Icon.gear],
