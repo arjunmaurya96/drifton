@@ -31,7 +31,7 @@ export default function HeroBanner() {
 
   return (
     <section id="top" aria-label="Featured products" aria-roledescription="carousel"
-      className="relative h-[calc(100svh-136px)] min-h-[600px] overflow-hidden lg:h-[100svh] lg:min-h-[640px]">
+      className="relative h-[100svh] min-h-[640px] overflow-hidden">
       {/* Product-colour backgrounds (cross-fade) */}
       {bannerSlides.map((s, k) => (
         <div key={k} aria-hidden="true" className={`absolute inset-0 transition-opacity duration-1000 ${k === i ? 'opacity-100' : 'opacity-0'}`}
@@ -52,13 +52,13 @@ export default function HeroBanner() {
       {/* Left: model photo, fading into the background colour */}
       {/* Mobile/tablet: photo across the top, fading down. Desktop: photo on the left, fading right. */}
       <div key={`m-${i}`} aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-[58%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] lg:inset-y-0 lg:right-auto lg:h-full lg:w-[50%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_62%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_62%,transparent_100%)]">
+        className="absolute inset-x-0 top-[96px] h-[52%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] lg:inset-y-0 lg:top-0 lg:right-auto lg:h-full lg:w-[50%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_62%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_62%,transparent_100%)]">
         <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined} className="h-full w-full object-cover" style={{ objectPosition: slide.modelPos || '58% center' }}
           // if a photo is missing (e.g. model-boy.jpg not added yet), fall back to the girl photo
           onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
       </div>
 
-      <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 lg:items-center lg:justify-end lg:pb-14">
+      <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 pt-[110px] lg:items-center lg:justify-end lg:pb-14 lg:pt-[118px]">
         {/* Right: this slide's product big in the middle, its other variants smaller around it (no text, no base) */}
         <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[54%] w-full items-end justify-center sm:h-[56%] lg:h-full lg:w-[58%] lg:items-center">
           <img src={slide.rightImage || slide.cutout} alt={`${product.name} and other Drifton variants`}

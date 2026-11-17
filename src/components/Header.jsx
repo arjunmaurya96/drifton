@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { business } from '../data/site.js';
 import { useStore } from '../context/StoreContext.jsx';
@@ -64,11 +64,24 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const hidden = useHideOnScroll() && !open && !searchOpen;
+  const { pathname } = useLocation();
+  const ref = useRef(null);
+  const [h, setH] = useState(118);
+  // header is fixed (floats over the page) — measure it so other pages can leave room under it
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const measure = () => setH((el.querySelector('[data-header-bar]')?.offsetHeight || 0) + (el.querySelector('[data-header-nav]')?.offsetHeight || 0));
+    measure();
+    const ro = new ResizeObserver(measure); ro.observe(el); return () => ro.disconnect();
+  }, []);
 
   return (
-    <header className={`sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${hidden ? '-translate-y-full' : 'translate-y-0 shadow-[0_8px_24px_-18px_rgba(15,26,60,.35)]'}`}>
-      <AnnouncementBar />
-      <div className="container-x flex h-[78px] items-center justify-between gap-5">
+    <>
+    {/* spacer on every page except home, where the hero sits right under the header */}
+    {pathname !== '/' && <div aria-hidden="true" style={{ height: h }} />}
+    <header ref={ref} className={`fixed inset-x-0 top-0 z-40 border-b border-line bg-white/95 backdrop-blur transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${hidden ? '-translate-y-full' : 'translate-y-0 shadow-[0_8px_24px_-18px_rgba(15,26,60,.35)]'}`}>
+      <div data-header-bar><AnnouncementBar /></div>
+      <div data-header-nav className="container-x flex h-[78px] items-center justify-between gap-5">
         <Link to="/" aria-label="Drifton home" className="shrink-0">
           <img src="/assets/images/logo.webp" alt="Drifton by AI Enterprises" className="h-9 w-auto sm:h-11" />
         </Link>
@@ -109,5 +122,6 @@ export default function Header() {
       </div>
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
+    </>
   );
 }
