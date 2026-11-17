@@ -53,16 +53,16 @@ export default function HeroBanner() {
       {/* Mobile/tablet: photo across the top, fading down. Desktop: photo on the left, fading right. */}
       <div key={`m-${i}`} aria-hidden="true"
         className="absolute inset-x-0 top-[96px] h-[52%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_55%,transparent_100%)] lg:inset-y-0 lg:top-[118px] lg:right-auto lg:h-full lg:w-[50%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_62%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_62%,transparent_100%)]">
-        <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined} className={`h-full w-full ${slide.modelFit === 'contain' ? 'object-contain [-webkit-mask-image:linear-gradient(to_right,transparent_8%,#000_22%,#000_48%,transparent_66%)] [mask-image:linear-gradient(to_right,transparent_8%,#000_22%,#000_48%,transparent_66%)]' : 'object-cover'}`} style={{ objectPosition: slide.modelPos || '58% center' }}
+        <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined} className="h-full w-full object-cover" style={{ objectPosition: slide.modelPos || '58% center' }}
           // if a photo is missing (e.g. model-boy.jpg not added yet), fall back to the girl photo
           onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
       </div>
 
-      <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 pt-[110px] lg:items-end lg:justify-end lg:pb-[88px] lg:pt-[118px]">
+      <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 pt-[110px] lg:items-center lg:justify-end lg:pb-14 lg:pt-[118px]">
         {/* Right: this slide's product big in the middle, its other variants smaller around it (no text, no base) */}
-        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[54%] w-full items-end justify-center sm:h-[56%] lg:h-full lg:w-[58%] lg:items-end">
+        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[54%] w-full items-end justify-center sm:h-[56%] lg:h-full lg:w-[58%] lg:items-center">
           <img src={slide.rightImage || slide.cutout} alt={`${product.name} and other Drifton variants`}
-            className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(calc(100svh-230px),800px)]" style={{ animationDelay: '150ms' }} />
+            className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(calc(100svh-250px),780px)]" style={{ animationDelay: '150ms' }} />
         </Link>
       </div>
       </>}
