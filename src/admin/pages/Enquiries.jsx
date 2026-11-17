@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useAdmin } from '../store.jsx';
 import { TOPIC_LABEL } from '../data.js';
-import { Badge, Btn, Card, Empty, Icon, PageHeader, Toolbar, ago } from '../ui.jsx';
+import { Badge, Btn, Card, Empty, Icon, PageHeader, Toolbar, ago, Help } from '../ui.jsx';
 
 const STATUSES = ['New', 'Contacted', 'Closed'];
 const groups = [['all', 'All'], ['business', 'Distributor & retail'], ['support', 'Customer support']];
@@ -22,6 +22,7 @@ export default function Enquiries() {
   return (
     <>
       <PageHeader title="Enquiries" sub="Messages from the Contact page — customers, distributors and retailers." />
+      <Help>Messages sent from the Contact page. Call or email the person, then mark it <b>Contacted</b>, and <b>Closed</b> when it is done.</Help>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
         <Card className="overflow-hidden">
           <Toolbar q={q} setQ={setQ} placeholder="Search name, company, city…" chips={chips} active={tab} setActive={setTab} />

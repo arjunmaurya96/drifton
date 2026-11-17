@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase.js';
 import { AdminStore, useAdmin, LIVE } from './store.jsx';
-import { Icon, inputCls } from './ui.jsx';
+import { Icon, LOW_STOCK, inputCls } from './ui.jsx';
 import Overview from './pages/Overview.jsx';
 import Orders from './pages/Orders.jsx';
 import Products from './pages/Products.jsx';
@@ -77,8 +77,61 @@ function Login({ onLogin, notice }) {
   );
 }
 
+// ---------- new order alert: sound + pop-up message + browser notification ----------
+const SOUND_KEY = 'drifton_admin_sound';
+function beep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [[880, 0], [1320, 0.18]].forEach(([f, t]) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = f; o.connect(g); g.connect(ctx.destination);
+      g.gain.setValueAtTime(0.0001, ctx.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime + t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + t + 0.35);
+      o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + 0.4);
+    });
+    setTimeout(() => ctx.close(), 1200);
+  } catch { /* no sound support */ }
+}
+function useNewOrderAlert(orders, loading, notify) {
+  const seen = useRef(null);
+  const [sound, setSound] = useState(() => { try { return localStorage.getItem(SOUND_KEY) !== 'off'; } catch { return true; } });
+  const [unseen, setUnseen] = useState(0);
+  useEffect(() => {
+    if (loading) return;
+    const ids = orders.map((o) => o.id);
+    if (!seen.current) { seen.current = new Set(ids); return; } // first load: nothing is "new"
+    const fresh = orders.filter((o) => !seen.current.has(o.id) && o.status === 'New');
+    ids.forEach((id) => seen.current.add(id));
+    if (!fresh.length) return;
+    const o = fresh[0];
+    const msg = fresh.length > 1 ? `${fresh.length} new orders received` : `New order ${o.id} — ${o.customer}, ₹${Math.round(o.total || 0).toLocaleString('en-IN')}`;
+    notify(msg);
+    if (sound) beep();
+    setUnseen((n) => n + fresh.length);
+    try { if (document.hidden && 'Notification' in window && Notification.permission === 'granted') new Notification('DriftOn — new order', { body: msg, icon: '/assets/images/logo.webp' }); } catch { /* ignore */ }
+  }, [orders, loading, notify, sound]);
+  // tab title shows the count until the admin looks at the page
+  useEffect(() => {
+    const base = 'DriftOn Admin';
+    document.title = unseen ? `(${unseen}) New order — ${base}` : base;
+    if (!unseen) return undefined;
+    const clear = () => !document.hidden && setUnseen(0);
+    window.addEventListener('focus', clear); document.addEventListener('visibilitychange', clear); window.addEventListener('click', clear);
+    return () => { window.removeEventListener('focus', clear); document.removeEventListener('visibilitychange', clear); window.removeEventListener('click', clear); };
+  }, [unseen]);
+  const toggleSound = () => {
+    const next = !sound;
+    setSound(next);
+    try { localStorage.setItem(SOUND_KEY, next ? 'on' : 'off'); } catch { /* ignore */ }
+    if (next) { beep(); try { if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission(); } catch { /* ignore */ } }
+  };
+  return { sound, toggleSound };
+}
+
 function Shell({ onLogout }) {
-  const { data, toast, reset } = useAdmin();
+  const { data, toast, reset, notify } = useAdmin();
+  const { sound, toggleSound } = useNewOrderAlert(data.orders, data.loading, notify);
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -90,7 +143,7 @@ function Shell({ onLogout }) {
   const nav = [
     ['', 'Overview', Icon.home],
     ['orders', 'Orders', Icon.orders, newOrders],
-    ['products', 'Products', Icon.box],
+    ['products', 'Products', Icon.box, data.products.filter((p) => p.active && p.stock <= LOW_STOCK).length],
     ['offers', 'Offers & coupons', Icon.tag],
     ['customers', 'Customers & Users', Icon.users],
     ['enquiries', 'Enquiries', Icon.inbox, newEnq],
@@ -140,6 +193,10 @@ function Shell({ onLogout }) {
             <input name="q" placeholder="Search orders, customers…" className="min-h-10 w-full rounded-xl bg-[#F3F5FA] pl-10 pr-3 text-[14px] outline-none focus:bg-white focus:ring-2 focus:ring-blue-soft" />
           </form>
           <div className="ml-auto flex items-center gap-2">
+            <button onClick={toggleSound} title={sound ? 'New order sound is ON' : 'New order sound is OFF'} aria-label={sound ? 'Turn off new order sound' : 'Turn on new order sound'}
+              className={`flex min-h-10 items-center gap-1.5 rounded-xl px-2.5 text-[12.5px] font-semibold hover:bg-[#F3F5FA] ${sound ? 'text-[#17703D]' : 'text-muted-2'}`}>
+              {sound ? <Icon.sound size={19} /> : <Icon.mute size={19} />}<span className="hidden md:inline">{sound ? 'Order alert on' : 'Order alert off'}</span>
+            </button>
             <Link to="/admin/orders" aria-label="Notifications" className="relative flex size-10 items-center justify-center rounded-xl hover:bg-[#F3F5FA]">
               <Icon.bell />{newOrders + newEnq > 0 && <span className="absolute right-2 top-2 size-2 rounded-full bg-[#E5484D] ring-2 ring-white" />}
             </Link>

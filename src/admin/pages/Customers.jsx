@@ -138,9 +138,31 @@ export default function Customers() {
         />
 
         {rows.length === 0 ? (
-          <Empty text="No customers or users found. Try adjusting your search query." />
+          <Empty icon={Icon.users} text="No customers or users found" sub="Customers appear here after ordering or signing up. Try a different name, phone or email." />
         ) : (
-          <div className="overflow-x-auto">
+          <>
+          {/* mobile cards */}
+          <ul className="flex flex-col gap-2.5 bg-[#F6F7FB] p-3 md:hidden">
+            {rows.map((r) => (
+              <li key={r.id}>
+                <button onClick={() => setOpenId(r.id)} className="flex w-full items-start gap-3 rounded-2xl border border-[#E6E9F2] bg-white p-3.5 text-left">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#EAF0FF] font-head text-[13px] font-bold text-[#2647B8]">
+                    {r.name.split(' ').map((x) => x[0]).join('').slice(0, 2).toUpperCase() || 'U'}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex flex-wrap items-center gap-1.5"><b className="text-[15px]">{r.name}</b>
+                      {r.count > 1 && <span className="rounded-full bg-[#E5F5EC] px-2 py-0.5 text-[10.5px] font-bold text-[#17703D]">Repeat ({r.count})</span>}</span>
+                    <span className="block text-[13px] text-muted-2">{r.phone || '—'}{r.email ? ` · ${r.email}` : ''}</span>
+                    <span className="mt-1.5 flex items-center justify-between text-[13px]">
+                      <span className="text-muted">{r.count} order{r.count !== 1 ? 's' : ''}{r.latestOrderId ? ` · last #${r.latestOrderId}` : ''}</span>
+                      <b className="text-[#17703D]">{inr(r.spent)}</b>
+                    </span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="hidden overflow-x-auto md:block">
             <table className="w-full min-w-[760px] text-left text-[14px]">
               <thead className="bg-[#F8F9FC] text-[12px] uppercase tracking-wider text-muted-2">
                 <tr>
@@ -223,6 +245,7 @@ export default function Customers() {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </Card>
 
