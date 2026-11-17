@@ -62,7 +62,7 @@ export default function HeroBanner() {
         {/* Right: this slide's product big in the middle, its other variants smaller around it (no text, no base) */}
         <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[54%] w-full items-end justify-center sm:h-[56%] lg:h-full lg:w-[58%] lg:items-center">
           <img src={slide.rightImage || slide.cutout} alt={`${product.name} and other Drifton variants`}
-            className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(76svh,780px)]" style={{ animationDelay: '150ms' }} />
+            className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(calc(100svh-250px),780px)]" style={{ animationDelay: '150ms' }} />
         </Link>
       </div>
       </>}
