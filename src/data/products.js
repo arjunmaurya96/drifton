@@ -158,7 +158,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'charcoal', modelPhoto: '/assets/images/models/model-boy-charcoal-open.jpg', modelPos: '50% 15%', cutout: '/assets/images/cutouts/charcoal.webp', rightImage: '/assets/images/hero-products/range-charcoal.webp',
+    productId: 'charcoal', modelPhoto: '/assets/images/models/model-boy-charcoal-open.jpg', modelPos: '50% 15%', modelZoomOut: true, cutout: '/assets/images/cutouts/charcoal.webp', rightImage: '/assets/images/hero-products/range-charcoal.webp',
     bgFrom: '#4A5163', bgTo: '#161A23', glow: '#8C97B3', dark: true, accent: '#7BE0A6',
     serif: 'Deep clean', line: 'for your busiest days',
     ingredients: [

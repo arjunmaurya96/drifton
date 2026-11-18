@@ -54,9 +54,9 @@ export default function HeroBanner() {
         style={slide.modelZoomOut ? { WebkitMaskImage: 'none', maskImage: 'none' } : undefined}
         className="absolute inset-x-0 top-[96px] h-[52%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_0%,#000_65%,rgba(0,0,0,0.4)_85%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_0%,#000_65%,rgba(0,0,0,0.4)_85%,transparent_100%)] lg:inset-y-0 lg:top-[118px] lg:right-auto lg:h-full lg:w-[54%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_0%,#000_58%,rgba(0,0,0,0.85)_74%,rgba(0,0,0,0.35)_90%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_0%,#000_58%,rgba(0,0,0,0.85)_74%,rgba(0,0,0,0.35)_90%,transparent_100%)]">
         {slide.modelZoomOut ? (
-          // zoomed-out photo: the whole photo is shown a little smaller, sitting at the bottom-left (no fade)
+          // banner photo: the whole photo, full height from the header to the bottom, flush left (no fade, no shadow)
           <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined}
-            className="absolute bottom-0 left-1/2 h-[88%] w-auto max-w-none -translate-x-1/2 lg:bottom-auto lg:left-0 lg:top-[calc((100%-118px)*0.14)] lg:h-[calc((100%-118px)*0.86)] lg:translate-x-0"
+            className="absolute bottom-0 left-1/2 h-full w-auto max-w-none -translate-x-1/2 lg:bottom-auto lg:left-0 lg:top-0 lg:h-[calc(100%-118px)] lg:translate-x-0"
             onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
         ) : (
         <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined} className="h-full w-full object-cover" style={{ objectPosition: slide.modelPos || '58% center' }}
