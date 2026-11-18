@@ -149,7 +149,7 @@ export const bannerSlides = [
     bgFrom: '#F3E9F3', bgTo: '#F7B9D0', glow: '#FF9CC2', dark: false, accent: '#A02E54',
   },
   {
-    productId: 'palash', modelPhoto: '/assets/images/models/model-girl.webp', modelPos: '58% center', cutout: '/assets/images/cutouts/palash.webp', rightImage: '/assets/images/hero-products/range-palash.webp',
+    productId: 'palash', modelPhoto: '/assets/images/models/model-palash-robe.jpg', modelPos: '50% 20%', cutout: '/assets/images/cutouts/palash.webp', rightImage: '/assets/images/hero-products/range-palash.webp',
     bgFrom: '#FFF3E2', bgTo: '#FFC98A', glow: '#FFB45E', dark: false, accent: '#C2571A',
     serif: 'Crystal Roll On', line: 'that keeps you fresh 24/7',
     ingredients: [
@@ -167,7 +167,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'rose', modelPhoto: '/assets/images/models/model-girls.webp', modelPos: 'center 30%', cutout: '/assets/images/cutouts/rose.webp', rightImage: '/assets/images/hero-products/range-rose.webp',
+    productId: 'rose', modelPhoto: '/assets/images/models/model-two-girls-drifton.jpg', modelPos: '50% 15%', cutout: '/assets/images/cutouts/rose.webp', rightImage: '/assets/images/hero-products/range-rose.webp',
     bgFrom: '#FFF0F4', bgTo: '#F7B5CA', glow: '#F08AAE', dark: false, accent: '#B0305D',
     serif: 'Soft & fresh', line: 'with a touch of rose',
     ingredients: [
@@ -176,7 +176,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'natural', modelPhoto: '/assets/images/models/model-palash-wink.jpg', modelPos: '50% 20%', cutout: '/assets/images/cutouts/crystal.webp', rightImage: '/assets/images/hero-products/range-natural.webp',
+    productId: 'natural', modelPhoto: '/assets/images/models/model-two-girls-drifton.jpg', modelPos: '50% 15%', cutout: '/assets/images/cutouts/crystal.webp', rightImage: '/assets/images/hero-products/range-natural.webp',
     bgFrom: '#FFF8F0', bgTo: '#FCECD8', glow: '#FFF2E0', dark: false, accent: '#1C6FB8',
     serif: 'Pure & clear', line: 'natural mineral freshness',
     ingredients: [
