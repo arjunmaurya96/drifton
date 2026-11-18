@@ -15,19 +15,27 @@ export default function ProductCard({ product, className = 'h-[500px] sm:h-[560p
   const inCart = cart.some((l) => l.id === product.id);
 
   return (
-    <article className={`relative overflow-hidden rounded-2xl lg:rounded-none ${className}`} style={{ background: product.bg }}>
-      <Link to={url} aria-label={`View ${product.name}`} className="absolute inset-0">
-        <img src={product.card || product.scene} alt={product.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)] lg:group-hover/card:scale-[1.04]" />
+    <article className={`group/c flex h-full flex-col overflow-hidden rounded-2xl bg-white lg:rounded-none ${className}`}>
+      {/* photo */}
+      <Link to={url} aria-label={`View ${product.name}`} className="relative block min-h-0 flex-1 overflow-hidden" style={{ background: product.bg }}>
+        <img src={product.card || product.scene} alt={product.name} loading="lazy"
+          className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)] lg:group-hover/c:scale-[1.05]" />
+        <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 font-jost text-[12.5px] font-semibold uppercase tracking-wider text-navy-900 shadow-sm">Sale</span>
+        <span className="absolute bottom-4 left-1/2 -translate-x-1/2 translate-y-3 rounded-full bg-black/55 px-4 py-2 font-jost text-[13px] font-medium text-white opacity-0 backdrop-blur transition duration-500 lg:group-hover/c:translate-y-0 lg:group-hover/c:opacity-100">View details →</span>
       </Link>
-      <span className="pointer-events-none absolute right-4 top-4 rounded-full bg-white px-4 py-2 font-jost text-[14px] font-medium text-navy-900">Sale</span>
 
-      {/* name, price and button on the photo */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-1.5 bg-gradient-to-t from-black/55 via-black/15 to-transparent px-5 pb-6 pt-28 text-center text-white">
-        <Link to={url} className="pointer-events-auto font-jost text-[22px] font-medium leading-tight text-white [text-shadow:0_1px_8px_rgba(0,0,0,.35)] hover:text-white 2xl:text-[25px]">{product.name}</Link>
-        <span className="font-jost text-[16px] font-medium">{formatINR(product.price)} <span className="text-[13px] font-normal text-white/80">+ delivery</span></span>
-        <button onClick={onAdd}
-          className="pointer-events-auto mt-2 min-h-[46px] rounded-full bg-white px-9 font-jost text-[14px] font-medium uppercase tracking-wide text-navy-900 hover:bg-mint">
-          {inCart ? 'Add another' : 'Add to cart'}
+      {/* info strip */}
+      <div className="flex items-center gap-3 border-t border-line bg-white px-4 py-4 sm:px-5">
+        <span className="min-w-0 flex-1">
+          <Link to={url} className="block truncate font-jost text-[17px] font-semibold leading-tight text-navy-900 hover:text-navy-700">{product.name.replace('DriftOn™ ', '')}</Link>
+          <span className="mt-0.5 flex items-center gap-2 font-jost text-[14px]">
+            <b className="font-semibold text-navy-900">{formatINR(product.price)}</b>
+            <span className="rounded-md bg-mint-soft px-1.5 py-0.5 text-[11.5px] font-bold text-brand-dark">2 for ₹750</span>
+          </span>
+        </span>
+        <button onClick={onAdd} aria-label={`Add ${product.name} to cart`}
+          className="shrink-0 rounded-full bg-navy-900 px-5 py-3 font-jost text-[13.5px] font-semibold uppercase tracking-wide text-white transition hover:bg-navy-700">
+          {inCart ? 'Add more' : 'Add'}
         </button>
       </div>
     </article>

@@ -39,11 +39,11 @@ export default function ProductGrid() {
       {/* full width product wall. Desktop: hover a card and it grows wider (accordion), the others shrink */}
       <div className="relative px-3 sm:px-4">
         <div ref={track}
-          className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible lg:flex lg:gap-0 lg:overflow-hidden lg:rounded-2xl [&::-webkit-scrollbar]:hidden">
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible lg:flex lg:gap-0 lg:divide-x lg:divide-line lg:overflow-hidden lg:rounded-2xl lg:border lg:border-line [&::-webkit-scrollbar]:hidden">
           {products.filter((p) => !p.hidden).map((p) => (
             <div key={p.id} id={p.id} data-product-id={p.id} data-slug={p.slug}
-              className="group/card w-full shrink-0 snap-start scroll-mt-28 sm:w-auto lg:min-w-0 lg:flex-1 lg:transition-[flex-grow] lg:duration-700 lg:ease-[cubic-bezier(.22,1,.36,1)] lg:hover:flex-[1.9]">
-              <ProductCard product={p} quickCheckout className="h-[66svh] min-h-[460px] max-h-[580px] sm:h-[560px] sm:max-h-none lg:h-[600px] xl:h-[660px]" />
+              className="group/card w-full shrink-0 snap-start scroll-mt-28 sm:w-auto lg:min-w-0 lg:flex-1 lg:transition-[flex-grow] lg:duration-700 lg:ease-[cubic-bezier(.22,1,.36,1)] lg:hover:flex-[1.6]">
+              <ProductCard product={p} quickCheckout className="h-[72svh] min-h-[520px] max-h-[640px] sm:h-[600px] sm:max-h-none lg:h-[620px] xl:h-[660px]" />
             </div>
           ))}
         </div>
