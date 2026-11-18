@@ -57,7 +57,7 @@ export default function InvoiceModal({ order, settings = {}, products = [], open
   const storeName = settings.storeName || 'DriftOn™';
   const legalName = settings.legalName || 'AI Enterprises';
   const gstNumber = settings.gst || '07ACIFA5199E1Z8';
-  const businessAddress = settings.address || 'Block-O, No. 28, Balraj Khanna Marg, West Patel Nagar, New Delhi – 110008, India';
+  const businessAddress = settings.address || 'Balraj Khanna Marg, Block O, West Patel Nagar, Patel Nagar, New Delhi, Delhi, 110008';
   const businessEmail = settings.email || 'infodrifton@gmail.com';
 
   const orderDate = order.date ? new Date(order.date) : new Date();

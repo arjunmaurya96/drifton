@@ -16,7 +16,7 @@ export const termsSections = [
         "p": "Brand Name: DriftOn™"
       },
       {
-        "p": "Registered Address: Block-O, No. 28, Balraj Khanna Marg, West Patel Nagar, New Delhi – 110008, India."
+        "p": "Registered Address: Balraj Khanna Marg, Block O, West Patel Nagar, Patel Nagar, New Delhi, Delhi, 110008."
       },
       {
         "p": "Customer Care Email: infodrifton@gmail.com"
@@ -302,7 +302,7 @@ export const termsSections = [
         "p": "Brand: DriftOn™"
       },
       {
-        "p": "Registered Address: Block-O, No. 28, Balraj Khanna Marg, West Patel Nagar, New Delhi – 110008, India."
+        "p": "Registered Address: Balraj Khanna Marg, Block O, West Patel Nagar, Patel Nagar, New Delhi, Delhi, 110008."
       },
       {
         "p": "Customer Care Email: infodrifton@gmail.com"

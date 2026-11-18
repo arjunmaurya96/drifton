@@ -240,7 +240,7 @@ export const productInfo = {
     { title: 'Use regularly', text: 'Apply daily for the best everyday freshness.' },
   ],
   legal: [
-    ['Marketed by', 'AI Enterprises, Block-O, No. 28, Balraj Khanna Marg, West Patel Nagar, New Delhi – 110008'],
+    ['Marketed by', 'AI Enterprises, Balraj Khanna Marg, Block O, West Patel Nagar, Patel Nagar, New Delhi, Delhi, 110008'],
     ['Manufactured by', '[MANUFACTURER NAME & ADDRESS]'],
     ['Price', '₹475 per roll on · any 2 for ₹800'],
     ['Country of origin', '[COUNTRY]'],
