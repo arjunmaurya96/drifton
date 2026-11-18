@@ -18,8 +18,10 @@ export default function ProductCard({ product, className = 'h-[500px] sm:h-[560p
     <article className={`group/c flex h-full flex-col overflow-hidden rounded-2xl bg-white lg:rounded-none ${className}`}>
       {/* photo */}
       <Link to={url} aria-label={`View ${product.name}`} className="relative block min-h-0 flex-1 overflow-hidden" style={{ background: product.bg }}>
+        {/* soft blurred copy fills any extra space when the card grows; the real photo keeps its size (no zoom) */}
+        <img src={product.card || product.scene} alt="" aria-hidden="true" loading="lazy" className="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl" />
         <img src={product.card || product.scene} alt={product.name} loading="lazy"
-          className="h-full w-full object-cover" />
+          className="absolute left-1/2 top-0 h-full w-auto max-w-none -translate-x-1/2" />
         <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 font-jost text-[12.5px] font-semibold uppercase tracking-wider text-navy-900 shadow-sm">Sale</span>
         <span className="absolute bottom-4 left-1/2 -translate-x-1/2 translate-y-3 rounded-full bg-black/55 px-4 py-2 font-jost text-[13px] font-medium text-white opacity-0 backdrop-blur transition duration-500 lg:group-hover/c:translate-y-0 lg:group-hover/c:opacity-100">View details →</span>
       </Link>
