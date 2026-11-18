@@ -52,11 +52,12 @@ export default function HeroBanner() {
       {/* Left: model photo, fading into the background colour */}
       {/* Mobile/tablet: photo across the top, fading down. Desktop: photo on the left, fading cleanly towards the far right. */}
       <div key={`m-${i}`} aria-hidden="true"
+        style={slide.modelZoomOut ? { WebkitMaskImage: 'none', maskImage: 'none' } : undefined}
         className="absolute inset-x-0 top-[96px] h-[52%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_70%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_70%,transparent_100%)] lg:inset-y-0 lg:top-[118px] lg:right-auto lg:h-full lg:w-[52%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_84%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_84%,transparent_100%)]">
         {slide.modelZoomOut ? (
-          // zoomed-out photo: the whole photo is shown a little smaller, sitting at the bottom-left (only a light edge fade)
+          // zoomed-out photo: the whole photo is shown a little smaller, sitting at the bottom-left (no fade)
           <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined}
-            className="absolute bottom-0 left-1/2 h-[88%] w-auto max-w-none -translate-x-1/2 [-webkit-mask-image:linear-gradient(to_bottom,transparent,#000_6%)] [mask-image:linear-gradient(to_bottom,transparent,#000_6%)] lg:bottom-auto lg:left-0 lg:top-[calc((100%-118px)*0.14)] lg:h-[calc((100%-118px)*0.86)] lg:translate-x-0 lg:[-webkit-mask-image:linear-gradient(to_right,#000_92%,transparent)] lg:[mask-image:linear-gradient(to_right,#000_92%,transparent)]"
+            className="absolute bottom-0 left-1/2 h-[88%] w-auto max-w-none -translate-x-1/2 lg:bottom-auto lg:left-0 lg:top-[calc((100%-118px)*0.14)] lg:h-[calc((100%-118px)*0.86)] lg:translate-x-0"
             onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
         ) : (
         <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined} className="h-full w-full object-cover" style={{ objectPosition: slide.modelPos || '58% center' }}
