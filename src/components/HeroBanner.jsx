@@ -58,11 +58,11 @@ export default function HeroBanner() {
           onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
       </div>
 
-      <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 pt-[110px] lg:items-center lg:justify-end lg:pb-16 lg:pt-[130px]">
+      <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 pt-[110px] lg:items-center lg:justify-end lg:pb-16 lg:pt-[135px]">
         {/* Right: this slide's product big in the middle, its other variants smaller around it (no text, no base) */}
-        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[66%] w-full items-end justify-center sm:h-[70%] lg:h-full lg:w-[66%] xl:w-[70%] lg:items-center lg:justify-center lg:pr-4 xl:pr-8">
+        <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[62%] w-full items-end justify-center sm:h-[66%] lg:h-full lg:w-[62%] xl:w-[64%] lg:items-center lg:justify-center lg:pr-8 xl:pr-14">
           <img src={slide.rightImage || slide.cutout} alt={`${product.name} and other Drifton variants`}
-            className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(calc(100svh-135px),920px)] scale-105 sm:scale-110 lg:scale-105 xl:scale-110 origin-bottom lg:origin-center" style={{ animationDelay: '150ms' }} />
+            className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(calc(100svh-170px),860px)]" style={{ animationDelay: '150ms' }} />
         </Link>
       </div>
       </>}
