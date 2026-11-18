@@ -176,7 +176,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'natural', modelPhoto: '/assets/images/models/model-two-girls-drifton.jpg', modelPos: '50% 15%', cutout: '/assets/images/cutouts/crystal.webp', rightImage: '/assets/images/hero-products/range-natural.webp',
+    productId: 'natural', modelPhoto: '/assets/images/models/model-natural-lounge.jpg', modelPos: '50% 15%', cutout: '/assets/images/cutouts/crystal.webp', rightImage: '/assets/images/hero-products/range-natural.webp',
     bgFrom: '#FFF8F0', bgTo: '#FCECD8', glow: '#FFF2E0', dark: false, accent: '#1C6FB8',
     serif: 'Pure & clear', line: 'natural mineral freshness',
     ingredients: [
