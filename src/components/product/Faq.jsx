@@ -4,8 +4,8 @@ import { Plus, Minus } from '../Icons.jsx';
 export default function Faq({ items }) {
   const [open, setOpen] = useState(0);
   return (
-    <section className="pb-24">
-      <div className="container-x grid grid-cols-1 gap-10 lg:grid-cols-[.8fr_1.2fr]">
+    <section className="pb-12">
+      <div className="container-x grid grid-cols-1 gap-6 lg:grid-cols-[.8fr_1.2fr]">
         <div className="flex flex-col gap-3">
           <span className="eyebrow">FAQ's</span>
           <h2 className="h2">Questions? <span className="text-brand">Answered.</span></h2>

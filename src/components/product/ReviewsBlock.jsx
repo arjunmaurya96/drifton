@@ -19,9 +19,9 @@ export default function ReviewsBlock({ reviews }) {
   const shown = reviews.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE);
 
   return (
-    <section id="product-reviews" className="py-20">
+    <section id="product-reviews" className="py-10">
       <div className="container-x">
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div className="flex flex-col gap-3">
             <span className="eyebrow">Customer reviews</span>
             <h2 className="h2">Loved by our <span className="text-brand">community</span></h2>
