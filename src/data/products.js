@@ -158,8 +158,8 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'charcoal', modelPhoto: '/assets/images/models/model-boy-charcoal-open.jpg', modelPos: '50% 15%', modelZoomOut: true, cutout: '/assets/images/cutouts/charcoal.webp', rightImage: '/assets/images/hero-products/range-charcoal.webp',
-    bgFrom: '#4A5163', bgTo: '#161A23', glow: '#8C97B3', dark: true, accent: '#7BE0A6',
+    productId: 'charcoal', modelPhoto: '/assets/images/models/hero-duo-2.webp', modelPos: '50% 20%', modelZoomOut: true, cutout: '/assets/images/cutouts/charcoal.webp', rightImage: '/assets/images/hero-products/range-charcoal.webp',
+    bgFrom: '#F3F5F9', bgTo: '#CDD4E0', glow: '#B5BFD2', dark: false, accent: '#2E3A4F',
     serif: 'Deep clean', line: 'for your busiest days',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Glycerine', icon: 'drop' },
@@ -176,7 +176,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'natural', modelPhoto: '/assets/images/models/model-natural-lounge.jpg', modelPos: '50% 15%', cutout: '/assets/images/cutouts/crystal.webp', rightImage: '/assets/images/hero-products/range-natural.webp',
+    productId: 'natural', modelPhoto: '/assets/images/models/model-natural-full.webp', modelPos: '50% 15%', modelZoomOut: true, cutout: '/assets/images/cutouts/crystal.webp', rightImage: '/assets/images/hero-products/range-natural.webp',
     bgFrom: '#FFF8F0', bgTo: '#FCECD8', glow: '#FFF2E0', dark: false, accent: '#1C6FB8',
     serif: 'Pure & clear', line: 'natural mineral freshness',
     ingredients: [
