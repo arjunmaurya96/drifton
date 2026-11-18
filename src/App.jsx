@@ -64,6 +64,7 @@ function useStoreConfig() {
   useEffect(() => {
     loadStoreConfig().then((cfg) => {
       if (!cfg) return;
+
       applyStoreConfig(cfg);
       const st = cfg.settings || {};
       if (st.email) business.email = st.email;
