@@ -50,13 +50,10 @@ export default function HeroBanner() {
 
       {!slide.full && <>
       {/* Left: model photo, fading into the background colour */}
-      {/* Mobile/tablet: photo across the top, fading down. Desktop: photo on the left, fading right. */}
-      {/* The whole photo is always shown (never cut): it keeps its own shape and fits inside this area,
-          then its edges fade softly into the background colour. */}
+      {/* Mobile/tablet: photo across the top, fading down. Desktop: photo on the left, fading cleanly towards the far right. */}
       <div key={`m-${i}`} aria-hidden="true"
-        className="absolute inset-x-0 top-[96px] flex h-[52%] animate-from-left items-end justify-center lg:bottom-0 lg:right-auto lg:top-[118px] lg:h-auto lg:w-[50%] lg:justify-start">
-        <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined}
-          className="block h-auto max-h-full w-auto max-w-full [-webkit-mask-composite:source-in] [mask-composite:intersect] [-webkit-mask-image:linear-gradient(to_bottom,transparent,#000_10%,#000_70%,transparent),linear-gradient(to_right,transparent,#000_12%,#000_88%,transparent)] [mask-image:linear-gradient(to_bottom,transparent,#000_10%,#000_70%,transparent),linear-gradient(to_right,transparent,#000_12%,#000_88%,transparent)] lg:[-webkit-mask-image:linear-gradient(to_top,#000_85%,transparent),linear-gradient(to_right,#000_72%,transparent)] lg:[mask-image:linear-gradient(to_top,#000_85%,transparent),linear-gradient(to_right,#000_72%,transparent)]"
+        className="absolute inset-x-0 top-[96px] h-[52%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_70%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_70%,transparent_100%)] lg:inset-y-0 lg:top-[118px] lg:right-auto lg:h-full lg:w-[52%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_84%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_84%,transparent_100%)]">
+        <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined} className="h-full w-full object-cover" style={{ objectPosition: slide.modelPos || '58% center' }}
           // if a photo is missing (e.g. model-boy.jpg not added yet), fall back to the girl photo
           onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
       </div>
