@@ -98,6 +98,26 @@ export default function ProductDetail() {
           <div className="flex flex-col gap-3">
             <ProductGallery key={product.id} media={media} name={product.name} badge={product.badge} bg={product.bg} />
             <p className="px-1 text-[12.5px] leading-relaxed text-muted-2">Images are for illustration. Actual product may vary slightly in colour, design or packaging.</p>
+            <div className="mt-2 hidden flex-col gap-4 rounded-[24px] border border-line bg-white p-5 lg:flex">
+              <form onSubmit={checkPin}>
+                <span className="mb-2 block text-sm font-bold">Check delivery</span>
+                <div className="flex items-center gap-2 rounded-full border-[1.5px] border-line-strong bg-white py-1.5 pl-4 pr-1.5">
+                  <Pin />
+                  <input inputMode="numeric" maxLength={6} placeholder="Enter pincode" aria-label="Pincode" value={pin}
+                    onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))} className="min-w-0 flex-1 text-[15px] outline-none" />
+                  <button className="btn-navy min-h-[42px] px-5">Check</button>
+                </div>
+                {pinMsg && <p className="mt-2 text-sm font-semibold text-brand-dark">{pinMsg}</p>}
+              </form>
+
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+                {[[Truck, 'Free delivery on combos'], [Shield, 'Secure checkout'], [Return, '48-hour returns']].map(([I, t]) => (
+                  <span key={t} className="flex items-center gap-2 rounded-xl border border-line bg-white px-3 py-2.5 text-[13px] font-semibold text-navy-700">
+                    <span className="text-brand"><I size={22} /></span>{t}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* ---------- Buy box ---------- */}
@@ -169,6 +189,7 @@ export default function ProductDetail() {
               <button className="btn-primary min-h-[54px] w-full text-base" onClick={buy}>Buy now</button>
             </div>
 
+            <div className="flex flex-col gap-4 lg:hidden">
             <form onSubmit={checkPin}>
               <span className="mb-2 block text-sm font-bold">Check delivery</span>
               <div className="flex items-center gap-2 rounded-full border-[1.5px] border-line-strong bg-white py-1.5 pl-4 pr-1.5">
@@ -187,27 +208,10 @@ export default function ProductDetail() {
                 </span>
               ))}
             </div>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* ---------- Why you'll love it ---------- */}
-      <section className="bg-navy-900 py-10 text-white">
-        <div className="container-x">
-          <h2 className="mb-6 text-center text-3xl font-bold tracking-tight">Why you'll <span className="text-mint">love it?</span></h2>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-            {productInfo.loveIt.map(({ title, icon }) => {
-              const I = loveIcons[icon];
-              return (
-                <div key={title} className="flex flex-col items-center gap-2.5 rounded-2xl bg-white/5 p-4 text-center ring-1 ring-white/10 transition hover:bg-white/10">
-                  <span className="flex size-12 items-center justify-center rounded-full bg-mint text-navy-900"><I /></span>
-                  <b className="font-head text-[16px] font-semibold leading-snug">{title}</b>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       {/* ---------- Detail sections with sticky contents ---------- */}
       <div className="container-x grid grid-cols-1 gap-6 py-10 lg:grid-cols-[240px_1fr]">
@@ -269,6 +273,24 @@ export default function ProductDetail() {
       </div>
 
       <ProductMarquee dark />
+      {/* ---------- Why you'll love it ---------- */}
+      <section className="bg-navy-900 py-10 text-white">
+        <div className="container-x">
+          <h2 className="mb-6 text-center text-3xl font-bold tracking-tight">Why you'll <span className="text-mint">love it?</span></h2>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+            {productInfo.loveIt.map(({ title, icon }) => {
+              const I = loveIcons[icon];
+              return (
+                <div key={title} className="flex flex-col items-center gap-2.5 rounded-2xl bg-white/5 p-4 text-center ring-1 ring-white/10 transition hover:bg-white/10">
+                  <span className="flex size-12 items-center justify-center rounded-full bg-mint text-navy-900"><I /></span>
+                  <b className="font-head text-[16px] font-semibold leading-snug">{title}</b>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       <ReviewsBlock reviews={reviews} />
       <Faq items={productInfo.faqs} />
 
