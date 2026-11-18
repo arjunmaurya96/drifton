@@ -4,7 +4,6 @@ import { products, packs, offer, productInfo, sampleReviews, getProductBySlug, f
 import { useStore } from '../context/StoreContext.jsx';
 import ProductCard from '../components/ProductCard.jsx';
 import ProductMarquee from '../components/ProductMarquee.jsx';
-import { ImagesNote, TaxNote } from '../components/InfoNote.jsx';
 import ProductGallery from '../components/product/ProductGallery.jsx';
 import ReviewsBlock from '../components/product/ReviewsBlock.jsx';
 import Faq from '../components/product/Faq.jsx';
@@ -58,12 +57,13 @@ export default function ProductDetail() {
   // Gallery: product video (if any) + photo framings. Replace with real angle shots/videos.
   const media = useMemo(() => {
     if (!product) return [];
+    const ingr = { palash: 'palash', charcoal: 'charcoal', rose: 'rose', natural: 'natural' }[product.id];
     const imgs = [
-      { type: 'image', src: product.scene, cover: true },
-      { type: 'image', src: product.image },
-      { type: 'image', src: product.image, pos: 'center 20%', scale: 1.7 },
-      { type: 'image', src: product.image, pos: 'center 85%', scale: 1.5 },
-    ];
+      product.card && { type: 'image', src: product.card, label: 'Studio' },
+      { type: 'image', src: product.image, fit: 'contain', stage: true, label: 'Product' },
+      { type: 'image', src: product.scene, pos: '50% 45%', label: 'Natural' },
+      ingr && { type: 'image', src: `/assets/images/ingredients/${ingr}.webp`, fit: 'contain', bg: '#fff', label: 'Ingredients' },
+    ].filter(Boolean);
     if (product.video) imgs.splice(1, 0, { type: 'video', src: product.video, poster: product.poster });
     return imgs;
   }, [product]);
@@ -88,33 +88,35 @@ export default function ProductDetail() {
   return (
     <>
       <div className="container-x">
-        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 py-6 text-sm text-muted-2">
+        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 py-5 text-sm text-muted-2">
           <Link to="/" className="text-muted-2 hover:text-brand">Home</Link><span>/</span>
           <Link to="/#shop" className="text-muted-2 hover:text-brand">Shop</Link><span>/</span>
           <b className="font-semibold text-navy-900">{product.name}</b>
         </nav>
 
-        <div className="grid grid-cols-1 items-start gap-10 pb-16 lg:grid-cols-[1.05fr_.95fr] lg:gap-14">
-          <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 items-start gap-8 pb-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)] lg:gap-12 xl:gap-16">
+          <div className="flex flex-col gap-3">
             <ProductGallery key={product.id} media={media} name={product.name} badge={product.badge} bg={product.bg} />
-            <ImagesNote />
+            <p className="px-1 text-[12.5px] leading-relaxed text-muted-2">Images are for illustration. Actual product may vary slightly in colour, design or packaging.</p>
           </div>
 
           {/* ---------- Buy box ---------- */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 rounded-[28px] border border-line bg-white p-5 shadow-[0_24px_60px_-44px_rgba(15,26,60,.5)] sm:p-8">
             <div className="flex flex-col gap-3">
-              <span className="text-[13px] font-bold uppercase tracking-widest" style={{ color: product.accent }}>{product.tag}</span>
-              <h1 className="text-[34px] font-bold leading-tight tracking-tight sm:text-[44px]">{product.name}</h1>
+              <span className="inline-flex w-fit items-center gap-2 rounded-full px-3 py-1 text-[12px] font-bold uppercase tracking-widest" style={{ color: product.accent, background: product.bg }}>
+                <span className="size-1.5 rounded-full" style={{ background: product.accent }} />{product.tag}
+              </span>
+              <h1 className="text-[30px] font-bold leading-[1.1] tracking-tight sm:text-[40px]">{product.name}</h1>
               <a href="#product-reviews" className="flex items-center gap-2 text-sm font-medium text-muted-2 hover:text-navy-900">
                 <Stars value={rating} size={18} /> {rating.toFixed(1)} · {reviews.length} sample reviews
               </a>
             </div>
 
-            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-2xl bg-page p-4">
               <b className="font-head text-4xl font-bold">{formatINR(unit)}</b>
               {pack.multiplier > 1 ? <s className="text-lg text-[#6B7493]">{formatINR(UNIT_PRICE * pack.multiplier)}</s> : <span className="text-[15px] font-semibold text-muted">+ delivery</span>}
               <span className="w-full text-[13.5px] text-muted-2">{pack.multiplier > 1 ? 'Free delivery on combos' : `Delivery ${formatINR(DELIVERY_FEE)}, free on any 2 roll ons`}</span>
-              <TaxNote className="mt-2 w-full" />
+              <span className="w-full text-[12.5px] text-muted-2">Inclusive of all taxes. Discounts and shipping calculated at checkout.</span>
             </div>
 
             <div className="flex items-center gap-3.5 rounded-2xl border border-dashed border-brand bg-mint-soft px-4 py-3.5">
@@ -129,11 +131,12 @@ export default function ProductDetail() {
 
             <div>
               <span className="mb-2.5 block text-sm font-bold">Variant: <span className="font-medium text-muted-2">{product.short}</span></span>
-              <div className="flex flex-wrap gap-2.5">
-                {products.map((p) => (
+              <div className="grid grid-cols-4 gap-2 sm:gap-2.5">
+                {products.filter((p) => !p.hidden).map((p) => (
                   <Link key={p.id} to={`/product/${p.slug}`} aria-current={p.id === product.id}
-                    className={`flex items-center gap-2.5 rounded-full border-[1.5px] py-1.5 pl-1.5 pr-4 text-[14.5px] font-semibold text-navy-900 transition ${p.id === product.id ? 'border-navy-700 bg-blue-soft' : 'border-line-strong bg-white hover:border-navy-700'}`}>
-                    <span className="flex size-[34px] items-center justify-center rounded-full bg-white p-0.5"><img src={p.image} alt="" className="h-full w-auto object-contain" /></span>{p.short}
+                    className={`flex flex-col overflow-hidden rounded-2xl border-[1.5px] bg-white text-center transition ${p.id === product.id ? 'border-navy-900 ring-2 ring-navy-900/10' : 'border-line hover:border-navy-700'}`}>
+                    <span className="block aspect-[4/5] w-full overflow-hidden" style={{ background: p.bg }}><img src={p.card || p.image} alt="" className="h-full w-full object-cover" /></span>
+                    <span className={`py-2 text-[13px] font-semibold sm:text-[14px] ${p.id === product.id ? 'bg-navy-900 text-white' : 'text-navy-900'}`}>{p.short}</span>
                   </Link>
                 ))}
               </div>
