@@ -49,20 +49,39 @@ export default function HeroBanner() {
       )}
 
       {!slide.full && <>
-      {/* Left: model photo, fading into the background colour */}
-      {/* Mobile/tablet: photo across the top, fading down. Desktop: photo on the left, fading cleanly towards the far right. */}
+      {/* Left: model photo, fading seamlessly into the background colour without any harsh divider line */}
       <div key={`m-${i}`} aria-hidden="true"
-        className="absolute inset-x-0 top-[96px] h-[52%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_70%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_70%,transparent_100%)] lg:inset-y-0 lg:top-[118px] lg:right-auto lg:h-full lg:w-[52%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_84%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_84%,transparent_100%)]">
+        className="absolute inset-x-0 top-[96px] h-[52%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_0%,#000_65%,rgba(0,0,0,0.4)_85%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_0%,#000_65%,rgba(0,0,0,0.4)_85%,transparent_100%)] lg:inset-y-0 lg:top-[118px] lg:right-auto lg:h-full lg:w-[54%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_0%,#000_58%,rgba(0,0,0,0.85)_74%,rgba(0,0,0,0.35)_90%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_0%,#000_58%,rgba(0,0,0,0.85)_74%,rgba(0,0,0,0.35)_90%,transparent_100%)]">
         <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined} className="h-full w-full object-cover" style={{ objectPosition: slide.modelPos || '58% center' }}
           // if a photo is missing (e.g. model-boy.jpg not added yet), fall back to the girl photo
           onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
       </div>
 
       <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 pt-[110px] lg:items-center lg:justify-end lg:pb-16 lg:pt-[135px]">
-        {/* Right: this slide's product big in the middle, its other variants smaller around it (no text, no base) */}
+        {/* Right: unified luxury banner presentation with ambient glow and realistic grounding shadow */}
         <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[62%] w-full items-end justify-center sm:h-[66%] lg:h-full lg:w-[62%] xl:w-[64%] lg:items-center lg:justify-center lg:pr-8 xl:pr-14">
-          <img src={slide.rightImage || slide.cutout} alt={`${product.name} and other Drifton variants`}
-            className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(calc(100svh-170px),860px)]" style={{ animationDelay: '150ms' }} />
+          <div className="relative flex items-center justify-center max-h-full max-w-full">
+            {/* Ambient soft glow aura matching variant theme */}
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-6 top-1/4 bottom-8 rounded-full blur-3xl opacity-35 transition-all duration-700"
+              style={{ background: slide.glow || '#FFF' }}
+            />
+
+            {/* Product Range Lineup with soft realistic drop shadow */}
+            <img
+              src={slide.rightImage || slide.cutout}
+              alt={`${product.name} and other Drifton variants`}
+              className="relative z-[2] h-auto max-h-full w-auto max-w-full animate-from-right object-contain drop-shadow-[0_24px_48px_rgba(15,26,60,0.18)] lg:max-h-[min(calc(100svh-170px),860px)]"
+              style={{ animationDelay: '150ms' }}
+            />
+
+            {/* Realistic soft contact floor shadow grounding the bottles */}
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute -bottom-2 inset-x-12 h-6 rounded-full bg-navy-950/20 blur-xl"
+            />
+          </div>
         </Link>
       </div>
 
