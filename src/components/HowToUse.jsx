@@ -28,18 +28,18 @@ export default function HowToUse() {
       </div>
 
       {/* mobile: swipe cards · tablet: 2 per row · desktop: all 4 in one row */}
-      <ol className="container-x -mb-2 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible lg:grid-cols-4 [&::-webkit-scrollbar]:hidden">
+      <ol className="-mb-2 flex w-full px-[18px] sm:px-8 xl:px-12 snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible lg:grid-cols-4 [&::-webkit-scrollbar]:hidden">
         {steps.map((s, k) => (
           <li key={s.title} className="relative flex w-[72%] shrink-0 snap-center flex-col sm:w-auto">
             {/* dotted connector to the next step (desktop) */}
             {k < steps.length - 1 && (
-              <span aria-hidden="true" className="absolute -right-5 top-[38%] z-10 hidden size-10 items-center justify-center rounded-full border border-line bg-white text-navy-900 shadow-md lg:flex">
+              <span aria-hidden="true" className="absolute -right-5 top-[38%] z-10 hidden size-10 items-center justify-center rounded-full bg-white text-navy-900 shadow-md lg:flex">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
               </span>
             )}
 
-            <div className="group flex h-full flex-col overflow-hidden rounded-[22px] border border-line bg-white p-2.5 shadow-[0_14px_34px_-24px_rgba(15,26,60,.45)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_44px_-24px_rgba(15,26,60,.5)]">
-              <div className="relative overflow-hidden rounded-[16px] bg-[#EEF1F5]">
+            <div className="group flex h-full flex-col">
+              <div className="relative overflow-hidden rounded-[22px] bg-[#EEF1F5] shadow-[0_18px_40px_-26px_rgba(15,26,60,.55)] transition duration-300 group-hover:-translate-y-1">
                 {s.photo ? (
                   <img src={s.photo} alt={`Step ${k + 1} — ${s.title}`} loading="lazy" decoding="async" className="block aspect-[1199/1312] w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
                 ) : (
@@ -54,7 +54,7 @@ export default function HowToUse() {
                 )}
               </div>
 
-              <div className="flex flex-1 items-start gap-3 px-2 pb-2 pt-4">
+              <div className="flex flex-1 items-start gap-3 px-1 pt-4">
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#EAF0FF] text-[#123A7A] [&_svg]:size-5">{icons[s.icon]}</span>
                 <span className="min-w-0">
                   <span className="block text-[11px] font-bold uppercase tracking-[1.5px] text-brand">Step {k + 1}</span>
