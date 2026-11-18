@@ -150,7 +150,7 @@ export const bannerSlides = [
   },
   {
     productId: 'palash', modelPhoto: '/assets/images/models/model-palash-robe.jpg', modelPos: '50% 20%', modelZoomOut: true, cutout: '/assets/images/cutouts/palash.webp', rightImage: '/assets/images/hero-products/range-palash.webp',
-    bgFrom: '#FFF3E2', bgTo: '#FFC98A', glow: '#FFB45E', dark: false, accent: '#C2571A',
+    bgFrom: '#FBF2E1', bgTo: '#F8D48E', glow: '#FFC65C', dark: false, accent: '#C2571A',
     serif: 'Crystal Roll On', line: 'that keeps you fresh 24/7',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Glycerine', icon: 'drop' },
@@ -159,7 +159,7 @@ export const bannerSlides = [
   },
   {
     productId: 'charcoal', modelPhoto: '/assets/images/models/hero-duo-2.webp', modelPos: '50% 20%', modelZoomOut: true, cutout: '/assets/images/cutouts/charcoal.webp', rightImage: '/assets/images/hero-products/range-charcoal.webp',
-    bgFrom: '#F3F5F9', bgTo: '#CDD4E0', glow: '#B5BFD2', dark: false, accent: '#2E3A4F',
+    bgFrom: '#F1EFF5', bgTo: '#C9D0DE', glow: '#AFBBD2', dark: false, accent: '#2E3A4F',
     serif: 'Deep clean', line: 'for your busiest days',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Glycerine', icon: 'drop' },
@@ -168,7 +168,7 @@ export const bannerSlides = [
   },
   {
     productId: 'rose', modelPhoto: '/assets/images/models/model-two-girls-drifton.jpg', modelPos: '50% 15%', cutout: '/assets/images/cutouts/rose.webp', rightImage: '/assets/images/hero-products/range-rose.webp',
-    bgFrom: '#FFF0F4', bgTo: '#F7B5CA', glow: '#F08AAE', dark: false, accent: '#B0305D',
+    bgFrom: '#F2EAF6', bgTo: '#DCC4F1', glow: '#C7A0F4', dark: false, accent: '#B0305D',
     serif: 'Soft & fresh', line: 'with a touch of rose',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Glycerine', icon: 'drop' },
@@ -177,7 +177,7 @@ export const bannerSlides = [
   },
   {
     productId: 'natural', modelPhoto: '/assets/images/models/model-natural-full.webp', modelPos: '50% 15%', modelZoomOut: true, cutout: '/assets/images/cutouts/crystal.webp', rightImage: '/assets/images/hero-products/range-natural.webp',
-    bgFrom: '#FFF8F0', bgTo: '#FCECD8', glow: '#FFF2E0', dark: false, accent: '#1C6FB8',
+    bgFrom: '#F5EFE7', bgTo: '#EBD7BC', glow: '#EBC99E', dark: false, accent: '#1C6FB8',
     serif: 'Pure & clear', line: 'natural mineral freshness',
     ingredients: [
       { name: 'Natural Alum', icon: 'gem' }, { name: 'Glycerine', icon: 'drop' },
