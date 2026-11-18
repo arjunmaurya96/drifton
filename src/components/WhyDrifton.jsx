@@ -10,7 +10,7 @@ const cards = [
 
 export default function WhyDrifton() {
   return (
-    <section id="why" className="pb-24">
+    <section id="why" className="pb-6 sm:pb-8">
       <div className="container-x grid grid-cols-1 items-center gap-14 lg:grid-cols-[.8fr_1.2fr]">
         <div className="flex flex-col gap-5">
           <span className="eyebrow">Why Drifton</span>

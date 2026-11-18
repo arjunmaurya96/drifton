@@ -36,7 +36,7 @@ function useCountUp(duration = 1800) {
 export default function Stats() {
   const [ref, p] = useCountUp();
   return (
-    <section ref={ref} className="pb-10 pt-24">
+    <section ref={ref} className="pb-10 pt-8 sm:pt-10">
       <div className="container-x">
         <div className="mb-11 flex flex-col items-center gap-3 text-center">
           <span className="eyebrow flex items-center gap-2.5 before:h-0.5 before:w-6 before:bg-brand after:h-0.5 after:w-6 after:bg-brand"><img src="/assets/images/logo-drifton.webp" alt="DriftOn" className="h-6 w-auto" /> promise</span>
