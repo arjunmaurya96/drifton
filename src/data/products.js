@@ -167,7 +167,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'rose', modelPhoto: '/assets/images/models/model-girls.webp', modelPos: 'center 30%', cutout: '/assets/images/cutouts/rose.webp', rightImage: '/assets/images/hero-products/range-rose.webp',
+    productId: 'rose', modelPhoto: '/assets/images/models/hero-duo-1.webp', modelPos: 'center 18%', cutout: '/assets/images/cutouts/rose.webp', rightImage: '/assets/images/hero-products/range-rose.webp',
     bgFrom: '#FFF0F4', bgTo: '#F7B5CA', glow: '#F08AAE', dark: false, accent: '#B0305D',
     serif: 'Soft & fresh', line: 'with a touch of rose',
     ingredients: [
@@ -176,7 +176,7 @@ export const bannerSlides = [
     ],
   },
   {
-    productId: 'natural', modelPhoto: '/assets/images/models/model-palash-wink.jpg', modelPos: '50% 20%', cutout: '/assets/images/cutouts/crystal.webp', rightImage: '/assets/images/hero-products/range-natural.webp',
+    productId: 'natural', modelPhoto: '/assets/images/models/hero-duo-2.webp', modelPos: 'center 25%', cutout: '/assets/images/cutouts/crystal.webp', rightImage: '/assets/images/hero-products/range-natural.webp',
     bgFrom: '#FFF8F0', bgTo: '#FCECD8', glow: '#FFF2E0', dark: false, accent: '#1C6FB8',
     serif: 'Pure & clear', line: 'natural mineral freshness',
     ingredients: [

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { bannerSlides, getProductById } from '../data/products.js';
+import { bannerSlides, getProductById, formatINR } from '../data/products.js';
 import { ChevronLeft, ChevronRight } from './Icons.jsx';
 
 // Timing (ms): slide comes in, then stays still for 3 seconds, then the next one slides in.
@@ -58,12 +58,56 @@ export default function HeroBanner() {
           onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
       </div>
 
-      <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 pt-[110px] lg:items-center lg:justify-end lg:pb-16 lg:pt-[135px]">
+      <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-[118px] pt-[110px] sm:pb-24 lg:items-center lg:justify-end lg:pb-16 lg:pt-[135px]">
         {/* Right: this slide's product big in the middle, its other variants smaller around it (no text, no base) */}
         <Link key={`p-${i}`} to={url} aria-label={`View ${product.name}`} className="flex h-[62%] w-full items-end justify-center sm:h-[66%] lg:h-full lg:w-[62%] xl:w-[64%] lg:items-center lg:justify-center lg:pr-8 xl:pr-14">
           <img src={slide.rightImage || slide.cutout} alt={`${product.name} and other Drifton variants`}
             className="h-auto max-h-full w-auto max-w-full animate-from-right object-contain lg:max-h-[min(calc(100svh-170px),860px)]" style={{ animationDelay: '150ms' }} />
         </Link>
+      </div>
+
+      {/* Glass product card — sits on the seam between photo and products (desktop) */}
+      <div className="pointer-events-none absolute inset-0 z-[4] hidden lg:block">
+        <div className="container-wide relative h-full">
+          <div key={`c-${i}`} className="pointer-events-auto absolute bottom-[84px] left-8 w-[330px] animate-fade-up rounded-[22px] border border-white/70 bg-white/80 p-5 shadow-[0_30px_60px_-30px_rgba(15,26,60,.55)] backdrop-blur-xl xl:w-[350px]" style={{ animationDelay: '450ms' }}>
+            <div className="flex items-center justify-between gap-3">
+              <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11.5px] font-bold uppercase tracking-wider" style={{ background: slide.dark ? '#E5F5EC' : `${slide.glow}33`, color: slide.dark ? '#17703D' : slide.accent }}>
+                <span className="size-1.5 rounded-full" style={{ background: slide.dark ? '#17703D' : slide.accent }} />{product.short || 'DriftOn'}
+              </span>
+              <span className="font-head text-[12px] font-semibold text-muted-2">{String(i + 1).padStart(2, '0')} / {String(n).padStart(2, '0')}</span>
+            </div>
+            <h2 className="mt-3 font-head text-[20px] font-bold leading-tight text-navy-900 xl:text-[21px]">{product.name}</h2>
+            {product.tagline && <p className="mt-1 text-[14px] text-muted">{product.tagline}</p>}
+            <div className="mt-4 flex items-end justify-between gap-3">
+              <span><b className="font-head text-[26px] font-bold text-navy-900">{formatINR(product.price)}</b><span className="ml-1.5 text-[12px] text-muted-2">incl. taxes</span></span>
+              <span className="rounded-lg bg-mint-soft px-2 py-1 text-[11.5px] font-bold text-brand-dark">2 for ₹750</span>
+            </div>
+            <div className="mt-4 flex gap-2">
+              <Link to={url} className="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-navy-900 text-[14px] font-semibold text-white transition hover:bg-navy-700">Shop now <span aria-hidden="true">→</span></Link>
+              <Link to="/#shop" className="flex min-h-11 items-center justify-center rounded-xl border border-navy-900/15 bg-white px-4 text-[14px] font-semibold text-navy-900 transition hover:border-navy-900">All variants</Link>
+            </div>
+          </div>
+
+          {/* trust badges near the products */}
+          <div key={`b-${i}`} className="absolute right-10 top-[150px] flex animate-fade-up flex-col items-end gap-2 xl:right-16" style={{ animationDelay: '650ms' }}>
+            {['100% natural alum', 'No white marks', 'Long lasting'].map((t) => (
+              <span key={t} className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 py-1.5 pl-1.5 pr-3.5 text-[13px] font-semibold text-navy-900 shadow-[0_10px_24px_-14px_rgba(15,26,60,.5)] backdrop-blur">
+                <span className="flex size-6 items-center justify-center rounded-full bg-mint-soft text-brand">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+                </span>{t}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile / tablet: slim glass bar with name, price and Shop now */}
+      <div key={`mb-${i}`} className="absolute inset-x-[18px] bottom-[64px] z-[4] flex animate-fade-up items-center gap-3 rounded-2xl border border-white/70 bg-white/80 p-2.5 pl-4 shadow-[0_20px_40px_-24px_rgba(15,26,60,.6)] backdrop-blur-xl sm:inset-x-8 lg:hidden" style={{ animationDelay: '350ms' }}>
+        <span className="min-w-0 flex-1">
+          <b className="block truncate font-head text-[15px] text-navy-900">{product.name}</b>
+          <span className="text-[13px] text-muted"><b className="text-navy-900">{formatINR(product.price)}</b> · 2 for ₹750</span>
+        </span>
+        <Link to={url} className="flex min-h-11 shrink-0 items-center rounded-xl bg-navy-900 px-4 text-[14px] font-semibold text-white">Shop now</Link>
       </div>
       </>}
 
