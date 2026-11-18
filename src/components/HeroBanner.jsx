@@ -53,9 +53,16 @@ export default function HeroBanner() {
       {/* Mobile/tablet: photo across the top, fading down. Desktop: photo on the left, fading cleanly towards the far right. */}
       <div key={`m-${i}`} aria-hidden="true"
         className="absolute inset-x-0 top-[96px] h-[52%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_70%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_70%,transparent_100%)] lg:inset-y-0 lg:top-[118px] lg:right-auto lg:h-full lg:w-[52%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_84%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_84%,transparent_100%)]">
+        {slide.modelZoomOut ? (
+          // zoomed-out photo: the whole photo is shown a little smaller, sitting at the bottom-left (only a light edge fade)
+          <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined}
+            className="absolute bottom-0 left-1/2 h-[88%] w-auto max-w-none -translate-x-1/2 [-webkit-mask-image:linear-gradient(to_bottom,transparent,#000_6%)] [mask-image:linear-gradient(to_bottom,transparent,#000_6%)] lg:bottom-auto lg:left-0 lg:top-[calc((100%-118px)*0.14)] lg:h-[calc((100%-118px)*0.86)] lg:translate-x-0 lg:[-webkit-mask-image:linear-gradient(to_right,#000_92%,transparent)] lg:[mask-image:linear-gradient(to_right,#000_92%,transparent)]"
+            onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
+        ) : (
         <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined} className="h-full w-full object-cover" style={{ objectPosition: slide.modelPos || '58% center' }}
           // if a photo is missing (e.g. model-boy.jpg not added yet), fall back to the girl photo
           onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
+        )}
       </div>
 
       <div className="container-wide relative z-[2] flex h-full items-end justify-center pb-20 pt-[110px] lg:items-center lg:justify-end lg:pb-16 lg:pt-[135px]">
