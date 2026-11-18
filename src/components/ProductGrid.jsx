@@ -42,7 +42,7 @@ export default function ProductGrid() {
           className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible lg:flex lg:gap-0 lg:divide-x lg:divide-line lg:overflow-hidden lg:rounded-2xl lg:border lg:border-line [&::-webkit-scrollbar]:hidden">
           {products.filter((p) => !p.hidden).map((p) => (
             <div key={p.id} id={p.id} data-product-id={p.id} data-slug={p.slug}
-              className="group/card w-full shrink-0 snap-start scroll-mt-28 sm:w-auto lg:min-w-0 lg:flex-1 lg:transition-[flex-grow] lg:duration-700 lg:ease-[cubic-bezier(.22,1,.36,1)] lg:hover:flex-[1.6]">
+              className="group/card w-full shrink-0 snap-start scroll-mt-28 sm:w-auto lg:min-w-0 lg:flex-1 lg:transition-[flex-grow] lg:duration-[900ms] lg:ease-[cubic-bezier(.4,0,.2,1)] lg:will-change-[flex-grow] lg:hover:flex-[1.6]">
               <ProductCard product={p} quickCheckout className="h-[72svh] min-h-[520px] max-h-[640px] sm:h-[600px] sm:max-h-none lg:h-[620px] xl:h-[660px]" />
             </div>
           ))}
