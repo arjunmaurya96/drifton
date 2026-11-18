@@ -34,22 +34,25 @@ export default function ProductGrid() {
           </Link>
         </div>
 
-        <div className="relative">
-          <div ref={track}
-            className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible lg:grid-cols-4 lg:gap-4 [&::-webkit-scrollbar]:hidden">
-            {products.filter((p) => !p.hidden).map((p) => (
-              <div key={p.id} id={p.id} data-product-id={p.id} data-slug={p.slug} className="w-full shrink-0 snap-start sm:w-auto scroll-mt-28">
-                <ProductCard product={p} quickCheckout className="h-[66svh] min-h-[460px] max-h-[580px] sm:h-[560px] sm:max-h-none lg:h-[520px] xl:h-[600px]" />
-              </div>
-            ))}
-          </div>
+      </div>
 
-          {/* arrows (phitku style) */}
-          <button onClick={() => slide(-1)} aria-label="Previous products"
-            className="absolute left-3 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-navy-900 shadow-lg sm:hidden"><ChevronLeft /></button>
-          <button onClick={() => slide(1)} aria-label="Next products"
-            className="absolute right-3 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-navy-900 shadow-lg sm:hidden"><ChevronRight /></button>
+      {/* full width product wall. Desktop: hover a card and it grows wider (accordion), the others shrink */}
+      <div className="relative px-3 sm:px-4">
+        <div ref={track}
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible lg:flex lg:gap-0 lg:overflow-hidden lg:rounded-2xl [&::-webkit-scrollbar]:hidden">
+          {products.filter((p) => !p.hidden).map((p) => (
+            <div key={p.id} id={p.id} data-product-id={p.id} data-slug={p.slug}
+              className="group/card w-full shrink-0 snap-start scroll-mt-28 sm:w-auto lg:min-w-0 lg:flex-1 lg:transition-[flex-grow] lg:duration-700 lg:ease-[cubic-bezier(.22,1,.36,1)] lg:hover:flex-[1.9]">
+              <ProductCard product={p} quickCheckout className="h-[66svh] min-h-[460px] max-h-[580px] sm:h-[560px] sm:max-h-none lg:h-[600px] xl:h-[660px]" />
+            </div>
+          ))}
         </div>
+
+        {/* arrows (phitku style) */}
+        <button onClick={() => slide(-1)} aria-label="Previous products"
+          className="absolute left-5 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-navy-900 shadow-lg sm:hidden"><ChevronLeft /></button>
+        <button onClick={() => slide(1)} aria-label="Next products"
+          className="absolute right-5 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-navy-900 shadow-lg sm:hidden"><ChevronRight /></button>
       </div>
     </section>
   );

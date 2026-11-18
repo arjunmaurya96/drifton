@@ -15,9 +15,9 @@ export default function ProductCard({ product, className = 'h-[500px] sm:h-[560p
   const inCart = cart.some((l) => l.id === product.id);
 
   return (
-    <article className={`relative overflow-hidden rounded-2xl ${className}`} style={{ background: product.bg }}>
+    <article className={`relative overflow-hidden rounded-2xl lg:rounded-none ${className}`} style={{ background: product.bg }}>
       <Link to={url} aria-label={`View ${product.name}`} className="absolute inset-0">
-        <img src={product.card || product.scene} alt={product.name} loading="lazy" className="h-full w-full object-cover" />
+        <img src={product.card || product.scene} alt={product.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(.22,1,.36,1)] lg:group-hover/card:scale-[1.04]" />
       </Link>
       <span className="pointer-events-none absolute right-4 top-4 rounded-full bg-white px-4 py-2 font-jost text-[14px] font-medium text-navy-900">Sale</span>
 
