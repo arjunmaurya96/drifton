@@ -18,46 +18,59 @@ const steps = [
 
 export default function HowToUse() {
   return (
-    <section id="how" aria-labelledby="how-title" className="bg-white pb-16 sm:pb-20">
+    <section id="how" aria-labelledby="how-title" className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#F4F7FC_100%)] pb-16 sm:pb-20">
       <div className="container-x flex flex-col items-center gap-3 py-12 text-center sm:py-14">
-        <span className="eyebrow flex items-center gap-3 before:h-0.5 before:w-8 before:bg-brand after:h-0.5 after:w-8 after:bg-brand">4 simple steps</span>
-        <h2 id="how-title" className="font-serif text-[48px] leading-none text-navy-900 sm:text-[68px]">How to <span className="text-brand">use</span></h2>
-        <p className="max-w-[460px] text-[16px] text-muted sm:text-[17px]">Just like it says on the pack — fresh all day in under 10 seconds.</p>
+        <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3 py-1.5 text-[12.5px] font-semibold text-navy-900 shadow-sm">
+          <span className="size-2 rounded-full bg-brand" /> 4 simple steps
+        </span>
+        <h2 id="how-title" className="font-serif text-[44px] leading-none text-navy-900 sm:text-[60px]">How to <span className="text-brand">use</span></h2>
+        <p className="max-w-[460px] text-[15px] text-muted sm:text-[16px]">Just like it says on the pack — fresh all day in under 10 seconds.</p>
       </div>
-      <ol className="container-wide grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-8 lg:gap-10">
+
+      {/* mobile: swipe cards · tablet: 2 per row · desktop: all 4 in one row */}
+      <ol className="container-x -mb-2 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible lg:grid-cols-4 [&::-webkit-scrollbar]:hidden">
         {steps.map((s, k) => (
-          <li key={s.title} className="relative flex flex-col">
-            {/* step marker + connector line (timeline) */}
-            <div className="mb-4 flex items-center gap-3">
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#123A7A] font-head text-[17px] font-bold text-white ring-4 ring-[#E3ECF8]">{k + 1}</span>
-              <span className="text-[12px] font-bold uppercase tracking-[2px] text-[#123A7A]">Step {k + 1}</span>
-              {k % 2 === 0 && <span aria-hidden="true" className="ml-1 hidden h-0.5 flex-1 bg-[repeating-linear-gradient(90deg,#9DB6DA_0_8px,transparent_8px_14px)] sm:block" />}
-            </div>
+          <li key={s.title} className="relative flex w-[72%] shrink-0 snap-center flex-col sm:w-auto">
+            {/* dotted connector to the next step (desktop) */}
+            {k < steps.length - 1 && (
+              <span aria-hidden="true" className="absolute -right-5 top-[38%] z-10 hidden size-10 items-center justify-center rounded-full border border-line bg-white text-navy-900 shadow-md lg:flex">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              </span>
+            )}
 
-            {/* image — every card the same size */}
-            <div className="relative overflow-hidden rounded-[24px] bg-[#EEF1F5] shadow-[0_22px_50px_-26px_rgba(15,26,60,.5)] ring-1 ring-line">
-              {s.photo ? (
-                <img src={s.photo} alt={`Step ${k + 1} — ${s.title}`} loading="lazy" decoding="async" className="block aspect-[1199/1312] w-full object-cover" />
-              ) : (
-                <>
-                  <img src={s.img} alt="" loading="lazy" decoding="async" className="block aspect-[1199/1312] w-full object-cover" style={{ objectPosition: s.pos }} />
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/85 via-white/20 to-transparent" />
-                  <div className="absolute left-[4%] top-[9%] flex w-[28%] flex-col items-center gap-2 text-center">
-                    <span className="whitespace-nowrap rounded-full bg-[#123A7A] px-3 py-1 font-head text-[16px] font-bold text-white sm:text-[20px] lg:text-[26px]">Step {k + 1}</span>
-                    <span className="flex aspect-square w-[80%] items-center justify-center rounded-full border-[2.5px] border-[#123A7A] bg-white text-[#123A7A] [&_svg]:h-1/2 [&_svg]:w-1/2">{icons[s.icon]}</span>
-                  </div>
-                </>
-              )}
-            </div>
+            <div className="group flex h-full flex-col overflow-hidden rounded-[22px] border border-line bg-white p-2.5 shadow-[0_14px_34px_-24px_rgba(15,26,60,.45)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_44px_-24px_rgba(15,26,60,.5)]">
+              <div className="relative overflow-hidden rounded-[16px] bg-[#EEF1F5]">
+                {s.photo ? (
+                  <img src={s.photo} alt={`Step ${k + 1} — ${s.title}`} loading="lazy" decoding="async" className="block aspect-[1199/1312] w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+                ) : (
+                  <>
+                    <img src={s.img} alt="" loading="lazy" decoding="async" className="block aspect-[1199/1312] w-full object-cover" style={{ objectPosition: s.pos }} />
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/85 via-white/20 to-transparent" />
+                    <div className="absolute left-[4%] top-[9%] flex w-[28%] flex-col items-center gap-2 text-center">
+                      <span className="whitespace-nowrap rounded-full bg-[#123A7A] px-3 py-1 font-head text-[14px] font-bold text-white">Step {k + 1}</span>
+                      <span className="flex aspect-square w-[80%] items-center justify-center rounded-full border-2 border-[#123A7A] bg-white text-[#123A7A] [&_svg]:h-1/2 [&_svg]:w-1/2">{icons[s.icon]}</span>
+                    </div>
+                  </>
+                )}
+              </div>
 
-            {/* caption — same for all four */}
-            <div className="mt-4 flex flex-col gap-1 px-1">
-              <h3 className="font-head text-[22px] font-bold leading-tight text-navy-900 sm:text-[26px]">{s.title}</h3>
-              <p className="text-[15px] leading-relaxed text-muted sm:text-[16px]">{s.text}</p>
+              <div className="flex flex-1 items-start gap-3 px-2 pb-2 pt-4">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#EAF0FF] text-[#123A7A] [&_svg]:size-5">{icons[s.icon]}</span>
+                <span className="min-w-0">
+                  <span className="block text-[11px] font-bold uppercase tracking-[1.5px] text-brand">Step {k + 1}</span>
+                  <h3 className="font-head text-[17px] font-bold leading-tight text-navy-900">{s.title}</h3>
+                  <p className="mt-1 text-[13.5px] leading-relaxed text-muted">{s.text}</p>
+                </span>
+              </div>
             </div>
           </li>
         ))}
       </ol>
+
+      {/* swipe hint dots (mobile) */}
+      <div aria-hidden="true" className="mt-3 flex justify-center gap-1.5 sm:hidden">
+        {steps.map((s) => <span key={s.title} className="h-1.5 w-5 rounded-full bg-navy-900/15" />)}
+      </div>
     </section>
   );
 }
