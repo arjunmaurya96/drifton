@@ -28,7 +28,7 @@ export default function HowToUse() {
       </div>
 
       {/* mobile: swipe cards · tablet: 2 per row · desktop: all 4 in one row */}
-      <ol className="-mb-2 flex w-full px-[18px] sm:px-8 xl:px-12 snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible lg:grid-cols-4 [&::-webkit-scrollbar]:hidden">
+      <ol className="-mb-2 flex w-full px-3 sm:px-4 snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible lg:grid-cols-4 [&::-webkit-scrollbar]:hidden">
         {steps.map((s, k) => (
           <li key={s.title} className="relative flex w-[72%] shrink-0 snap-center flex-col sm:w-auto">
             {/* dotted connector to the next step (desktop) */}
