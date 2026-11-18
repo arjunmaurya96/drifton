@@ -54,10 +54,21 @@ export default function HeroBanner() {
         style={slide.modelZoomOut ? { WebkitMaskImage: 'none', maskImage: 'none' } : undefined}
         className="absolute inset-x-0 top-[96px] h-[52%] w-full animate-from-left [-webkit-mask-image:linear-gradient(to_bottom,#000_0%,#000_65%,rgba(0,0,0,0.4)_85%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_0%,#000_65%,rgba(0,0,0,0.4)_85%,transparent_100%)] lg:inset-y-0 lg:top-[118px] lg:right-auto lg:h-full lg:w-[54%] lg:[-webkit-mask-image:linear-gradient(to_right,#000_0%,#000_58%,rgba(0,0,0,0.85)_74%,rgba(0,0,0,0.35)_90%,transparent_100%)] lg:[mask-image:linear-gradient(to_right,#000_0%,#000_58%,rgba(0,0,0,0.85)_74%,rgba(0,0,0,0.35)_90%,transparent_100%)]">
         {slide.modelZoomOut ? (
-          // banner photo: the whole photo, full height from the header to the bottom, flush left (no fade, no shadow)
-          <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined}
-            className="absolute bottom-0 left-1/2 h-full w-auto max-w-none -translate-x-1/2 lg:bottom-auto lg:left-0 lg:top-0 lg:h-[calc(100%-118px)] lg:translate-x-0"
-            onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
+          // banner photo: the whole photo, full height. Its right edge melts into a band of the photo's own edge
+          // colours, which then melts into the slide colour — so photo + products read as ONE banner (no divider line).
+          <div className="absolute inset-x-0 bottom-0 top-0 flex justify-center lg:inset-x-auto lg:left-0 lg:h-[calc(100%-118px)] lg:justify-start">
+            {/* mobile: soft band behind the photo in its own colours */}
+            <span aria-hidden="true" className="absolute inset-0 lg:hidden [-webkit-mask-image:linear-gradient(to_bottom,#000_55%,transparent)] [mask-image:linear-gradient(to_bottom,#000_55%,transparent)]"
+              style={{ background: `linear-gradient(180deg, ${slide.edge?.[0]}, ${slide.edge?.[1]}, ${slide.edge?.[2]})` }} />
+            <span className="relative h-full">
+              <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined}
+                className="relative z-[1] block h-full w-auto max-w-none [-webkit-mask-image:linear-gradient(to_right,transparent,#000_12%,#000_88%,transparent),linear-gradient(to_bottom,#000_75%,transparent)] [mask-image:linear-gradient(to_right,transparent,#000_12%,#000_88%,transparent),linear-gradient(to_bottom,#000_75%,transparent)] [-webkit-mask-composite:source-in] [mask-composite:intersect] lg:[-webkit-mask-image:linear-gradient(to_right,#000_72%,transparent)] lg:[mask-image:linear-gradient(to_right,#000_72%,transparent)]"
+                onError={(e) => { if (!e.currentTarget.src.endsWith(FALLBACK_MODEL)) e.currentTarget.src = FALLBACK_MODEL; }} />
+              {/* desktop: colour band that continues the photo to the right and fades into the slide colour */}
+              <span aria-hidden="true" className="absolute left-[60%] top-0 hidden h-full w-[90%] lg:block [-webkit-mask-image:linear-gradient(to_right,#000_25%,transparent)] [mask-image:linear-gradient(to_right,#000_25%,transparent)]"
+                style={{ background: `linear-gradient(180deg, ${slide.edge?.[0]}, ${slide.edge?.[1]}, ${slide.edge?.[2]})` }} />
+            </span>
+          </div>
         ) : (
         <img src={slide.modelPhoto} alt="" fetchpriority={i === 0 ? 'high' : undefined} className="h-full w-full object-cover" style={{ objectPosition: slide.modelPos || '58% center' }}
           // if a photo is missing (e.g. model-boy.jpg not added yet), fall back to the girl photo

@@ -326,7 +326,7 @@ export function Contact() {
         <aside className="flex flex-col gap-5">
           <div className="overflow-hidden rounded-[28px] border border-line bg-white shadow-[0_24px_60px_-30px_rgba(15,26,60,.35)]">
             <a
-              href="https://maps.app.goo.gl/ea8hYYkU7zMWvenP9"
+              href={business.mapsUrl}
               target="_blank"
               rel="noreferrer"
               title="Click anywhere to open in Google Maps"
@@ -348,7 +348,7 @@ export function Contact() {
             <div className="flex flex-col gap-1 p-5 sm:p-6">
               <b className="font-head text-[17px]">{business.name}</b>
               <p className="text-[14px] text-muted">{business.address}</p>
-              <a href="https://maps.app.goo.gl/ea8hYYkU7zMWvenP9" target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-navy-900 hover:text-brand hover:underline">
+              <a href={business.mapsUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-navy-900 hover:text-brand hover:underline">
                 📍 Open in Google Maps →
               </a>
             </div>
