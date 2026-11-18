@@ -44,7 +44,8 @@ export const combos = [
 export const products = [
   {
     id: 'palash',
-    scene: `${IMG}/scenes/palash.webp`, // product photo with its natural ingredient (phitku style)
+    scene: `${IMG}/scenes/palash.webp`,
+    card: `${IMG}/scenes/palash-card.webp`, // 'Pick your variant' card photo (4:5) // product photo with its natural ingredient (phitku style)
     slug: 'palash-alum-stick',
     name: 'DriftOn™ Palash Alum Roll On',
     short: 'Palash',
@@ -66,7 +67,8 @@ export const products = [
   },
   {
     id: 'charcoal',
-    scene: `${IMG}/scenes/charcoal.webp`, // product photo with its natural ingredient (phitku style)
+    scene: `${IMG}/scenes/charcoal.webp`,
+    card: `${IMG}/scenes/charcoal-card.webp`, // 'Pick your variant' card photo (4:5) // product photo with its natural ingredient (phitku style)
     slug: 'charcoal-alum-stick',
     name: 'DriftOn™ Charcoal Alum Roll On',
     short: 'Charcoal',
@@ -88,7 +90,8 @@ export const products = [
   },
   {
     id: 'rose',
-    scene: `${IMG}/scenes/rose.webp`, // product photo with its natural ingredient (phitku style)
+    scene: `${IMG}/scenes/rose.webp`,
+    card: `${IMG}/scenes/rose-card.webp`, // 'Pick your variant' card photo (4:5) // product photo with its natural ingredient (phitku style)
     slug: 'rose-alum-stick',
     name: 'DriftOn™ Rose Alum Roll On',
     short: 'Rose',
@@ -110,7 +113,8 @@ export const products = [
   },
   {
     id: 'natural',
-    scene: `${IMG}/scenes/natural.webp`, // product photo with its natural ingredient (phitku style)
+    scene: `${IMG}/scenes/natural.webp`,
+    card: `${IMG}/scenes/natural-card.webp`, // 'Pick your variant' card photo (4:5) // product photo with its natural ingredient (phitku style)
     slug: 'natural-alum-stick',
     name: 'DriftOn™ Natural Alum Roll On',
     short: 'Natural',
