@@ -2,7 +2,6 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { products } from '../data/products.js';
 import ProductCard from './ProductCard.jsx';
-import ProductInfoNote from './ProductInfoNote.jsx';
 import { ChevronLeft, ChevronRight } from './Icons.jsx';
 
 /**
@@ -25,8 +24,6 @@ export default function ProductGrid() {
   return (
     <section className="bg-white pb-16 pt-12 xl:pb-16 xl:pt-10">
       <div className="container-wide">
-        <ProductInfoNote className="mb-12 sm:mb-14" />
-
         <div id="shop" className="mb-8 scroll-mt-28 flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
           <h2 className="font-jost text-[40px] font-medium leading-tight tracking-tight text-black sm:text-5xl xl:text-[44px]">Pick your variant.</h2>
           <Link to="/ingredients" className="border-b-[3px] border-black pb-2 font-jost text-[15px] font-semibold uppercase tracking-wide text-black hover:text-black">

@@ -135,12 +135,16 @@ export default function VariantSpotlight() {
         />
       </button>
 
-      {/* centre product */}
-      <Link
+      {/* centre product - click scrolls smoothly to Pick your variant (#shop) */}
+      <a
         key={`c-${i}`}
-        to={`/product/${center.slug}`}
-        aria-label={`View ${center.name}`}
-        className="absolute bottom-[-2%] left-1/2 z-[6] h-[60%] -translate-x-1/2 md:h-[76%]"
+        href="#shop"
+        onClick={(e) => {
+          e.preventDefault();
+          document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }}
+        aria-label={`Pick ${center.name} in Pick your variant`}
+        className="absolute bottom-[-2%] left-1/2 z-[6] h-[60%] -translate-x-1/2 cursor-pointer md:h-[76%]"
       >
         <span
           aria-hidden="true"
@@ -152,9 +156,9 @@ export default function VariantSpotlight() {
           decoding="async"
           src={cutoutOf(center.id)}
           alt={center.name}
-          className="relative h-full w-auto animate-pop object-contain"
+          className="relative h-full w-auto animate-pop object-contain transition-transform duration-300 hover:scale-105"
         />
-      </Link>
+      </a>
     </section>
   );
 }
