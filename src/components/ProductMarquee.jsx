@@ -7,7 +7,7 @@ const [palash, charcoal, rose, natural] = products;
 const items = [
   { text: 'Helps Reducing Sweat', product: palash },
   { text: 'Helps Reducing Odor', product: charcoal },
-  { text: 'Helps in Lightening Underarm Skin', product: rose },
+  { text: 'Help’s Brighter-Looking Skin', product: rose },
   { text: 'Helps Reducing Itching', product: natural },
 ];
 
