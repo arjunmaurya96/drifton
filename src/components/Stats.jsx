@@ -36,12 +36,30 @@ function useCountUp(duration = 1800) {
 export default function Stats() {
   const [ref, p] = useCountUp();
   return (
-    <section ref={ref} className="pb-0 pt-8 sm:pt-6">
+    <section ref={ref} className="pb-4 pt-3 sm:pt-4">
       <div className="container-x">
-        <div className="mb-11 flex flex-col items-center gap-3 text-center">
-          <span className="eyebrow flex items-center gap-2.5 before:h-0.5 before:w-6 before:bg-brand after:h-0.5 after:w-6 after:bg-brand"><img src="/assets/images/logo-drifton.webp" alt="DriftOn" className="h-6 w-auto" /> promise</span>
-          <h2 className="h2">Why customers <span className="text-brand">choose us</span></h2>
-          <p className="max-w-[660px] text-[17px] text-muted">Quality products, reliable service and a shopping experience you can trust.</p>
+        <div className="mb-6 flex flex-col items-center gap-2 text-center sm:mb-7">
+          <h2 className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 font-head text-[28px] font-extrabold tracking-tight text-navy-900 sm:text-[38px] xl:text-[44px]">
+            <img
+              src="/assets/images/logo-drifton.webp"
+              alt="DriftOn"
+              className="h-8 sm:h-10 w-auto object-contain"
+            />
+            <span className="text-brand">Promise:</span>
+            <span>
+              Why Customers{' '}
+              <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
+                Choose Us.
+                <span
+                  aria-hidden="true"
+                  className="absolute bottom-0 left-0 h-[3.5px] w-full rounded-full bg-gradient-to-r from-brand via-mint to-transparent"
+                />
+              </span>
+            </span>
+          </h2>
+          <p className="mt-1 max-w-4xl text-center text-sm font-medium text-muted sm:text-[15.5px] sm:whitespace-nowrap">
+            Quality products, reliable service and a shopping experience you can trust.
+          </p>
         </div>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map(({ value, suffix, label, sub, tint, ink, Icon }) => (
