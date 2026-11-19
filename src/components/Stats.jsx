@@ -38,15 +38,15 @@ export default function Stats() {
   return (
     <section ref={ref} className="pb-4 pt-3 sm:pt-0">
       <div className="container-x">
-        <div className="mb-6 flex flex-col items-center gap-2 text-center sm:mb-7">
-          <h2 className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 font-head text-[28px] font-extrabold tracking-tight text-navy-900 sm:text-[38px] xl:text-[44px]">
+        <div className="mb-6 flex flex-col gap-3 sm:mb-7 lg:flex-row lg:items-end lg:justify-between lg:gap-8">
+          <h2 className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 font-head text-[26px] font-extrabold tracking-tight text-navy-900 sm:text-[36px] xl:text-[42px] max-lg:justify-center">
             <span className="inline-flex items-center gap-2.5 before:h-[2px] before:w-6 sm:before:w-8 before:rounded-full before:bg-brand after:h-[2px] after:w-6 sm:after:w-8 after:rounded-full after:bg-brand">
               <img
                 src="/assets/images/logo-drifton.webp"
                 alt="DriftOn"
                 className="h-8 sm:h-10 w-auto object-contain"
               />
-              <span className="text-brand font-bold uppercase tracking-wider text-[20px] sm:text-[24px]">Promise</span>
+              <span className="text-brand font-bold uppercase tracking-wider text-[20px] sm:text-[28px]">Promise</span>
             </span>
             <span>
               Why Customers{' '}
@@ -59,7 +59,7 @@ export default function Stats() {
               </span>
             </span>
           </h2>
-          <p className="mt-0 max-w-4xl text-center text-sm font-medium text-muted sm:text-[15.5px] sm:whitespace-nowrap">
+          <p className="mt-0 text-center text-sm font-medium text-muted sm:text-[15.5px] lg:text-right lg:pb-1 shrink-0 max-lg:max-w-4xl max-lg:mx-auto">
             Quality products, reliable service and a shopping experience you can trust.
           </p>
         </div>
