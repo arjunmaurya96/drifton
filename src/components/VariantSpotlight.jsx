@@ -43,7 +43,7 @@ export default function VariantSpotlight() {
       aria-label="Choose your variant"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      className="relative h-[100svh] max-h-[920px] min-h-[640px] overflow-hidden text-white"
+      className="relative h-[calc(100svh-125px)] min-h-[480px] max-h-[620px] overflow-hidden text-white"
     >
       {/* backgrounds (cross-fade) */}
       {products.map((p, k) => {
@@ -66,10 +66,10 @@ export default function VariantSpotlight() {
         className="absolute inset-0 opacity-40 [background:radial-gradient(30%_20%_at_20%_30%,rgba(255,255,255,.08),transparent),radial-gradient(25%_18%_at_80%_22%,rgba(255,255,255,.07),transparent),radial-gradient(35%_25%_at_70%_70%,rgba(255,255,255,.05),transparent)]"
       />
 
-      {/* big words left */}
+      {/* big words left - moved up to top-[7%] to eliminate empty top space */}
       <div
         key={`l-${i}`}
-        className="pointer-events-none absolute left-[4%] top-[17%] z-10 animate-from-left whitespace-nowrap text-right max-lg:left-0 max-lg:right-0 max-lg:top-[13%] max-lg:text-center lg:left-auto lg:right-[61%]"
+        className="pointer-events-none absolute left-[4%] top-[7%] z-10 animate-from-left whitespace-nowrap text-right max-lg:left-0 max-lg:right-0 max-lg:top-[5%] max-lg:text-center lg:left-auto lg:right-[61%]"
       >
         <span className="block font-display text-[56px] leading-none tracking-wide text-transparent [-webkit-text-stroke:2px_white] md:text-[80px] xl:text-[110px]">
           {look.left[0]}
@@ -82,10 +82,10 @@ export default function VariantSpotlight() {
         </span>
       </div>
 
-      {/* big words right: ZERO replaced with REDUCE */}
+      {/* big words right - moved up to top-[7%] */}
       <div
         key={`r-${i}`}
-        className="absolute left-[61%] top-[26%] z-10 hidden animate-from-right whitespace-nowrap lg:block"
+        className="absolute left-[61%] top-[7%] z-10 hidden animate-from-right whitespace-nowrap lg:block"
       >
         <span className="block font-display text-[80px] leading-none tracking-wide text-transparent [-webkit-text-stroke:2px_white] xl:text-[110px]">
           {look.right[0]}
@@ -144,7 +144,7 @@ export default function VariantSpotlight() {
           document.getElementById('shop')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }}
         aria-label={`Pick ${center.name} in Pick your variant`}
-        className="absolute bottom-[-2%] left-1/2 z-[6] h-[60%] -translate-x-1/2 cursor-pointer md:h-[76%]"
+        className="absolute bottom-0 left-1/2 z-[6] h-[66%] -translate-x-1/2 cursor-pointer md:bottom-[-1%] md:h-[82%] lg:h-[84%]"
       >
         <span
           aria-hidden="true"
