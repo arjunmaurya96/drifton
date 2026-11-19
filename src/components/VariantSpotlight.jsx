@@ -102,37 +102,51 @@ export default function VariantSpotlight() {
         </div>
       </div>
 
-      {/* Big Words Left: Helps in Deep Cleaning (brought down to upper-center) */}
+      {/* Mobile Benefit Block (Centered, never overflows, never touches bottle) */}
       <div
-        key={`l-${i}`}
-        className="pointer-events-none absolute left-[4%] top-[32%] z-10 animate-from-left whitespace-nowrap text-right max-lg:left-0 max-lg:right-0 max-lg:top-[16%] max-lg:text-center lg:left-auto lg:right-[59%]"
+        key={`m-${i}`}
+        className="pointer-events-none absolute inset-x-4 top-[15%] z-10 flex flex-col items-center text-center lg:hidden"
       >
-        <span className="block font-display text-[42px] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.5px_white] md:text-[58px] xl:text-[76px]">
+        <span className="font-display text-[26px] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.2px_white] sm:text-[32px]">
           {look.left[0]}
         </span>
-        <span className="block font-display text-[50px] leading-[0.95] tracking-wide text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.5)] md:text-[68px] xl:text-[92px]">
+        <span className="font-display text-[34px] leading-tight tracking-wide text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)] sm:text-[42px]">
           {look.left[1]}
         </span>
-
-        {/* Mobile secondary benefit pill */}
-        <div className="mt-3 flex justify-center lg:hidden">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 font-head text-[13px] font-semibold tracking-wide text-white shadow-lg backdrop-blur-md ring-1 ring-white/20">
-            <span className="size-2 rounded-full shadow-[0_0_8px_currentColor]" style={{ backgroundColor: look.accent, color: look.accent }} />
+        <div className="mt-2.5">
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1 font-head text-[12px] font-semibold tracking-wide text-white shadow-lg backdrop-blur-md ring-1 ring-white/20">
+            <span
+              className="size-2 rounded-full shadow-[0_0_8px_currentColor]"
+              style={{ backgroundColor: look.accent, color: look.accent }}
+            />
             {look.right[0]} {look.right[1]}
           </span>
         </div>
       </div>
 
-      {/* Big Words Right: Helps in Reducing Odor (Desktop) */}
+      {/* Desktop Left Words: text-left, anchored from left, Help In directly over Deep */}
+      <div
+        key={`l-${i}`}
+        className="pointer-events-none absolute left-8 top-[31%] z-10 hidden max-w-[420px] text-left animate-from-left lg:block lg:left-12 xl:left-20"
+      >
+        <span className="block font-display text-[28px] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.5px_white] xl:text-[36px]">
+          {look.left[0]}
+        </span>
+        <span className="block font-display text-[42px] leading-[0.98] tracking-wide text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.5)] xl:text-[56px]">
+          {look.left[1]}
+        </span>
+      </div>
+
+      {/* Desktop Right Words: text-right, anchored from right, Helps In directly over Odor */}
       <div
         key={`r-${i}`}
-        className="pointer-events-none absolute left-[59%] top-[32%] z-10 hidden animate-from-right whitespace-nowrap lg:block"
+        className="pointer-events-none absolute right-8 top-[31%] z-10 hidden max-w-[420px] text-right animate-from-right lg:block lg:right-12 xl:right-20"
       >
-        <span className="block font-display text-[42px] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.5px_white] md:text-[58px] xl:text-[76px]">
+        <span className="block font-display text-[28px] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.5px_white] xl:text-[36px]">
           {look.right[0]}
         </span>
         <span
-          className="block font-display text-[50px] leading-[0.95] tracking-wide md:text-[68px] xl:text-[92px]"
+          className="block font-display text-[42px] leading-[0.98] tracking-wide xl:text-[56px]"
           style={{ color: look.accent, textShadow: `0 0 32px ${look.glow}55` }}
         >
           {look.right[1]}
