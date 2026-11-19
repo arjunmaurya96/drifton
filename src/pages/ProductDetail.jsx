@@ -84,12 +84,8 @@ export default function ProductDetail() {
 
           {/* Right Column: In front of product ("product ke samne") */}
           <div className="flex flex-col gap-5 rounded-[28px] border border-line bg-white p-6 shadow-[0_24px_60px_-44px_rgba(15,26,60,.4)] sm:p-7">
-            {/* Category Tag, Title & Reviews */}
+            {/* Title & Reviews */}
             <div className="flex flex-col gap-2">
-              <span className="inline-flex w-fit items-center gap-2 rounded-full px-3 py-1 text-[12px] font-bold uppercase tracking-widest" style={{ color: product.accent, background: product.bg }}>
-                <span className="size-1.5 rounded-full" style={{ background: product.accent }} />
-                {product.tag}
-              </span>
               <h1 className="text-[28px] font-extrabold leading-[1.12] tracking-tight text-navy-900 sm:text-[34px]">
                 {product.name}
               </h1>
@@ -211,7 +207,6 @@ export default function ProductDetail() {
                   Product Story &amp; Details
                 </span>
                 <h2 className="font-head text-[28px] font-extrabold tracking-tight text-navy-900 sm:text-[36px] xl:text-[40px] leading-tight">
-                  About{' '}
                   <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
                     {product.name}.
                     <span
@@ -224,7 +219,7 @@ export default function ProductDetail() {
                   {product.description}
                 </p>
                 <p className="text-[14.5px] leading-relaxed text-muted">
-                  Formulated with 100% natural mineral potassium alum, DriftOn creates an invisible breathable layer that eliminates odor-causing bacteria at the source. Free from alcohol, artificial dyes, and sticky residue.
+                  Formulated with 100% natural mineral potassium alum, it creates an invisible breathable layer that eliminates odor-causing bacteria at the source. Free from alcohol, artificial dyes, and sticky residue.
                 </p>
               </div>
 

@@ -208,8 +208,8 @@ export const packs = [
 export const productInfo = {
   loveIt: [
     { title: 'Natural alum crystal', icon: 'gem' },
-    { title: 'Zero Camicals', icon: 'check' },
-    { title: 'Glides on clear', icon: 'drop' },
+    { title: 'No Alcohol', icon: 'check' },
+    { title: '100% Natural', icon: 'drop' },
     { title: 'Long lasting roll on', icon: 'clock' },
     { title: 'Travel friendly', icon: 'box' },
     { title: 'Botanical blends', icon: 'leaf' },
