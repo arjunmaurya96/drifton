@@ -43,7 +43,7 @@ export default function VariantSpotlight() {
       aria-label="Choose your variant"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      className="relative h-[100svh] max-h-[920px] min-h-[640px] overflow-hidden text-white"
+      className="relative h-[88svh] max-h-[800px] min-h-[580px] overflow-hidden text-white"
     >
       {/* backgrounds (cross-fade) */}
       {products.map((p, k) => {
@@ -66,10 +66,10 @@ export default function VariantSpotlight() {
         className="absolute inset-0 opacity-40 [background:radial-gradient(30%_20%_at_20%_30%,rgba(255,255,255,.08),transparent),radial-gradient(25%_18%_at_80%_22%,rgba(255,255,255,.07),transparent),radial-gradient(35%_25%_at_70%_70%,rgba(255,255,255,.05),transparent)]"
       />
 
-      {/* big words left */}
+      {/* big words left - moved up to top-[6%] */}
       <div
         key={`l-${i}`}
-        className="pointer-events-none absolute left-[4%] top-[12%] z-10 animate-from-left whitespace-nowrap text-right max-lg:left-0 max-lg:right-0 max-lg:top-[10%] max-lg:text-center lg:left-auto lg:right-[61%]"
+        className="pointer-events-none absolute left-[4%] top-[6%] z-10 animate-from-left whitespace-nowrap text-right max-lg:left-0 max-lg:right-0 max-lg:top-[5%] max-lg:text-center lg:left-auto lg:right-[61%]"
       >
         <span className="block font-display text-[56px] leading-none tracking-wide text-transparent [-webkit-text-stroke:2px_white] md:text-[80px] xl:text-[110px]">
           {look.left[0]}
@@ -82,10 +82,10 @@ export default function VariantSpotlight() {
         </span>
       </div>
 
-      {/* big words right: ZERO replaced with REDUCE */}
+      {/* big words right: ZERO replaced with REDUCE - moved up to top-[6%] */}
       <div
         key={`r-${i}`}
-        className="absolute left-[61%] top-[16%] z-10 hidden animate-from-right whitespace-nowrap lg:block"
+        className="absolute left-[61%] top-[6%] z-10 hidden animate-from-right whitespace-nowrap lg:block"
       >
         <span className="block font-display text-[80px] leading-none tracking-wide text-transparent [-webkit-text-stroke:2px_white] xl:text-[110px]">
           {look.right[0]}
