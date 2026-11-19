@@ -315,8 +315,11 @@ export default function CheckoutModal() {
           </div>
           <button className="icon-btn" onClick={closeCheckout} aria-label="Close"><Close /></button>
         </div>
-        {!order && <div className="bg-[linear-gradient(90deg,#0A1E4A_0%,#1B49AF_50%,#0A1E4A_100%)] px-4 py-2 text-center text-[12.5px] font-bold tracking-wide text-white sm:text-[13px]">💥 Unlock Special Discounts at Checkout!</div>}
-        {!order && <div className="pt-4"><Stepper step={step - 1} /></div>}
+        {!order && (
+          <div className="bg-[linear-gradient(90deg,#0A1E4A_0%,#1B49AF_50%,#0A1E4A_100%)] px-4 py-2 text-center text-[12.5px] font-bold tracking-wide text-white sm:text-[13px]">
+            <span className="inline-block animate-glow-blink">💥 Unlock Special Discounts at Checkout!</span>
+          </div>
+        )}
 
         {order ? (
           <div className="flex flex-col items-center gap-4 border-t border-line px-6 py-12 text-center">
@@ -338,71 +341,9 @@ export default function CheckoutModal() {
         ) : (
           <>
             <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto border-t border-line px-5 py-5 sm:px-7">
-              {/* ---------- order summary (collapsible) ---------- */}
-              {step === 1 && (
-                <details open={!otpSent && authProvider !== 'google'} className="order-2 group rounded-2xl border border-line [&_summary::-webkit-details-marker]:hidden">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
-                    <b className="font-head text-[16px]">Order summary <span className="font-normal text-muted-2">({sum.sticks} {sum.sticks === 1 ? 'item' : 'items'})</span></b>
-                    <span className="flex items-center gap-2 text-[15px] font-semibold">{formatINR(sum.total)}<span className="text-muted-2 transition group-open:rotate-180">⌄</span></span>
-                  </summary>
-                  <div className="flex flex-col gap-5 border-t border-line p-4">
-                  {cart.length === 0 ? (
-                    <p className="rounded-2xl bg-page p-5 text-center text-muted">Your bag is empty. Add a roll on below.</p>
-                  ) : (
-                    <ul className="flex flex-col gap-3">
-                      {cart.map((l) => (
-                        <li key={l.key} className="flex items-center gap-3 rounded-2xl bg-page p-2.5 pr-3">
-                          <span className="flex size-16 shrink-0 items-center justify-center rounded-xl bg-white p-1"><img src={l.image} alt="" className="h-full w-auto object-contain" /></span>
-                          <span className="min-w-0 flex-1">
-                            <b className="block truncate font-head text-[15px] font-semibold">{l.name}</b>
-                            <small className="text-[13px] text-muted-2">{l.pack} · {formatINR(l.unitPrice)}</small>
-                          </span>
-                          <QtyStepper size="sm" value={l.qty} onChange={(q) => updateQty(l.key, q)} />
-                          <button onClick={() => updateQty(l.key, 0)} aria-label={`Remove ${l.name}`} className="hidden size-9 items-center justify-center rounded-full text-muted-2 hover:bg-white hover:text-[#C0392B] sm:flex"><Trash /></button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {/* offer cards */}
-                  {cart.length > 0 && <CartOffers cart={cart} count={sum.sticks} addToCart={(p) => addToCart(p, 1, undefined, true)} />}
-
-                  {/* add more variants */}
-                  <div>
-                    <span className="mb-2.5 block text-sm font-bold">Add more variants</span>
-                    <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-                      {products.filter((p) => !p.hidden).map((p) => {
-                        const n = qtyOf(p.id);
-                        return (
-                          <div key={p.id} className={`flex flex-col items-center gap-1.5 rounded-2xl border-[1.5px] p-3 text-center ${n ? 'border-navy-700' : 'border-line'}`} style={{ background: `linear-gradient(180deg, ${p.bg}, #fff 85%)` }}>
-                            <img src={p.image} alt="" className="h-20 w-auto object-contain" />
-                            <b className="text-[13.5px] leading-tight">{p.short}</b>
-                            <span className="text-[12.5px] text-muted-2">{formatINR(UNIT_PRICE)}{n ? ` · ${n} in bag` : ''}</span>
-                            <button onClick={() => addToCart(p, 1, undefined, true)} className="mt-0.5 inline-flex min-h-9 items-center gap-1 rounded-full bg-navy-900 px-3.5 text-[12.5px] font-semibold text-white hover:bg-navy-700">
-                              <Plus size={14} /> Add
-                            </button>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* coupon */}
-                  <div>
-                    <span className="mb-2 block text-sm font-bold">Coupon code</span>
-                    <div className="flex gap-2">
-                      <input className={`${field} uppercase`} placeholder="Enter code" aria-label="Coupon code" value={code} onChange={(e) => setCode(e.target.value)} />
-                      <button type="button" onClick={apply} className="min-h-12 shrink-0 rounded-xl bg-navy-900 px-5 text-sm font-semibold text-white hover:bg-navy-700">Apply</button>
-                    </div>
-                    {(sum.couponBlocked ? 'Your combo already has free delivery. Coupons can be used on single-stick orders.' : codeMsg) && <p className={`mt-1.5 text-[13px] font-semibold ${applied && !sum.couponBlocked ? 'text-brand-dark' : 'text-[#C0392B]'}`}>{sum.couponBlocked ? 'Your combo already has free delivery. Coupons can be used on single-stick orders.' : codeMsg}</p>}
-                  </div>
-                  </div>
-                </details>
-              )}
-
               {/* ---------- STEP 1: Google login OR Email + Mobile with 4-Digit OTP ---------- */}
               {step === 1 && (
-                <div className="order-1 flex flex-col gap-4 pb-1">
+                <div className="flex flex-col gap-4 pb-1">
                   {/* Case 1: Google account chosen, now enter mobile number */}
                   {authProvider === 'google' && !verified ? (
                     <div className="flex flex-col gap-3 rounded-2xl border border-[#86EFAC] bg-[#F0FDF4] p-4 sm:p-5">
@@ -558,7 +499,7 @@ export default function CheckoutModal() {
                   </button>
                 ) : !otpSent ? (
                   <button onClick={sendOtp} disabled={!cart.length} className="btn-primary min-h-[52px] w-full text-base">
-                    Send 4-Digit OTP to Email
+                    Send 4 Digit OTP
                   </button>
                 ) : (
                   <button onClick={verifyOtp} disabled={otp.length < 4} className="btn-primary min-h-[52px] w-full text-base disabled:opacity-50">
