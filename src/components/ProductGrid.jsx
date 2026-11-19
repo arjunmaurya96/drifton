@@ -24,10 +24,35 @@ export default function ProductGrid() {
   return (
     <section className="bg-white pb-16 pt-12 xl:pb-16 xl:pt-10">
       <div className="container-wide">
-        <div id="shop" className="mb-8 scroll-mt-28 flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
-          <h2 className="font-jost text-[40px] font-medium leading-tight tracking-tight text-black sm:text-5xl xl:text-[44px]">Pick your variant.</h2>
-          <Link to="/ingredients" className="border-b-[3px] border-black pb-2 font-jost text-[15px] font-semibold uppercase tracking-wide text-black hover:text-black">
-            Shop roll on &amp; more…
+        <div id="shop" className="mb-9 scroll-mt-28 flex flex-col items-center gap-5 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
+          <div>
+            <div className="mb-2.5 flex items-center justify-center gap-2 sm:justify-start">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 font-head text-[11.5px] font-bold uppercase tracking-widest text-brand">
+                <span className="size-1.5 rounded-full bg-brand animate-pulse" />
+                Natural Crystal Roll Ons
+              </span>
+            </div>
+            <h2 className="font-head text-[36px] font-extrabold tracking-tight text-navy-900 sm:text-[44px] xl:text-[50px]">
+              Pick Your{' '}
+              <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
+                Variant.
+                <span
+                  aria-hidden="true"
+                  className="absolute -bottom-1 left-0 h-[4px] w-full rounded-full bg-gradient-to-r from-brand via-mint to-transparent"
+                />
+              </span>
+            </h2>
+            <p className="mt-1 text-sm font-medium text-muted">
+              Glides smooth · 0% alcohol · Leaves no white marks · 24-hr odour defense
+            </p>
+          </div>
+
+          <Link
+            to="/ingredients"
+            className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-line-strong bg-white px-5 py-2.5 font-head text-[13.5px] font-semibold text-navy-900 shadow-sm transition hover:border-brand hover:bg-brand hover:text-white"
+          >
+            <span>Know Ingredients</span>
+            <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
           </Link>
         </div>
       </div>
