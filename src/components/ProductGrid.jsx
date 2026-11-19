@@ -21,7 +21,7 @@ export default function ProductGrid() {
   };
 
   return (
-    <section className="bg-white pt-8 pb-1 sm:pt-10">
+    <section className="bg-white pt-8 pb-1 sm:pt-5">
       <div className="container-wide">
         <div id="shop" className="mb-2 scroll-mt-10 flex flex-col items-center text-center sm:mb-2.5">
           <h2 className="font-head text-[34px] font-extrabold tracking-tight text-navy-900 sm:text-[42px] xl:text-[48px]">
