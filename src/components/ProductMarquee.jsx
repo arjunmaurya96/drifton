@@ -5,10 +5,10 @@ import { Sparkle } from './Icons.jsx';
 const [palash, charcoal, rose, natural] = products;
 
 const items = [
-  { text: 'Helps reducing sweat', product: palash },
-  { text: 'Helps reducing odor', product: charcoal },
-  { text: 'Helps in lightening underarm skin', product: rose },
-  { text: 'Helps reducing itching', product: natural },
+  { text: 'Helps Reducing Sweat', product: palash },
+  { text: 'Helps Reducing Odor', product: charcoal },
+  { text: 'Helps in Lightening Underarm Skin', product: rose },
+  { text: 'Helps Reducing Itching', product: natural },
 ];
 
 export default function ProductMarquee({ dark = false }) {
