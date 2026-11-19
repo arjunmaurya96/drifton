@@ -3,27 +3,45 @@ import { products } from '../data/products.js';
 import { Sparkle } from './Icons.jsx';
 
 const [palash, charcoal, rose, natural] = products;
+
 const items = [
-  { name: 'Palash Flower', product: palash },
-  { name: 'Activated Charcoal', product: charcoal },
-  { name: 'Rose', product: rose },
-  { name: 'Natural', product: natural },
-  { name: 'Natural Crystal Alum', product: palash },
-  { name: 'No White Marks', product: charcoal },
-  { name: 'Long Lasting Roll On', product: natural },
+  { text: 'Helps reducing itching', product: natural },
+  { text: 'Helps in lightening underarm skin', product: rose },
+  { text: 'Helps reducing odor', product: charcoal },
+  { text: 'Helps reducing sweat', product: palash },
 ];
 
 export default function ProductMarquee({ dark = false }) {
-  const loop = [...items, ...items]; // duplicated for a seamless loop
+  // Repeat 4 items 4 times for seamless infinite scroll
+  const loop = [...items, ...items, ...items, ...items];
+
   return (
-    <div className={`overflow-hidden border-b py-5 ${dark ? 'border-navy-700 bg-navy-900' : 'border-line bg-white'}`}>
-      <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
+    <div className={`overflow-hidden border-b py-3.5 sm:py-4.5 ${dark ? 'border-navy-700 bg-navy-900' : 'border-line bg-white'}`}>
+      <div className="flex w-max animate-marquee hover:[animation-play-state:paused]" style={{ animationDuration: '34s' }}>
         {loop.map((it, i) => (
-          <Link key={i} to={`/product/${it.product.slug}`} aria-hidden={i >= items.length} tabIndex={i >= items.length ? -1 : 0}
-            className={`flex shrink-0 items-center gap-4 px-7 ${dark ? 'text-white hover:text-mint' : 'text-navy-900 hover:text-brand'}`}>
-            <img loading="lazy" decoding="async" src={it.product.image} alt="" className="size-16 rounded-full border-[3px] border-[#EEF1F8] bg-blue-soft object-contain p-1.5" />
-            <span className="whitespace-nowrap font-head text-[30px] font-semibold tracking-tight">{it.name}</span>
-            <span className="ml-7 text-brand"><Sparkle /></span>
+          <Link
+            key={i}
+            to={`/product/${it.product.slug}`}
+            aria-hidden={i >= items.length}
+            tabIndex={i >= items.length ? -1 : 0}
+            className={`group flex shrink-0 items-center gap-3.5 px-6 sm:gap-4.5 sm:px-8 ${
+              dark ? 'text-white hover:text-mint' : 'text-navy-900 hover:text-brand'
+            }`}
+          >
+            {/* Pure Product bottle with elegant 3D drop shadow, no circle container */}
+            <img
+              loading="lazy"
+              decoding="async"
+              src={it.product.image}
+              alt={it.product.name}
+              className="h-14 sm:h-16 w-auto object-contain filter drop-shadow-[0_8px_16px_rgba(15,26,60,0.16)] transition-transform duration-300 group-hover:scale-110"
+            />
+            <span className="whitespace-nowrap font-head text-[20px] font-bold tracking-tight transition-colors sm:text-[25px]">
+              {it.text}
+            </span>
+            <span className={`ml-6 sm:ml-8 ${dark ? 'text-mint/70' : 'text-brand/60'}`}>
+              <Sparkle size={18} />
+            </span>
           </Link>
         ))}
       </div>
