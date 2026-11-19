@@ -6,7 +6,7 @@ import { Arrow } from './Icons.jsx';
 // Look of each product when it is in the centre. Words are shown big on the left and right.
 const looks = {
   palash: { from: '#3A1A06', to: '#0E0602', glow: '#FF8A2A', accent: '#FFB15E', left: ['FLOWER', 'POWER'], right: ['ZERO', 'ODOUR'] },
-  charcoal: { from: '#2A2D35', to: '#08090C', glow: '#FF7A2F', accent: '#FF9A55', left: ['DEEP', 'CLEAN'], right: ['ZERO', 'SMELL'] },
+  charcoal: { from: '#2A2D35', to: '#08090C', glow: '#FF7A2F', accent: '#FF9A55', left: ['DEEP', 'CLEAN'], right: ['REDUCE', 'SMELL'] },
   rose: { from: '#3D0F22', to: '#12040A', glow: '#FF5C93', accent: '#FF8FB6', left: ['SOFT', 'FRESH'], right: ['ALL', 'DAY'] },
   natural: { from: '#0D2A4A', to: '#040C18', glow: '#4FB2FF', accent: '#8FD0FF', left: ['PURE', 'CRYSTAL'], right: ['100%', 'NATURAL'] },
 };
@@ -54,7 +54,7 @@ export default function VariantSpotlight() {
       </div>
 
       {/* big words */}
-      <div key={`l-${i}`} className="pointer-events-none absolute left-[4%] top-[17%] z-10 animate-from-left whitespace-nowrap text-right max-lg:left-0 max-lg:right-0 max-lg:top-[13%] max-lg:text-center lg:left-auto lg:right-[61%]">
+      <div key={`l-${i}`} className="pointer-events-none absolute left-[4%] top-[26%] z-10 animate-from-left whitespace-nowrap text-right max-lg:left-0 max-lg:right-0 max-lg:top-[16%] max-lg:text-center lg:left-auto lg:right-[61%]">
         <span className="block font-display text-[56px] leading-none tracking-wide text-transparent [-webkit-text-stroke:2px_white] md:text-[80px] xl:text-[110px]">{look.left[0]}</span>
         <span className={`block font-display leading-[0.9] tracking-wide ${big(look.left[1])}`} style={{ color: '#fff' }}>{look.left[1]}</span>
       </div>
@@ -75,21 +75,21 @@ export default function VariantSpotlight() {
       {/* side variants */}
       {[{ p: left, k: (i + n - 1) % n, pos: 'left-[3%] max-md:left-[2%]' }, { p: right, k: (i + 1) % n, pos: 'right-[3%] max-md:right-[2%]' }].map(({ p, k, pos }) => (
         <button key={`${p.id}-${i}`} onClick={() => setI(k)} aria-label={`Show ${p.name}`}
-          className={`absolute bottom-[3%] z-[5] h-[34%] animate-fade-up opacity-90 transition hover:opacity-100 md:h-[44%] ${pos}`}>
+          className={`absolute bottom-[3%] z-[5] h-[36%] animate-fade-up opacity-90 transition hover:opacity-100 md:h-[48%] lg:h-[50%] ${pos}`}>
           <img loading="lazy" decoding="async" src={cutoutOf(p.id)} alt="" className="h-full w-auto object-contain [filter:brightness(.82)_saturate(.9)]" />
         </button>
       ))}
 
       {/* 4th product: smaller, next to the left one, so all 4 products are on screen */}
       <button key={`${opposite.id}-o-${i}`} onClick={() => setI((i + 2) % n)} aria-label={`Show ${opposite.name}`}
-        className="absolute bottom-[3%] left-[15%] z-[4] hidden h-[32%] animate-fade-up opacity-80 transition hover:opacity-100 md:block xl:left-[16%]"
+        className="absolute bottom-[3%] left-[15%] z-[4] hidden h-[32%] animate-fade-up opacity-80 transition hover:opacity-100 md:block lg:h-[38%] xl:left-[16%]"
         style={{ animationDelay: '120ms' }}>
         <img loading="lazy" decoding="async" src={cutoutOf(opposite.id)} alt="" className="h-full w-auto object-contain [filter:brightness(.7)_saturate(.85)]" />
       </button>
 
-      {/* centre product */}
+      {/* centre product - taller height to close gap with top buttons */}
       <Link key={`c-${i}`} to={`/product/${center.slug}`} aria-label={`View ${center.name}`}
-        className="absolute bottom-[-2%] left-1/2 z-[6] h-[60%] -translate-x-1/2 md:h-[76%]">
+        className="absolute bottom-[-2%] left-1/2 z-[6] h-[68%] -translate-x-1/2 md:h-[84%] lg:h-[87%] xl:h-[89%]">
         <span aria-hidden="true" className="absolute inset-x-[-30%] bottom-0 h-1/2 rounded-full blur-3xl" style={{ background: look.glow, opacity: 0.35 }} />
         <img loading="lazy" decoding="async" src={cutoutOf(center.id)} alt={center.name} className="relative h-full w-auto animate-pop object-contain" />
       </Link>
