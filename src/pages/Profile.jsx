@@ -263,7 +263,7 @@ export default function Profile() {
                   <div className="mt-4 flex flex-col items-center gap-3 rounded-2xl bg-[#F6F7FB] px-6 py-10 text-center">
                     <span className="text-[34px]" aria-hidden="true">🛍️</span>
                     <b className="font-head text-[17px] text-navy-900">No orders yet</b>
-                    <p className="max-w-[340px] text-[13.5px] text-muted">Pick your favourite roll on — 2 for ₹750 and free delivery on 2 or more.</p>
+                    <p className="max-w-[340px] text-[13.5px] text-muted">Pick your favourite roll on.</p>
                     <Link to="/#shop" className="btn-primary mt-1">Shop now</Link>
                   </div>
                 ) : (() => {
@@ -299,7 +299,6 @@ export default function Profile() {
               <section className="rounded-3xl border border-line bg-white p-5 shadow-sm sm:p-6">
                 <div className="flex items-center justify-between">
                   <h2 className="font-head text-[18px] font-bold text-navy-900">Try another variant</h2>
-                  <span className="rounded-lg bg-mint-soft px-2 py-1 text-[12px] font-bold text-brand-dark">2 for ₹750</span>
                 </div>
                 <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
                   {products.filter((p) => !p.hidden).map((p) => (

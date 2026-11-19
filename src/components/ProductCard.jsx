@@ -30,9 +30,8 @@ export default function ProductCard({ product, className = 'h-[500px] sm:h-[560p
       <div className="flex h-[78px] shrink-0 items-center gap-3 border-t border-line bg-white px-4 sm:px-5">
         <span className="min-w-0 flex-1">
           <Link to={url} className="block truncate font-jost leading-tight text-navy-900 hover:text-navy-700"><b className="text-[17px] font-semibold">{product.short}</b> <span className="text-[13px] font-medium text-muted">Alum Roll On</span></Link>
-          <span className="mt-0.5 flex items-center gap-2 font-jost text-[14px]">
+          <span className="mt-0.5 block font-jost text-[15px]">
             <b className="font-semibold text-navy-900">{formatINR(product.price)}</b>
-            <span className="rounded-md bg-mint-soft px-1.5 py-0.5 text-[11.5px] font-bold text-brand-dark">2 for ₹750</span>
           </span>
         </span>
         <button onClick={onAdd} aria-label={`Add ${product.name} to cart`}
