@@ -6,7 +6,6 @@ import WhyDrifton from '../components/WhyDrifton.jsx';
 import HowToUse from '../components/HowToUse.jsx';
 import Reviews from '../components/Reviews.jsx';
 import Stats from '../components/Stats.jsx';
-import ReferEarn from '../components/ReferEarn.jsx';
 import GoogleBusiness from '../components/GoogleBusiness.jsx';
 
 export default function Home() {
@@ -19,7 +18,6 @@ export default function Home() {
       <HowToUse />
       <WhyDrifton />
       <Stats />
-      <ReferEarn />
       <GoogleBusiness />
       <Reviews />
     </>
