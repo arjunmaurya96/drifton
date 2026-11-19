@@ -5,7 +5,6 @@ import { useStore } from '../context/StoreContext.jsx';
 import ProductCard from '../components/ProductCard.jsx';
 import ProductMarquee from '../components/ProductMarquee.jsx';
 import ProductGallery from '../components/product/ProductGallery.jsx';
-import StickyBuyBar from '../components/product/StickyBuyBar.jsx';
 import { Stars } from '../components/Reviews.jsx';
 import NotFound from './NotFound.jsx';
 import { Truck, Shield, Return, Gem, CheckCircle, Drop, Clock, Box, Leaf } from '../components/Icons.jsx';
@@ -306,16 +305,6 @@ export default function ProductDetail() {
           </div>
         </div>
       </section>
-
-      {/* Sticky Bottom Bar (No increment/decrement stepper) */}
-      <StickyBuyBar
-        product={product}
-        rating={rating}
-        price={unit}
-        onAdd={add}
-        onBuy={buy}
-        watchId="main-buy"
-      />
     </>
   );
 }
