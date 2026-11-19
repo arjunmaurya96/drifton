@@ -1,5 +1,4 @@
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { products } from '../data/products.js';
 import ProductCard from './ProductCard.jsx';
 import { ChevronLeft, ChevronRight } from './Icons.jsx';
@@ -22,38 +21,22 @@ export default function ProductGrid() {
   };
 
   return (
-    <section className="bg-white pb-16 pt-12 xl:pb-16 xl:pt-10">
+    <section className="bg-white pb-10 pt-6 sm:pb-12 sm:pt-6">
       <div className="container-wide">
-        <div id="shop" className="mb-9 scroll-mt-28 flex flex-col items-center gap-5 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
-          <div>
-            <div className="mb-2.5 flex items-center justify-center gap-2 sm:justify-start">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 font-head text-[11.5px] font-bold uppercase tracking-widest text-brand">
-                <span className="size-1.5 rounded-full bg-brand animate-pulse" />
-                Natural Crystal Roll Ons
-              </span>
-            </div>
-            <h2 className="font-head text-[36px] font-extrabold tracking-tight text-navy-900 sm:text-[44px] xl:text-[50px]">
-              Pick Your{' '}
-              <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
-                Variant.
-                <span
-                  aria-hidden="true"
-                  className="absolute -bottom-1 left-0 h-[4px] w-full rounded-full bg-gradient-to-r from-brand via-mint to-transparent"
-                />
-              </span>
-            </h2>
-            <p className="mt-1 text-sm font-medium text-muted">
-              Glides smooth · 0% alcohol · Leaves no white marks · 24-hr odour defense
-            </p>
-          </div>
-
-          <Link
-            to="/ingredients"
-            className="group inline-flex shrink-0 items-center gap-2 rounded-full border border-line-strong bg-white px-5 py-2.5 font-head text-[13.5px] font-semibold text-navy-900 shadow-sm transition hover:border-brand hover:bg-brand hover:text-white"
-          >
-            <span>Know Ingredients</span>
-            <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-          </Link>
+        <div id="shop" className="mb-6 scroll-mt-28 flex flex-col items-center text-center sm:mb-7">
+          <h2 className="font-head text-[34px] font-extrabold tracking-tight text-navy-900 sm:text-[42px] xl:text-[48px]">
+            Pick Your{' '}
+            <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
+              Variant.
+              <span
+                aria-hidden="true"
+                className="absolute -bottom-1 left-0 h-[3.5px] w-full rounded-full bg-gradient-to-r from-brand via-mint to-transparent"
+              />
+            </span>
+          </h2>
+          <p className="mt-1.5 max-w-xl text-center text-sm font-medium text-muted">
+            Glides smooth · 0% alcohol · Leaves no white marks · 24-hr odour defense
+          </p>
         </div>
       </div>
 
