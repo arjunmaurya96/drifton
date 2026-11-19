@@ -101,11 +101,8 @@ export default function ProductDetail() {
                 <b className="font-head text-[34px] font-extrabold text-navy-900">{formatINR(unit)}</b>
                 <span className="text-[14px] font-semibold text-muted">+ delivery</span>
               </div>
-              <span className="text-[13.5px] font-semibold text-brand">
-                🎉 Combo Offer: Any 2 roll ons for ₹800 (Free Delivery)
-              </span>
               <span className="text-[12px] text-muted-2">
-                Inclusive of all taxes. Discounts applied automatically at checkout.
+                Inclusive of all taxes.
               </span>
             </div>
 
