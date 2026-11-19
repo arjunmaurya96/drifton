@@ -76,25 +76,10 @@ export default function ProductDetail() {
         </nav>
 
         {/* Main Product Hero Grid */}
-        <div className="grid grid-cols-1 items-start gap-8 pb-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,.9fr)] lg:gap-10 xl:gap-12">
-          {/* Left Column: Big Product Image Gallery + Illustration Disclaimer + Description */}
+        <div className="grid grid-cols-1 items-start gap-8 pb-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,.9fr)] lg:gap-10 xl:gap-12">
+          {/* Left Column: Big Product Image Gallery with precisely aligned illustration text */}
           <div className="flex flex-col">
             <ProductGallery key={product.id} media={media} name={product.name} badge={product.badge} bg={product.bg} />
-            
-            {/* Disclaimer text right below big image */}
-            <p className="mt-3 px-2 text-center text-[12.5px] font-medium leading-relaxed text-muted-2 sm:text-[13px]">
-              Images are for illustration. Actual product may vary slightly in colour, design or packaging.
-            </p>
-
-            {/* Description Card right below illustration text */}
-            <div className="mt-5 rounded-2xl border border-line bg-page/70 p-5 shadow-sm">
-              <h3 className="mb-2 font-head text-[15px] font-bold uppercase tracking-wider text-navy-900">
-                Description
-              </h3>
-              <p className="text-[14.5px] leading-relaxed text-muted">
-                {product.description} DriftOn is a 100% natural alum crystal roll on designed for 24-hr odor defense with 0% alcohol, no aluminum chlorohydrate, and leaves no white marks.
-              </p>
-            </div>
           </div>
 
           {/* Right Column: In front of product ("product ke samne") */}
@@ -210,6 +195,62 @@ export default function ProductDetail() {
         </div>
       </div>
 
+      {/* Full-width Attractive Description Section */}
+      <section className="border-t border-line bg-gradient-to-b from-white via-page/40 to-white py-12 sm:py-16">
+        <div className="container-x">
+          <div className="relative overflow-hidden rounded-[32px] border border-line bg-white p-6 sm:p-10 lg:p-12 shadow-[0_12px_40px_-20px_rgba(15,26,60,0.08)]">
+            {/* Ambient subtle glow */}
+            <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-16 size-72 rounded-full bg-brand/5 blur-3xl" />
+            <div aria-hidden="true" className="pointer-events-none absolute -left-16 -bottom-16 size-72 rounded-full bg-mint/10 blur-3xl" />
+
+            <div className="relative z-10 grid grid-cols-1 gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12 items-center">
+              {/* Left Column: Heading, Subtitle & Full Description */}
+              <div className="flex flex-col gap-4">
+                <span className="inline-flex w-fit items-center gap-2 rounded-full border border-brand/20 bg-brand/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-brand">
+                  <span className="size-2 rounded-full bg-brand animate-pulse" />
+                  Product Story &amp; Details
+                </span>
+                <h2 className="font-head text-[28px] font-extrabold tracking-tight text-navy-900 sm:text-[36px] xl:text-[40px] leading-tight">
+                  About DriftOn{' '}
+                  <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
+                    {product.short}.
+                    <span
+                      aria-hidden="true"
+                      className="absolute bottom-0 left-0 h-[3.5px] w-full rounded-full bg-gradient-to-r from-brand via-mint to-transparent"
+                    />
+                  </span>
+                </h2>
+                <p className="text-[16px] leading-relaxed text-slate-700 sm:text-[17px] font-normal">
+                  {product.description}
+                </p>
+                <p className="text-[14.5px] leading-relaxed text-muted">
+                  Formulated with 100% natural mineral potassium alum, DriftOn creates an invisible breathable layer that eliminates odor-causing bacteria at the source. Free from alcohol, artificial dyes, and sticky residue.
+                </p>
+              </div>
+
+              {/* Right Column: 4 Highlight Pillars */}
+              <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                {[
+                  { title: '24-Hour Odor Defense', desc: 'Natural mineral shield keeps you smelling fresh morning to night.', icon: '🛡️' },
+                  { title: '0% Alcohol & Sticky Feel', desc: 'Clear glide formula that dries fast with zero white chalky residue.', icon: '✨' },
+                  { title: 'Skin Gentle & Tested', desc: 'Enriched with glycerine to protect underarm barrier softness.', icon: '🌿' },
+                  { title: 'Long-Lasting Stick', desc: 'Solid crystal lasts 3x longer than conventional spray deodorants.', icon: '💎' },
+                ].map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex flex-col gap-1.5 rounded-2xl border border-line bg-page/80 p-4.5 transition-all duration-300 hover:border-brand/40 hover:bg-white hover:shadow-md"
+                  >
+                    <span className="text-2xl mb-1">{item.icon}</span>
+                    <b className="font-head text-[15px] font-bold text-navy-900 leading-snug">{item.title}</b>
+                    <p className="text-[13px] leading-relaxed text-muted-2">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 1. Blinking Benefits Slider */}
       <ProductMarquee dark />
 
@@ -251,7 +292,8 @@ export default function ProductDetail() {
             <button className="btn-line" onClick={() => navigate('/#shop')}>View all</button>
           </div>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((p) => <ProductCard key={p.id} product={p} />)}
+            {/* quickCheckout prop passed so clicking Buy now directly opens checkout popup */}
+            {related.map((p) => <ProductCard key={p.id} product={p} quickCheckout />)}
           </div>
         </div>
       </section>

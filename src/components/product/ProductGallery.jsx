@@ -51,18 +51,24 @@ export default function ProductGallery({ media, name, badge, bg }) {
         ))}
       </div>
 
-      {/* main stage */}
-      <div className="group relative aspect-[4/5] w-full overflow-hidden rounded-[28px] shadow-[0_30px_60px_-40px_rgba(15,26,60,.55)]" style={{ background: bg }}>
-        <button className="block h-full w-full cursor-zoom-in" onClick={() => setZoom(true)} aria-label="Open image full screen">
-          <span key={i} className="block h-full w-full animate-fade-in"><Media m={cur} big name={name} bg={bg} /></span>
-        </button>
-        {badge && <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3.5 py-1.5 text-[12.5px] font-bold uppercase tracking-wider text-navy-900 shadow-sm">{badge}</span>}
-        {cur.label && <span className="absolute right-4 top-4 rounded-full bg-black/45 px-3 py-1.5 text-[12px] font-semibold text-white backdrop-blur">{cur.label}</span>}
-        <span className="absolute bottom-4 left-4 rounded-full bg-black/45 px-3 py-1.5 text-[12.5px] font-semibold text-white backdrop-blur">{i + 1} / {n}</span>
-        <div className="absolute bottom-4 right-4 flex gap-2">
-          <button className="flex size-11 items-center justify-center rounded-full bg-white text-navy-900 shadow-md hover:bg-mint-soft" onClick={() => go(-1)} aria-label="Previous image"><ChevronLeft /></button>
-          <button className="flex size-11 items-center justify-center rounded-full bg-white text-navy-900 shadow-md hover:bg-mint-soft" onClick={() => go(1)} aria-label="Next image"><ChevronRight /></button>
+      {/* main stage & disclaimer */}
+      <div className="flex flex-col">
+        <div className="group relative aspect-[4/5] w-full overflow-hidden rounded-[28px] shadow-[0_30px_60px_-40px_rgba(15,26,60,.55)]" style={{ background: bg }}>
+          <button className="block h-full w-full cursor-zoom-in" onClick={() => setZoom(true)} aria-label="Open image full screen">
+            <span key={i} className="block h-full w-full animate-fade-in"><Media m={cur} big name={name} bg={bg} /></span>
+          </button>
+          {badge && <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3.5 py-1.5 text-[12.5px] font-bold uppercase tracking-wider text-navy-900 shadow-sm">{badge}</span>}
+          {cur.label && <span className="absolute right-4 top-4 rounded-full bg-black/45 px-3 py-1.5 text-[12px] font-semibold text-white backdrop-blur">{cur.label}</span>}
+          <span className="absolute bottom-4 left-4 rounded-full bg-black/45 px-3 py-1.5 text-[12.5px] font-semibold text-white backdrop-blur">{i + 1} / {n}</span>
+          <div className="absolute bottom-4 right-4 flex gap-2">
+            <button className="flex size-11 items-center justify-center rounded-full bg-white text-navy-900 shadow-md hover:bg-mint-soft" onClick={() => go(-1)} aria-label="Previous image"><ChevronLeft /></button>
+            <button className="flex size-11 items-center justify-center rounded-full bg-white text-navy-900 shadow-md hover:bg-mint-soft" onClick={() => go(1)} aria-label="Next image"><ChevronRight /></button>
+          </div>
         </div>
+
+        <p className="mt-3 text-center text-[12px] font-medium leading-relaxed text-muted-2 sm:text-[12.5px]">
+          Images are for illustration. Actual product may vary slightly in colour, design or packaging.
+        </p>
       </div>
 
       {zoom && (
