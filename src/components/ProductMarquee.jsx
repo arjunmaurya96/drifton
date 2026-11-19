@@ -5,10 +5,10 @@ import { Sparkle } from './Icons.jsx';
 const [palash, charcoal, rose, natural] = products;
 
 const items = [
-  { text: 'Helps reducing itching', product: natural },
-  { text: 'Helps in lightening underarm skin', product: rose },
-  { text: 'Helps reducing odor', product: charcoal },
   { text: 'Helps reducing sweat', product: palash },
+  { text: 'Helps reducing odor', product: charcoal },
+  { text: 'Helps in lightening underarm skin', product: rose },
+  { text: 'Helps reducing itching', product: natural },
 ];
 
 export default function ProductMarquee({ dark = false }) {
@@ -36,7 +36,7 @@ export default function ProductMarquee({ dark = false }) {
               alt={it.product.name}
               className="h-14 sm:h-16 w-auto object-contain filter drop-shadow-[0_8px_16px_rgba(15,26,60,0.16)] transition-transform duration-300 group-hover:scale-110"
             />
-            <span className="whitespace-nowrap font-head text-[20px] font-bold tracking-tight transition-colors sm:text-[25px]">
+            <span className="whitespace-nowrap font-head text-[20px] font-bold tracking-tight transition-colors sm:text-[25px] animate-soft-blink">
               {it.text}
             </span>
             <span className={`ml-6 sm:ml-8 ${dark ? 'text-mint/70' : 'text-brand/60'}`}>

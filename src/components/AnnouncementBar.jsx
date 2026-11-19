@@ -23,7 +23,7 @@ export default function AnnouncementBar() {
                 key={k}
                 className="flex shrink-0 items-center gap-6 px-4 font-head text-[13.5px] font-bold tracking-wide text-white sm:gap-10 sm:px-6 sm:text-[14.5px]"
               >
-                <span>{text}</span>
+                <span className="animate-glow-blink">{text}</span>
                 <span className="inline-block size-2 rotate-45 rounded-[1px] bg-[#67E8F9] shadow-[0_0_8px_#38BDF8]" />
               </span>
             ))}
