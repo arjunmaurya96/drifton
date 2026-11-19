@@ -21,16 +21,16 @@ export default function ProductGrid() {
   };
 
   return (
-    <section className="bg-white pt-3 pb-1">
+    <section className="bg-white pt-8 pb-1 sm:pt-10">
       <div className="container-wide">
-        <div id="shop" className="mb-3 scroll-mt-10 flex flex-col items-center text-center sm:mb-4">
+        <div id="shop" className="mb-2 scroll-mt-10 flex flex-col items-center text-center sm:mb-2.5">
           <h2 className="font-head text-[34px] font-extrabold tracking-tight text-navy-900 sm:text-[42px] xl:text-[48px]">
             Pick Your{' '}
             <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
               Variant.
               <span
                 aria-hidden="true"
-                className="absolute -bottom-1 left-0 h-[3.5px] w-full rounded-full bg-gradient-to-r from-brand via-mint to-transparent"
+                className="absolute bottom-0 left-0 h-[3.5px] w-full rounded-full bg-gradient-to-r from-brand via-mint to-transparent"
               />
             </span>
           </h2>
