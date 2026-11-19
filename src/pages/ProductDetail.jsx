@@ -93,10 +93,10 @@ export default function ProductDetail() {
                 <Stars value={rating} size={17} />
                 <span className="font-semibold text-navy-900">{rating.toFixed(1)}</span>
                 <span className="text-slate-300">·</span>
-                {/* <span className="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md text-[12px] font-semibold">
+                <span className="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md text-[12px] font-semibold">
                   <CheckCircle size={13} className="text-brand" />
                   {reviews.length} Verified Reviews
-                </span> */}
+                </span>
               </div>
             </div>
 
