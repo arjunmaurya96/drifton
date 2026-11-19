@@ -19,7 +19,7 @@ export default function GoogleBusiness() {
     <section id="google" className="pb-20 pt-8 sm:pb-24 sm:pt-10">
       <div className="container-x">
         <div className="mb-10 flex flex-col items-center gap-3 text-center">
-          <span className="eyebrow">Find us on Google</span>
+          {/* <span className="eyebrow">Find us on Google</span> */}
           <h2 className="h2">Visit, call or <span className="text-brand">review us</span></h2>
         </div>
         <div className="grid grid-cols-1 overflow-hidden rounded-[32px] border border-line bg-white lg:grid-cols-[.9fr_1.1fr]">
