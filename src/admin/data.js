@@ -121,7 +121,7 @@ export const initialData = {
   settings: {
     storeName: 'DriftOn™', legalName: business.legalName, email: business.email, phone: business.phone || '',
     address: business.address, hours: business.hours,
-    announcement: 'Add Natural Roll On: 2 for ₹750 · 3rd roll on just ₹300 · Free delivery',
+    announcement: '💥 Unlock Special Discounts at Checkout!',
     gst: '07ACIFA5199E1Z8',
     manufacturer: business.manufacturer.name, manufacturerAddress: business.manufacturer.address, licence: business.manufacturer.licence,
   },
