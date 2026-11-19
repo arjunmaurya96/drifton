@@ -36,7 +36,7 @@ function useCountUp(duration = 1800) {
 export default function Stats() {
   const [ref, p] = useCountUp();
   return (
-    <section ref={ref} className="pb-4 pt-3 sm:pt-4">
+    <section ref={ref} className="pb-4 pt-3 sm:pt-0">
       <div className="container-x">
         <div className="mb-6 flex flex-col items-center gap-2 text-center sm:mb-7">
           <h2 className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 font-head text-[28px] font-extrabold tracking-tight text-navy-900 sm:text-[38px] xl:text-[44px]">
@@ -45,7 +45,7 @@ export default function Stats() {
               alt="DriftOn"
               className="h-8 sm:h-10 w-auto object-contain"
             />
-            <span className="text-brand">Promise:</span>
+            <span className="text-brand">Promise</span>
             <span>
               Why Customers{' '}
               <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
@@ -57,7 +57,7 @@ export default function Stats() {
               </span>
             </span>
           </h2>
-          <p className="mt-1 max-w-4xl text-center text-sm font-medium text-muted sm:text-[15.5px] sm:whitespace-nowrap">
+          <p className="mt-0 max-w-4xl text-center text-sm font-medium text-muted sm:text-[15.5px] sm:whitespace-nowrap">
             Quality products, reliable service and a shopping experience you can trust.
           </p>
         </div>
