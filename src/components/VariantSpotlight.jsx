@@ -127,12 +127,12 @@ export default function VariantSpotlight() {
       {/* Desktop Left Words: text-left, anchored from left, Help In directly over Deep */}
       <div
         key={`l-${i}`}
-        className="pointer-events-none absolute left-[4%] top-[26%] z-10 hidden text-left animate-from-left lg:block xl:left-[6%]"
+        className="pointer-events-none absolute left-[3%] top-[26%] z-10 hidden max-w-[34vw] text-left animate-from-left lg:block xl:left-[4.5%]"
       >
-        <span className="block font-display text-[46px] leading-none tracking-wider text-transparent [-webkit-text-stroke:2px_white] xl:text-[68px] 2xl:text-[84px]">
+        <span className="block font-display text-[clamp(26px,2.6vw,44px)] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.5px_white]">
           {look.left[0]}
         </span>
-        <span className="block font-display text-[60px] leading-[0.92] tracking-wide text-white drop-shadow-[0_6px_32px_rgba(0,0,0,0.65)] xl:text-[88px] 2xl:text-[110px]">
+        <span className="block font-display text-[clamp(34px,3.8vw,66px)] leading-[0.93] tracking-wide text-white drop-shadow-[0_6px_32px_rgba(0,0,0,0.65)]">
           {look.left[1]}
         </span>
       </div>
@@ -140,13 +140,13 @@ export default function VariantSpotlight() {
       {/* Desktop Right Words: text-right, anchored from right, Helps In directly over Order */}
       <div
         key={`r-${i}`}
-        className="pointer-events-none absolute right-[4%] top-[26%] z-10 hidden text-right animate-from-right lg:block xl:right-[6%]"
+        className="pointer-events-none absolute right-[3%] top-[26%] z-10 hidden max-w-[34vw] text-right animate-from-right lg:block xl:right-[4.5%]"
       >
-        <span className="block font-display text-[46px] leading-none tracking-wider text-transparent [-webkit-text-stroke:2px_white] xl:text-[68px] 2xl:text-[84px]">
+        <span className="block font-display text-[clamp(26px,2.6vw,44px)] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.5px_white]">
           {look.right[0]}
         </span>
         <span
-          className="block font-display text-[60px] leading-[0.92] tracking-wide xl:text-[88px] 2xl:text-[110px]"
+          className="block font-display text-[clamp(34px,3.8vw,66px)] leading-[0.93] tracking-wide"
           style={{ color: look.accent, textShadow: `0 0 35px ${look.glow}77` }}
         >
           {look.right[1]}
@@ -176,15 +176,15 @@ export default function VariantSpotlight() {
         <img loading="lazy" decoding="async" src={cutoutOf(opposite.id)} alt="" className="h-full w-auto object-contain [filter:brightness(.7)_saturate(.85)]" />
       </button>
 
-      {/* centre product */}
+      {/* centre product - elevated z-20 so text never renders on top */}
       <Link
         key={`c-${i}`}
         to={`/product/${center.slug}`}
         aria-label={`View ${center.name}`}
-        className="absolute bottom-[-2%] left-1/2 z-[6] h-[60%] -translate-x-1/2 md:h-[76%]"
+        className="absolute bottom-[-2%] left-1/2 z-20 h-[60%] -translate-x-1/2 md:h-[76%]"
       >
         <span aria-hidden="true" className="absolute inset-x-[-30%] bottom-0 h-1/2 rounded-full blur-3xl" style={{ background: look.glow, opacity: 0.35 }} />
-        <img loading="lazy" decoding="async" src={cutoutOf(center.id)} alt={center.name} className="relative h-full w-auto animate-pop object-contain" />
+        <img loading="lazy" decoding="async" src={cutoutOf(center.id)} alt={center.name} className="relative z-20 h-full w-auto animate-pop object-contain" />
       </Link>
     </section>
   );
