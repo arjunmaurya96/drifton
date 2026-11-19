@@ -21,9 +21,9 @@ export default function ProductGrid() {
   };
 
   return (
-    <section className="bg-white pb-10 pt-6 sm:pb-12 sm:pt-6">
+    <section className="bg-white pt-3 pb-1">
       <div className="container-wide">
-        <div id="shop" className="mb-6 scroll-mt-28 flex flex-col items-center text-center sm:mb-7">
+        <div id="shop" className="mb-3 scroll-mt-10 flex flex-col items-center text-center sm:mb-4">
           <h2 className="font-head text-[34px] font-extrabold tracking-tight text-navy-900 sm:text-[42px] xl:text-[48px]">
             Pick Your{' '}
             <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
@@ -34,9 +34,6 @@ export default function ProductGrid() {
               />
             </span>
           </h2>
-          <p className="mt-1.5 max-w-xl text-center text-sm font-medium text-muted">
-            Glides smooth · 0% alcohol · Leaves no white marks · 24-hr odour defense
-          </p>
         </div>
       </div>
 
