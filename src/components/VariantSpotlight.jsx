@@ -18,7 +18,7 @@ const looks = {
     glow: '#FF7A2F',
     accent: '#FF9A55',
     left: ['HELPS IN', 'DEEP CLEANING'],
-    right: ['HELPS IN', 'REDUCING ODOR'],
+    right: ['HELPS IN', 'REDUCING ORDER'],
   },
   palash: {
     from: '#3A1A06',
@@ -105,16 +105,16 @@ export default function VariantSpotlight() {
       {/* Mobile Benefit Block (Centered, never overflows, never touches bottle) */}
       <div
         key={`m-${i}`}
-        className="pointer-events-none absolute inset-x-4 top-[15%] z-10 flex flex-col items-center text-center lg:hidden"
+        className="pointer-events-none absolute inset-x-4 top-[14%] z-10 flex flex-col items-center text-center lg:hidden"
       >
-        <span className="font-display text-[26px] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.2px_white] sm:text-[32px]">
+        <span className="font-display text-[32px] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.3px_white] sm:text-[42px]">
           {look.left[0]}
         </span>
-        <span className="font-display text-[34px] leading-tight tracking-wide text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)] sm:text-[42px]">
+        <span className="font-display text-[40px] leading-tight tracking-wide text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.6)] sm:text-[54px]">
           {look.left[1]}
         </span>
         <div className="mt-2.5">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3.5 py-1 font-head text-[12px] font-semibold tracking-wide text-white shadow-lg backdrop-blur-md ring-1 ring-white/20">
+          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 font-head text-[13px] font-semibold tracking-wide text-white shadow-lg backdrop-blur-md ring-1 ring-white/20">
             <span
               className="size-2 rounded-full shadow-[0_0_8px_currentColor]"
               style={{ backgroundColor: look.accent, color: look.accent }}
@@ -127,27 +127,27 @@ export default function VariantSpotlight() {
       {/* Desktop Left Words: text-left, anchored from left, Help In directly over Deep */}
       <div
         key={`l-${i}`}
-        className="pointer-events-none absolute left-8 top-[31%] z-10 hidden max-w-[420px] text-left animate-from-left lg:block lg:left-12 xl:left-20"
+        className="pointer-events-none absolute left-[4%] top-[26%] z-10 hidden text-left animate-from-left lg:block xl:left-[6%]"
       >
-        <span className="block font-display text-[28px] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.5px_white] xl:text-[36px]">
+        <span className="block font-display text-[46px] leading-none tracking-wider text-transparent [-webkit-text-stroke:2px_white] xl:text-[68px] 2xl:text-[84px]">
           {look.left[0]}
         </span>
-        <span className="block font-display text-[42px] leading-[0.98] tracking-wide text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.5)] xl:text-[56px]">
+        <span className="block font-display text-[60px] leading-[0.92] tracking-wide text-white drop-shadow-[0_6px_32px_rgba(0,0,0,0.65)] xl:text-[88px] 2xl:text-[110px]">
           {look.left[1]}
         </span>
       </div>
 
-      {/* Desktop Right Words: text-right, anchored from right, Helps In directly over Odor */}
+      {/* Desktop Right Words: text-right, anchored from right, Helps In directly over Order */}
       <div
         key={`r-${i}`}
-        className="pointer-events-none absolute right-8 top-[31%] z-10 hidden max-w-[420px] text-right animate-from-right lg:block lg:right-12 xl:right-20"
+        className="pointer-events-none absolute right-[4%] top-[26%] z-10 hidden text-right animate-from-right lg:block xl:right-[6%]"
       >
-        <span className="block font-display text-[28px] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.5px_white] xl:text-[36px]">
+        <span className="block font-display text-[46px] leading-none tracking-wider text-transparent [-webkit-text-stroke:2px_white] xl:text-[68px] 2xl:text-[84px]">
           {look.right[0]}
         </span>
         <span
-          className="block font-display text-[42px] leading-[0.98] tracking-wide xl:text-[56px]"
-          style={{ color: look.accent, textShadow: `0 0 32px ${look.glow}55` }}
+          className="block font-display text-[60px] leading-[0.92] tracking-wide xl:text-[88px] 2xl:text-[110px]"
+          style={{ color: look.accent, textShadow: `0 0 35px ${look.glow}77` }}
         >
           {look.right[1]}
         </span>
