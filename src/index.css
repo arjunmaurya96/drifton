@@ -37,16 +37,16 @@
   --animate-from-right: from-right 1s cubic-bezier(.2,.8,.2,1) both;
   --animate-bar: bar-fill linear both;
   --animate-pop: pop-in .8s cubic-bezier(.2,.8,.2,1) both;
-  --animate-glow-blink: glow-blink 1.8s ease-in-out infinite;
-  --animate-soft-blink: soft-blink 1.8s ease-in-out infinite;
+  --animate-glow-blink: glow-blink 0.7s ease-in-out infinite;
+  --animate-soft-blink: soft-blink 0.7s ease-in-out infinite;
 
   @keyframes glow-blink {
     0%, 100% {
       opacity: 1;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 18px rgba(56, 189, 248, 0.7);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 18px rgba(56, 189, 248, 0.8);
     }
     50% {
-      opacity: 0.52;
+      opacity: 0;
       text-shadow: none;
     }
   }
@@ -54,11 +54,9 @@
   @keyframes soft-blink {
     0%, 100% {
       opacity: 1;
-      transform: scale(1);
     }
     50% {
-      opacity: 0.48;
-      transform: scale(0.99);
+      opacity: 0;
     }
   }
 
