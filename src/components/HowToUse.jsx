@@ -18,7 +18,7 @@ const steps = [
 
 export default function HowToUse() {
   return (
-    <section id="how" aria-labelledby="how-title" className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#F4F7FC_100%)] pt-8 pb-10 sm:pt-10 sm:pb-14">
+    <section id="how" aria-labelledby="how-title" className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#F4F7FC_100%)] pt-8 pb-10 sm:pt-6 sm:pb-14">
       <div className="container-x mb-5 flex flex-col items-center text-center sm:mb-7">
         <h2 id="how-title" className="font-head text-[34px] font-extrabold tracking-tight text-navy-900 sm:text-[42px] xl:text-[48px]">
           How to{' '}

@@ -36,12 +36,12 @@ function useCountUp(duration = 1800) {
 export default function Stats() {
   const [ref, p] = useCountUp();
   return (
-    <section ref={ref} className="pb-10 pt-8 sm:pt-10">
+    <section ref={ref} className="pb-0 pt-8 sm:pt-6">
       <div className="container-x">
         <div className="mb-11 flex flex-col items-center gap-3 text-center">
           <span className="eyebrow flex items-center gap-2.5 before:h-0.5 before:w-6 before:bg-brand after:h-0.5 after:w-6 after:bg-brand"><img src="/assets/images/logo-drifton.webp" alt="DriftOn" className="h-6 w-auto" /> promise</span>
           <h2 className="h2">Why customers <span className="text-brand">choose us</span></h2>
-          <p className="max-w-[560px] text-[17px] text-muted">Quality products, reliable service and a shopping experience you can trust.</p>
+          <p className="max-w-[660px] text-[17px] text-muted">Quality products, reliable service and a shopping experience you can trust.</p>
         </div>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map(({ value, suffix, label, sub, tint, ink, Icon }) => (
