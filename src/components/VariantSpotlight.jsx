@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { products, bannerSlides, formatINR } from '../data/products.js';
-import { Arrow } from './Icons.jsx';
+import { products, bannerSlides } from '../data/products.js';
 
 // Look of each product when it is in the centre. Words are shown big on the left and right.
 const looks = {
@@ -53,23 +52,16 @@ export default function VariantSpotlight() {
         </div>
       </div>
 
-      {/* big words */}
-      <div key={`l-${i}`} className="pointer-events-none absolute left-[4%] top-[26%] z-10 animate-from-left whitespace-nowrap text-right max-lg:left-0 max-lg:right-0 max-lg:top-[16%] max-lg:text-center lg:left-auto lg:right-[61%]">
+      {/* big words left: moved up to top-[17%] */}
+      <div key={`l-${i}`} className="pointer-events-none absolute left-[4%] top-[17%] z-10 animate-from-left whitespace-nowrap text-right max-lg:left-0 max-lg:right-0 max-lg:top-[13%] max-lg:text-center lg:left-auto lg:right-[61%]">
         <span className="block font-display text-[56px] leading-none tracking-wide text-transparent [-webkit-text-stroke:2px_white] md:text-[80px] xl:text-[110px]">{look.left[0]}</span>
         <span className={`block font-display leading-[0.9] tracking-wide ${big(look.left[1])}`} style={{ color: '#fff' }}>{look.left[1]}</span>
       </div>
-      <div key={`r-${i}`} className="absolute left-[61%] top-[26%] z-10 hidden animate-from-right whitespace-nowrap lg:block">
-        <span className="block font-display text-[80px] leading-none tracking-wide text-transparent [-webkit-text-stroke:2px_white] xl:text-[110px]">{look.right[0]}</span>
-        <span className={`block font-display leading-[0.9] tracking-wide ${big(look.right[1])}`} style={{ color: look.accent }}>{look.right[1]}</span>
-        <div className="mt-5 flex items-center gap-4">
-          <span>
-            <b className="block font-jost text-lg font-medium">{center.name}</b>
-            <span className="font-jost text-white/80">{formatINR(center.price)} <span className="text-white/50">· 3rd roll on just ₹300</span></span>
-          </span>
-          <Link to={`/product/${center.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-6 font-jost text-sm font-semibold uppercase tracking-wide text-navy-900 hover:bg-mint hover:text-navy-900">
-            Shop now <Arrow size={16} />
-          </Link>
-        </div>
+
+      {/* big words right: REDUCE right-aligned so it matches the right edge of SMELL (L) */}
+      <div key={`r-${i}`} className="pointer-events-none absolute left-[61%] top-[26%] z-10 hidden animate-from-right whitespace-nowrap lg:flex lg:flex-col lg:items-end text-right">
+        <span className="block font-display text-[80px] leading-none tracking-wide text-transparent [-webkit-text-stroke:2px_white] xl:text-[110px] text-right">{look.right[0]}</span>
+        <span className={`block font-display leading-[0.9] tracking-wide ${big(look.right[1])} text-right`} style={{ color: look.accent }}>{look.right[1]}</span>
       </div>
 
       {/* side variants */}
@@ -93,11 +85,6 @@ export default function VariantSpotlight() {
         <span aria-hidden="true" className="absolute inset-x-[-30%] bottom-0 h-1/2 rounded-full blur-3xl" style={{ background: look.glow, opacity: 0.35 }} />
         <img loading="lazy" decoding="async" src={cutoutOf(center.id)} alt={center.name} className="relative h-full w-auto animate-pop object-contain" />
       </Link>
-
-      {/* mobile CTA */}
-      <div className="absolute inset-x-0 top-[33%] z-20 flex justify-center lg:hidden">
-        <Link to={`/product/${center.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-6 font-jost text-sm font-semibold uppercase text-navy-900">Shop {center.short}</Link>
-      </div>
     </section>
   );
 }
