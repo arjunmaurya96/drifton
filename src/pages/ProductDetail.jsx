@@ -213,7 +213,7 @@ export default function ProductDetail() {
               <div className="flex flex-col gap-4">
                 <span className="inline-flex w-fit items-center gap-2 rounded-full border border-brand/20 bg-brand/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-brand">
                   <span className="size-2 rounded-full bg-brand animate-pulse" />
-                  Product Story &amp; Details
+                  Product Details
                 </span>
                 <h2 className="font-head text-[28px] font-extrabold tracking-tight text-navy-900 sm:text-[36px] xl:text-[40px] leading-tight">
                   <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
@@ -289,8 +289,13 @@ export default function ProductDetail() {
           <div className="mb-7 flex flex-wrap items-end justify-between gap-4 px-2">
             <div className="flex flex-col gap-2">
               <span className="eyebrow">Other Variants</span>
-              <h2 className="h2 text-3xl sm:text-4xl">
-                More from <span className="text-brand">DriftOn</span>
+              <h2 className="flex flex-wrap items-center gap-2.5 font-head text-3xl font-extrabold text-navy-900 sm:text-4xl">
+                <span>More from</span>
+                <img
+                  src="/assets/images/logo-drifton.webp"
+                  alt="DriftOn"
+                  className="h-8 sm:h-9.5 w-auto object-contain inline-block"
+                />
               </h2>
             </div>
             <button className="btn-line" onClick={() => navigate('/#shop')}>View all</button>
