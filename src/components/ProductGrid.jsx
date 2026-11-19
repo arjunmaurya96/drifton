@@ -23,9 +23,11 @@ export default function ProductGrid() {
   };
 
   return (
-    <section className="bg-white pb-16 pt-10 xl:pb-16 xl:pt-8">
-      <div id="shop" className="container-wide scroll-mt-28">
-        <div className="mb-8 flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
+    <section className="bg-white pb-16 pt-12 xl:pb-16 xl:pt-10">
+      <div className="container-wide">
+        <ProductInfoNote className="mb-12 sm:mb-14" />
+
+        <div id="shop" className="mb-8 scroll-mt-28 flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left">
           <h2 className="font-jost text-[40px] font-medium leading-tight tracking-tight text-black sm:text-5xl xl:text-[44px]">Pick your variant.</h2>
           <Link to="/ingredients" className="border-b-[3px] border-black pb-2 font-jost text-[15px] font-semibold uppercase tracking-wide text-black hover:text-black">
             Shop roll on &amp; more…
@@ -50,10 +52,6 @@ export default function ProductGrid() {
           className="absolute left-5 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-navy-900 shadow-lg sm:hidden"><ChevronLeft /></button>
         <button onClick={() => slide(1)} aria-label="Next products"
           className="absolute right-5 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-navy-900 shadow-lg sm:hidden"><ChevronRight /></button>
-      </div>
-
-      <div className="container-wide mt-14 sm:mt-16">
-        <ProductInfoNote />
       </div>
     </section>
   );
