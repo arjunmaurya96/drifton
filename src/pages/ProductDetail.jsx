@@ -211,9 +211,9 @@ export default function ProductDetail() {
                   Product Story &amp; Details
                 </span>
                 <h2 className="font-head text-[28px] font-extrabold tracking-tight text-navy-900 sm:text-[36px] xl:text-[40px] leading-tight">
-                  About DriftOn{' '}
+                  About{' '}
                   <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
-                    {product.short}.
+                    {product.name}.
                     <span
                       aria-hidden="true"
                       className="absolute bottom-0 left-0 h-[3.5px] w-full rounded-full bg-gradient-to-r from-brand via-mint to-transparent"

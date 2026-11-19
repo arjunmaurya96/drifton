@@ -36,9 +36,9 @@ export const coupons = { DRIFTON100: { off: 100, note: '₹100 off (single-stick
 
 // The real combos from the client (each = 2 roll ons for ₹800)
 export const combos = [
-  { id: 'rose-palash', name: 'DriftOn™ Rose + Palash Roll On', items: ['rose', 'palash'], tag: 'Floral pair' },
-  { id: 'charcoal-rose', name: 'DriftOn™ Charcoal + Rose Roll On', items: ['charcoal', 'rose'], tag: 'Fresh + floral' },
-  { id: 'natural-rose', name: 'DriftOn™ Natural + Rose Roll On', items: ['natural', 'rose'], tag: 'Pure + floral' },
+  { id: 'rose-palash', name: 'Rose + Palash Roll On', items: ['rose', 'palash'], tag: 'Floral pair' },
+  { id: 'charcoal-rose', name: 'Charcoal + Rose Roll On', items: ['charcoal', 'rose'], tag: 'Fresh + floral' },
+  { id: 'natural-rose', name: 'Natural + Rose Roll On', items: ['natural', 'rose'], tag: 'Pure + floral' },
 ];
 
 export const products = [
@@ -47,7 +47,7 @@ export const products = [
     scene: `${IMG}/scenes/palash.webp`,
     card: `${IMG}/scenes/palash-card.webp`, // 'Pick your variant' card photo (4:5) // product photo with its natural ingredient (phitku style)
     slug: 'palash-alum-stick',
-    name: 'DriftOn™ Palash Alum Roll On',
+    name: 'Palash Alum Roll On',
     short: 'Palash',
     tag: 'Floral · Bestseller',
     badge: 'Bestseller',
@@ -70,7 +70,7 @@ export const products = [
     scene: `${IMG}/scenes/charcoal.webp`,
     card: `${IMG}/scenes/charcoal-card.webp`, // 'Pick your variant' card photo (4:5) // product photo with its natural ingredient (phitku style)
     slug: 'charcoal-alum-stick',
-    name: 'DriftOn™ Charcoal Alum Roll On',
+    name: 'Charcoal Alum Roll On',
     short: 'Charcoal',
     tag: 'Detox · Fresh',
     badge: 'New',
@@ -93,7 +93,7 @@ export const products = [
     scene: `${IMG}/scenes/rose.webp`,
     card: `${IMG}/scenes/rose-card.webp`, // 'Pick your variant' card photo (4:5) // product photo with its natural ingredient (phitku style)
     slug: 'rose-alum-stick',
-    name: 'DriftOn™ Rose Alum Roll On',
+    name: 'Rose Alum Roll On',
     short: 'Rose',
     tag: 'Floral · Gentle',
     badge: 'Popular',
@@ -116,7 +116,7 @@ export const products = [
     scene: `${IMG}/scenes/natural.webp`,
     card: `${IMG}/scenes/natural-card.webp`, // 'Pick your variant' card photo (4:5) // product photo with its natural ingredient (phitku style)
     slug: 'natural-alum-stick',
-    name: 'DriftOn™ Natural Alum Roll On',
+    name: 'Natural Alum Roll On',
     short: 'Natural',
     tag: 'Pure · Fragrance free',
     badge: 'Pure',
@@ -208,7 +208,7 @@ export const packs = [
 export const productInfo = {
   loveIt: [
     { title: 'Natural alum crystal', icon: 'gem' },
-    { title: 'No white marks', icon: 'check' },
+    { title: 'Zero Camicals', icon: 'check' },
     { title: 'Glides on clear', icon: 'drop' },
     { title: 'Long lasting roll on', icon: 'clock' },
     { title: 'Travel friendly', icon: 'box' },
