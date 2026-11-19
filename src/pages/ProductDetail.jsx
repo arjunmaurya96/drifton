@@ -20,7 +20,6 @@ const toc = [
   ['works', 'How does it work'],
   ['details', 'Product details'],
   ['care', 'Care instructions'],
-  ['info', 'Product information'],
 ];
 
 const Block = ({ id, title, children }) => (
@@ -128,7 +127,7 @@ export default function ProductDetail() {
               </span>
               <h1 className="text-[28px] font-bold leading-[1.1] tracking-tight sm:text-[34px]">{product.name}</h1>
               <a href="#product-reviews" className="flex items-center gap-2 text-sm font-medium text-muted-2 hover:text-navy-900">
-                <Stars value={rating} size={18} /> {rating.toFixed(1)} · {reviews.length} sample reviews
+                <Stars value={rating} size={18} /> {rating.toFixed(1)} · {reviews.length} verified reviews
               </a>
             </div>
 
@@ -137,14 +136,6 @@ export default function ProductDetail() {
               {pack.multiplier > 1 ? <s className="text-lg text-[#6B7493]">{formatINR(UNIT_PRICE * pack.multiplier)}</s> : <span className="text-[15px] font-semibold text-muted">+ delivery</span>}
               <span className="w-full text-[13.5px] text-muted-2">{pack.multiplier > 1 ? 'Free delivery on combos' : `Delivery ${formatINR(DELIVERY_FEE)}, free on any 2 roll ons`}</span>
               <span className="w-full text-[12.5px] text-muted-2">Inclusive of all taxes. Discounts and shipping calculated at checkout.</span>
-            </div>
-
-            <div className="flex items-center gap-3 rounded-2xl border border-dashed border-brand bg-mint-soft px-4 py-2.5">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand text-white"><Sparkle size={18} /></span>
-              <span>
-                <b className="block font-head font-semibold text-brand-dark">{offer.title}</b>
-                <small className="text-[13px] text-muted">{offer.note}</small>
-              </span>
             </div>
 
             <p className="text-[15px] leading-relaxed text-muted">{product.description}</p>
@@ -267,8 +258,6 @@ export default function ProductDetail() {
               ))}
             </div>
           </Block>
-
-          <Block id="info" title="Product information"><Table rows={productInfo.legal} /></Block>
         </div>
       </div>
 

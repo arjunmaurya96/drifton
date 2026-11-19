@@ -220,11 +220,9 @@ export const productInfo = {
   ],
   details: [
     ['Colour', 'Clear crystal with botanical tint'],
-    ['Height', '[HEIGHT]'],
-    ['Weight', '[NET WEIGHT]'],
+    ['Weight', '60g'],
     ['Structure', 'Solid crystal roll on with twist base'],
     ['Texture', 'Smooth, glides when wet'],
-    ['Shelf life', '[SHELF LIFE]'],
     ['Special features', 'No white marks, travel friendly'],
   ],
   howToUse: [
@@ -255,13 +253,80 @@ export const productInfo = {
   ],
 };
 
-// SAMPLE reviews for the design — replace with real, verified reviews before launch
+// Verified real Google Reviews from Google Business Profile
 export const sampleReviews = [
-  { rating: 5, title: 'Fresh and light', text: 'Feels very light and fresh. No white marks on my clothes at all.', productId: 'palash' },
-  { rating: 5, title: 'Great for gym days', text: 'I use it before workouts. Quick to apply and easy to carry.', productId: 'charcoal' },
-  { rating: 4, title: 'Lovely smell', text: 'Gentle on skin and the rose note is soft, not overpowering.', productId: 'rose' },
-  { rating: 5, title: 'Good value', text: 'One roll on lasts a long time. Will buy again.', productId: 'natural' },
-  { rating: 4, title: 'Takes a day to get used to', text: 'You have to wet it first, but once you get the habit it works well.', productId: 'palash' },
+  {
+    rating: 5,
+    author: 'Guguloth Ganesh',
+    meta: '1 review · 18 photos · 4 days ago',
+    time: '4 days ago',
+    title: 'Fragrance is mild & very good for skin',
+    text: 'The product is really good. Would surely recommend the charcoal variant the one I bought and using helping me a lot in day to day life. The fragrance is mild and the product is very good for underarm skin. Thanks once again for your recommendation.',
+    productId: 'charcoal',
+  },
+  {
+    rating: 5,
+    author: 'Anshul Singh',
+    meta: '5 reviews · 1 photo · a week ago',
+    time: 'a week ago',
+    title: 'Stays for a long time',
+    text: "Got palash flavourful. That's really good and stays for a long time",
+    productId: 'palash',
+  },
+  {
+    rating: 5,
+    author: 'guguloth ganesh',
+    meta: '1 review · 1 photo · 4 days ago',
+    time: '4 days ago',
+    title: 'Feels very well',
+    text: 'The product is good and feels very well',
+    productId: 'rose',
+  },
+  {
+    rating: 5,
+    author: 'Neera Bhogal',
+    meta: '1 review · a week ago',
+    time: 'a week ago',
+    title: 'Helps in reducing sweat, mild fragrance',
+    text: 'Wow really nice product. I dot the palash underarm rollon thats really good and helping in reducing sweet and fragrance is mild and good',
+    productId: 'palash',
+  },
+  {
+    rating: 5,
+    author: 'Vikram Nagar',
+    meta: '2 reviews · a week ago',
+    time: 'a week ago',
+    title: 'Natural alum is helping a lot',
+    text: 'The natural alum is really good helping me a lot',
+    productId: 'natural',
+  },
+  {
+    rating: 5,
+    author: 'Abhijeet Chaudhary',
+    meta: '5 hours ago',
+    time: '5 hours ago',
+    title: 'Natural Alum is really fantastic',
+    text: 'Natural Alum is really fantastic',
+    productId: 'natural',
+  },
+  {
+    rating: 5,
+    author: 'Sachin Bhalla',
+    meta: '1 photo · 6 hours ago',
+    time: '6 hours ago',
+    title: 'Product & packing arrived on time',
+    text: 'The product and packing is really good and arrived on time. Thank you team for suggesting me to buy natural for daily use',
+    productId: 'natural',
+  },
+  {
+    rating: 5,
+    author: 'Verma Veena',
+    meta: 'a day ago',
+    time: 'a day ago',
+    title: 'Palash flower is really good',
+    text: 'Palash flower is really good',
+    productId: 'palash',
+  },
 ];
 
 export const getProductBySlug = (slug) => products.find((p) => p.slug === slug);
