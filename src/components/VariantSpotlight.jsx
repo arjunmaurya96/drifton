@@ -127,12 +127,12 @@ export default function VariantSpotlight() {
       {/* Desktop Left Words: text-left, anchored from left, Help In directly over Deep */}
       <div
         key={`l-${i}`}
-        className="pointer-events-none absolute left-[3%] top-[26%] z-10 hidden max-w-[34vw] text-left animate-from-left lg:block xl:left-[4.5%]"
+        className="pointer-events-none absolute left-[3%] top-[23%] z-10 hidden max-w-[34vw] text-left animate-from-left lg:block xl:left-[4.5%]"
       >
-        <span className="block font-display text-[clamp(26px,2.6vw,44px)] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.5px_white]">
+        <span className="block font-display text-[clamp(28px,3vw,50px)] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.8px_white]">
           {look.left[0]}
         </span>
-        <span className="block font-display text-[clamp(34px,3.8vw,66px)] leading-[0.93] tracking-wide text-white drop-shadow-[0_6px_32px_rgba(0,0,0,0.65)]">
+        <span className="block font-display text-[clamp(40px,4.5vw,76px)] leading-[0.92] tracking-wide text-white drop-shadow-[0_8px_32px_rgba(0,0,0,0.7)]">
           {look.left[1]}
         </span>
       </div>
@@ -140,14 +140,14 @@ export default function VariantSpotlight() {
       {/* Desktop Right Words: text-right, anchored from right, Helps In directly over Order */}
       <div
         key={`r-${i}`}
-        className="pointer-events-none absolute right-[3%] top-[26%] z-10 hidden max-w-[34vw] text-right animate-from-right lg:block xl:right-[4.5%]"
+        className="pointer-events-none absolute right-[3%] top-[23%] z-10 hidden max-w-[34vw] text-right animate-from-right lg:block xl:right-[4.5%]"
       >
-        <span className="block font-display text-[clamp(26px,2.6vw,44px)] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.5px_white]">
+        <span className="block font-display text-[clamp(28px,3vw,50px)] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.8px_white]">
           {look.right[0]}
         </span>
         <span
-          className="block font-display text-[clamp(34px,3.8vw,66px)] leading-[0.93] tracking-wide"
-          style={{ color: look.accent, textShadow: `0 0 35px ${look.glow}77` }}
+          className="block font-display text-[clamp(40px,4.5vw,76px)] leading-[0.92] tracking-wide"
+          style={{ color: look.accent, textShadow: `0 0 35px ${look.glow}88` }}
         >
           {look.right[1]}
         </span>
@@ -159,7 +159,7 @@ export default function VariantSpotlight() {
           key={`${p.id}-${i}`}
           onClick={() => setI(k)}
           aria-label={`Show ${p.name}`}
-          className={`absolute bottom-[3%] z-[5] h-[34%] animate-fade-up opacity-90 transition hover:opacity-100 md:h-[44%] ${pos}`}
+          className={`absolute bottom-[3%] z-[5] h-[36%] animate-fade-up opacity-90 transition hover:opacity-100 md:h-[48%] lg:h-[50%] ${pos}`}
         >
           <img loading="lazy" decoding="async" src={cutoutOf(p.id)} alt="" className="h-full w-auto object-contain [filter:brightness(.82)_saturate(.9)]" />
         </button>
@@ -170,18 +170,18 @@ export default function VariantSpotlight() {
         key={`${opposite.id}-o-${i}`}
         onClick={() => setI((i + 2) % n)}
         aria-label={`Show ${opposite.name}`}
-        className="absolute bottom-[3%] left-[15%] z-[4] hidden h-[32%] animate-fade-up opacity-80 transition hover:opacity-100 md:block xl:left-[16%]"
+        className="absolute bottom-[3%] left-[15%] z-[4] hidden h-[34%] animate-fade-up opacity-80 transition hover:opacity-100 md:block lg:h-[38%] xl:left-[16%]"
         style={{ animationDelay: '120ms' }}
       >
         <img loading="lazy" decoding="async" src={cutoutOf(opposite.id)} alt="" className="h-full w-auto object-contain [filter:brightness(.7)_saturate(.85)]" />
       </button>
 
-      {/* centre product - elevated z-20 so text never renders on top */}
+      {/* centre product - elevated z-20 so text never renders on top, taller height to close gap to top buttons */}
       <Link
         key={`c-${i}`}
         to={`/product/${center.slug}`}
         aria-label={`View ${center.name}`}
-        className="absolute bottom-[-2%] left-1/2 z-20 h-[60%] -translate-x-1/2 md:h-[76%]"
+        className="absolute bottom-[-3%] left-1/2 z-20 h-[68%] -translate-x-1/2 md:bottom-[-2%] md:h-[84%] lg:h-[87%] xl:h-[89%]"
       >
         <span aria-hidden="true" className="absolute inset-x-[-30%] bottom-0 h-1/2 rounded-full blur-3xl" style={{ background: look.glow, opacity: 0.35 }} />
         <img loading="lazy" decoding="async" src={cutoutOf(center.id)} alt={center.name} className="relative z-20 h-full w-auto animate-pop object-contain" />
