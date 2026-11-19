@@ -18,13 +18,21 @@ const steps = [
 
 export default function HowToUse() {
   return (
-    <section id="how" aria-labelledby="how-title" className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#F4F7FC_100%)] pb-16 sm:pb-20">
-      <div className="container-x flex flex-col items-center gap-3 py-12 text-center sm:py-14">
-        <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3 py-1.5 text-[12.5px] font-semibold text-navy-900 shadow-sm">
-          <span className="size-2 rounded-full bg-brand" /> 4 simple steps
-        </span>
-        <h2 id="how-title" className="font-serif text-[44px] leading-none text-navy-900 sm:text-[60px]">How to <span className="text-brand">use</span></h2>
-        <p className="max-w-[460px] text-[15px] text-muted sm:text-[16px]">Just like it says on the pack — fresh all day in under 10 seconds.</p>
+    <section id="how" aria-labelledby="how-title" className="relative overflow-hidden bg-[linear-gradient(180deg,#FFFFFF_0%,#F4F7FC_100%)] pt-8 pb-10 sm:pt-10 sm:pb-14">
+      <div className="container-x mb-5 flex flex-col items-center text-center sm:mb-7">
+        <h2 id="how-title" className="font-head text-[34px] font-extrabold tracking-tight text-navy-900 sm:text-[42px] xl:text-[48px]">
+          How to{' '}
+          <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
+            Use.
+            <span
+              aria-hidden="true"
+              className="absolute bottom-0 left-0 h-[3.5px] w-full rounded-full bg-gradient-to-r from-brand via-mint to-transparent"
+            />
+          </span>
+        </h2>
+        <p className="mt-2 max-w-3xl text-center text-sm font-medium text-muted sm:text-[15.5px]">
+          Just like it says on the pack — fresh all day in under 10 seconds.
+        </p>
       </div>
 
       {/* mobile: swipe cards · tablet: 2 per row · desktop: all 4 in one row */}
