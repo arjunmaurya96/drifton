@@ -83,50 +83,62 @@ export default function ProductDetail() {
           </div>
 
           {/* Right Column: In front of product ("product ke samne") */}
-          <div className="flex flex-col gap-5 rounded-[28px] border border-line bg-white p-6 shadow-[0_24px_60px_-44px_rgba(15,26,60,.4)] sm:p-7">
+          <div className="flex flex-col gap-5 rounded-[28px] border border-line/90 bg-white p-6 shadow-[0_20px_50px_-25px_rgba(15,26,60,0.12)] sm:p-7.5">
             {/* Title & Reviews */}
             <div className="flex flex-col gap-2">
-              <h1 className="text-[28px] font-extrabold leading-[1.12] tracking-tight text-navy-900 sm:text-[34px]">
+              <h1 className="text-[28px] font-extrabold leading-[1.14] tracking-tight text-navy-900 sm:text-[34px]">
                 {product.name.replace(/^DriftOn[™®]?\s*/i, '')}
               </h1>
               <div className="flex items-center gap-2 text-sm font-medium text-muted-2">
                 <Stars value={rating} size={17} />
-                <span>{rating.toFixed(1)} · {reviews.length} verified reviews</span>
+                <span className="font-semibold text-navy-900">{rating.toFixed(1)}</span>
+                <span className="text-slate-300">·</span>
+                {/* <span className="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md text-[12px] font-semibold">
+                  <CheckCircle size={13} className="text-brand" />
+                  {reviews.length} Verified Reviews
+                </span> */}
               </div>
             </div>
 
-            {/* Pricing Box */}
-            <div className="flex flex-col gap-1 rounded-2xl border border-line bg-page px-4.5 py-3.5">
-              <div className="flex items-baseline gap-3">
-                <b className="font-head text-[34px] font-extrabold text-navy-900">{formatINR(unit)}</b>
-                <span className="text-[14px] font-semibold text-muted">+ delivery</span>
+            {/* Pricing Box - Clean & Professional without any delivery charges */}
+            <div className="flex items-center justify-between rounded-2xl border border-line bg-page/70 px-5 py-4">
+              <div className="flex flex-col">
+                <b className="font-head text-[34px] font-extrabold leading-none tracking-tight text-navy-900">
+                  {formatINR(unit)}
+                </b>
+                <span className="mt-1.5 text-[12px] font-medium text-muted-2">
+                  Inclusive of all taxes
+                </span>
               </div>
-              <span className="text-[12px] text-muted-2">
-                Inclusive of all taxes.
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50/90 px-3 py-1.5 text-[12px] font-bold text-brand">
+                <span className="size-2 rounded-full bg-brand animate-pulse" />
+                In Stock · Ready to Ship
               </span>
             </div>
 
             {/* Variant Selector */}
             <div>
-              <span className="mb-2 block text-sm font-bold text-navy-900">
-                Variant: <span className="font-semibold text-brand">{product.short}</span>
-              </span>
+              <div className="mb-2.5 flex items-center justify-between">
+                <span className="text-sm font-bold text-navy-900">
+                  Select Variant: <span className="font-semibold text-brand">{product.short}</span>
+                </span>
+              </div>
               <div className="grid grid-cols-4 gap-2 sm:gap-2.5">
                 {products.filter((p) => !p.hidden).map((p) => (
                   <Link
                     key={p.id}
                     to={`/product/${p.slug}`}
                     aria-current={p.id === product.id}
-                    className={`flex flex-col overflow-hidden rounded-2xl border-[1.5px] bg-white text-center transition ${
+                    className={`group relative flex flex-col overflow-hidden rounded-2xl border-[1.5px] bg-white text-center transition-all duration-200 ${
                       p.id === product.id
-                        ? 'border-brand ring-2 ring-brand/20 shadow-sm'
-                        : 'border-line hover:border-navy-700'
+                        ? 'border-brand ring-2 ring-brand/20 shadow-md scale-[1.02]'
+                        : 'border-line hover:border-navy-700 hover:shadow-sm'
                     }`}
                   >
                     <span className="block aspect-[4/3] w-full overflow-hidden" style={{ background: p.bg }}>
-                      <img src={p.card || p.image} alt="" className="h-full w-full object-cover" />
+                      <img src={p.card || p.image} alt="" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
                     </span>
-                    <span className={`py-1.5 text-[12.5px] font-bold ${p.id === product.id ? 'bg-navy-900 text-white' : 'text-navy-900'}`}>
+                    <span className={`py-1.5 text-[12px] sm:text-[12.5px] font-bold transition ${p.id === product.id ? 'bg-navy-900 text-white' : 'text-navy-900 group-hover:text-brand'}`}>
                       {p.short}
                     </span>
                   </Link>
@@ -135,7 +147,7 @@ export default function ProductDetail() {
             </div>
 
             {/* Product Specifications: ONLY Colour, Weight & Structure */}
-            <div className="grid grid-cols-3 gap-2 rounded-2xl border border-line bg-page p-3.5 text-center">
+            <div className="grid grid-cols-3 gap-2 rounded-2xl border border-line bg-page/60 p-3.5 text-center shadow-inner">
               <div className="flex flex-col gap-0.5">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-muted-2">Colour</span>
                 <b className="text-[13px] font-bold text-navy-900 sm:text-[14px]">
@@ -152,28 +164,28 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            {/* Action Buttons: ONLY Add to Cart & Buy Now (No Increment Stepper, No Pack Size) */}
-            <div id="main-buy" className="flex flex-col sm:flex-row gap-3 pt-2">
+            {/* Action Buttons: ONLY Add to Cart & Buy Now */}
+            <div id="main-buy" className="flex flex-col sm:flex-row gap-3 pt-1">
               <button
-                className="btn-navy min-h-[52px] flex-1 text-[15.5px] font-bold shadow-sm transition hover:bg-navy-900"
+                className="btn-navy min-h-[52px] flex-1 text-[15.5px] font-bold shadow-sm transition hover:bg-navy-900 active:scale-[0.99]"
                 onClick={add}
               >
                 Add to cart · {formatINR(unit)}
                 {inCart > 0 && <span className="ml-1.5 text-xs font-normal text-mint">({inCart} in cart)</span>}
               </button>
               <button
-                className="btn-primary min-h-[52px] flex-1 text-[15.5px] font-bold shadow-md transition hover:bg-brand-dark"
+                className="min-h-[52px] flex-1 rounded-xl bg-gradient-to-r from-brand via-brand to-brand-dark px-5 text-[15.5px] font-bold text-white shadow-lg shadow-brand/20 transition-all hover:brightness-105 active:scale-[0.99]"
                 onClick={buy}
               >
                 Buy now
               </button>
             </div>
 
-            {/* Trust Highlights */}
+            {/* Trust Highlights - Zero delivery charge mentions */}
             <div className="grid grid-cols-3 gap-2 border-t border-line pt-3.5 text-center text-xs text-muted-2">
               <span className="flex flex-col sm:flex-row items-center justify-center gap-1.5 font-medium">
                 <Truck size={17} className="text-brand" />
-                <span>Free on 2+ units</span>
+                <span>Express Shipping</span>
               </span>
               <span className="flex flex-col sm:flex-row items-center justify-center gap-1.5 font-medium">
                 <Shield size={17} className="text-brand" />
