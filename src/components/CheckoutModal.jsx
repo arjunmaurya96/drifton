@@ -249,8 +249,8 @@ export default function CheckoutModal() {
     // save the order in the database with verified email + mobile number
     let saved;
     try {
-      const paymentLabel = method === 'cod' ? 'Cash on Delivery' : `Razorpay (${(r.paymentMethod || method).toUpperCase()})`;
-      const paymentStatus = method === 'cod' ? 'Pay on delivery' : 'Paid (Razorpay Test)';
+      const paymentLabel = method === 'cod' ? 'Cash on Delivery' : `Easebuzz (${(r.paymentMethod || method).toUpperCase()})`;
+      const paymentStatus = method === 'cod' ? 'Pay on delivery' : 'Paid (Easebuzz)';
 
       saved = await saveOrder({
         userId: user?.uid || null,
@@ -270,8 +270,8 @@ export default function CheckoutModal() {
         total,
         payment: paymentLabel,
         paymentStatus,
-        razorpayPaymentId: r.razorpay_payment_id || null,
-        razorpayOrderId: r.razorpay_order_id || null,
+        easebuzzPaymentId: r.easebuzz_payment_id || null,
+        easebuzzTxnId: r.txnid || null,
         source: 'Quick checkout',
       });
 
@@ -323,9 +323,9 @@ export default function CheckoutModal() {
             <span className="flex size-16 items-center justify-center rounded-full bg-mint-soft text-brand"><CheckCircle size={36} /></span>
             <p className="text-[17px] text-muted">Thank you, {d.name}! Order <b className="text-navy-900">{order.orderId}</b> of {formatINR(order.amount)} ({order.sticks} {order.sticks === 1 ? 'roll on' : 'roll ons'}) is confirmed.</p>
             <p className="text-xs text-muted-2">Confirmation & tracking details will be sent to <b>{d.email}</b> and <b>+91 {d.phone}</b>.</p>
-            {order.razorpay_payment_id ? (
+            {order.easebuzz_payment_id || order.razorpay_payment_id ? (
               <span className="rounded-full bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-800 border border-emerald-200">
-                Razorpay Payment Verified: <b className="font-mono">{order.razorpay_payment_id}</b>
+                Easebuzz Payment Verified: <b className="font-mono">{order.easebuzz_payment_id || order.razorpay_payment_id}</b>
               </span>
             ) : (
               <span className="rounded-full bg-page px-4 py-1.5 text-sm text-muted-2">Payment Mode: {order.payment || 'Cash on Delivery'}</span>

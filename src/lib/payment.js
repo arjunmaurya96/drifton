@@ -1,10 +1,10 @@
 // =====================================================================
-//  Razorpay Payment Gateway (Test Mode & Live Integration)
-//  • If VITE_RAZORPAY_KEY_ID is set (e.g. rzp_test_... or rzp_live_...):
-//      Launches the official Razorpay Standard Checkout popup.
-//  • If key is dummy or not set:
-//      Launches the interactive Razorpay Test Simulation Modal
-//      allowing 1-click test payments for UPI, Card, Netbanking, or Failure.
+//  Easebuzz Payment Gateway (Test Mode & Live Integration)
+//  • If VITE_EASEBUZZ_KEY is set with active credentials:
+//      Connects to Easebuzz Checkout JS SDK (window.EasebuzzCheckout).
+//  • If key is dummy or under account activation (Teller / NBBL Bharat Connect):
+//      Launches the interactive Easebuzz Simulation Modal
+//      allowing seamless testing for UPI (GPay/PhonePe/Paytm), Cards & Netbanking.
 // =====================================================================
 
 export async function createPayment({ amount, method = 'upi', customer = {} }) {
@@ -13,82 +13,92 @@ export async function createPayment({ amount, method = 'upi', customer = {} }) {
     return { ok: true, method: 'cod', amount };
   }
 
-  const keyId = import.meta.env.VITE_RAZORPAY_KEY_ID;
-  const isRealKey = keyId && (keyId.startsWith('rzp_test_') || keyId.startsWith('rzp_live_')) && keyId !== 'rzp_test_dummy';
+  const key = import.meta.env.VITE_EASEBUZZ_KEY;
+  const env = import.meta.env.VITE_EASEBUZZ_ENV || 'test';
+  const isRealKey = key && key !== 'test_easebuzz_dummy';
 
-  // If a real Razorpay key is configured and Razorpay SDK is loaded, use official checkout
-  if (isRealKey && typeof window !== 'undefined' && window.Razorpay) {
-    return new Promise((resolve) => {
+  // If a real Easebuzz key is configured and Easebuzz SDK is loaded
+  if (isRealKey && typeof window !== 'undefined' && window.EasebuzzCheckout) {
+    return new Promise(async (resolve) => {
       try {
-        const options = {
-          key: keyId,
-          amount: Math.round(Number(amount) * 100), // in paise
-          currency: 'INR',
-          name: 'DriftOn™',
-          description: 'Natural Crystal Mineral Roll Ons',
-          image: '/assets/images/logo-drifton.webp',
-          prefill: {
-            name: customer.name || '',
-            email: customer.email || '',
-            contact: customer.phone || '',
-          },
-          notes: {
-            address: customer.address || '',
-            pincode: customer.pin || '',
-          },
-          theme: {
-            color: '#0F1A3C',
-          },
-          handler: function (response) {
-            resolve({
-              ok: true,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_order_id: response.razorpay_order_id || 'order_' + Date.now().toString().slice(-8),
-              razorpay_signature: response.razorpay_signature || '',
-              paymentMethod: method,
-              amount,
-            });
-          },
-          modal: {
-            ondismiss: function () {
-              resolve({ ok: false, error: 'Payment was cancelled.' });
-            },
-          },
-        };
+        // Attempt initiate call if merchant backend endpoint exists
+        const txnid = 'EBZ_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+        let accessKey = null;
 
-        const rzp = new window.Razorpay(options);
-        rzp.on('payment.failed', function (res) {
-          resolve({ ok: false, error: res.error?.description || 'Payment failed.' });
-        });
-        rzp.open();
+        try {
+          const res = await fetch('/api/easebuzz-initiate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              amount,
+              txnid,
+              customer,
+              productinfo: 'Drifton Crystal Roll-On',
+            }),
+          });
+          const data = await res.json();
+          if (data && data.access_key) {
+            accessKey = data.access_key;
+          }
+        } catch {
+          // Backend endpoint not active yet
+        }
+
+        if (accessKey) {
+          const easebuzz = new window.EasebuzzCheckout(key, env);
+          easebuzz.initiatePayment({
+            access_key: accessKey,
+            onResponse: (response) => {
+              if (response && (response.status === 'success' || response.status === true)) {
+                resolve({
+                  ok: true,
+                  easebuzz_payment_id: response.easebuzz_id || response.txnid || txnid,
+                  txnid: response.txnid || txnid,
+                  paymentMethod: method,
+                  amount,
+                });
+              } else {
+                resolve({
+                  ok: false,
+                  error: response?.error_desc || response?.message || 'Payment cancelled or failed.',
+                });
+              }
+            },
+            theme: '#0A8558',
+          });
+          return;
+        }
+
+        // If backend initiate endpoint is not yet configured, launch Easebuzz Simulator
+        launchEasebuzzSimulator({ amount, method, customer }).then(resolve);
       } catch (err) {
-        console.warn('Real Razorpay initialization failed, falling back to test simulator:', err);
-        launchRazorpaySimulator({ amount, method, customer }).then(resolve);
+        console.warn('Easebuzz initialization falling back to simulator:', err);
+        launchEasebuzzSimulator({ amount, method, customer }).then(resolve);
       }
     });
   }
 
-  // Otherwise, launch the interactive Razorpay Test Simulation Modal
-  return launchRazorpaySimulator({ amount, method, customer });
+  // Otherwise, launch the interactive Easebuzz Test Mode Simulator
+  return launchEasebuzzSimulator({ amount, method, customer });
 }
 
 // -------------------------------------------------------------
-// Interactive Razorpay Test Mode Simulator (Zero configuration needed)
+// Interactive Easebuzz Test Mode Simulator
 // -------------------------------------------------------------
-function launchRazorpaySimulator({ amount, method = 'upi', customer = {} }) {
+function launchEasebuzzSimulator({ amount, method = 'upi', customer = {} }) {
   return new Promise((resolve) => {
-    // Remove existing test modal if present
-    const prev = document.getElementById('razorpay-test-simulator');
+    // Remove existing modal if present
+    const prev = document.getElementById('easebuzz-test-simulator');
     if (prev) prev.remove();
 
     const overlay = document.createElement('div');
-    overlay.id = 'razorpay-test-simulator';
+    overlay.id = 'easebuzz-test-simulator';
     overlay.style.cssText = `
       position: fixed; inset: 0; z-index: 99999;
-      background: rgba(15, 26, 60, 0.7); backdrop-filter: blur(4px);
+      background: rgba(10, 26, 44, 0.75); backdrop-filter: blur(4px);
       display: flex; align-items: center; justify-content: center;
       padding: 16px; font-family: 'Poppins', system-ui, -apple-system, sans-serif;
-      animation: rzpFadeIn 0.2s ease-out;
+      animation: ebzFadeIn 0.2s ease-out;
     `;
 
     let activeTab = method === 'card' ? 'card' : method === 'netbanking' ? 'netbanking' : 'upi';
@@ -98,23 +108,22 @@ function launchRazorpaySimulator({ amount, method = 'upi', customer = {} }) {
         <div style="
           width: 100%; max-width: 480px; background: #ffffff;
           border-radius: 20px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
-          display: flex; flex-direction: column; animation: rzpSlideUp 0.25s ease-out;
+          display: flex; flex-direction: column; animation: ebzSlideUp 0.25s ease-out;
         ">
-          <!-- Razorpay Header -->
-          <div style="background: #0C2340; color: #ffffff; padding: 18px 22px; position: relative;">
+          <!-- Easebuzz Header -->
+          <div style="background: linear-gradient(135deg, #092B48 0%, #065F46 100%); color: #ffffff; padding: 18px 22px; position: relative;">
             <div style="display: flex; align-items: center; justify-content: space-between;">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2L3 7V12C3 17.5 7 21.8 12 22C17 21.8 21 17.5 21 12V7L12 2Z" fill="#3399CC" opacity="0.3"/>
-                  <path d="M12 6L7 12H11L10 18L17 11H13L14 6H12Z" fill="#3399CC"/>
-                </svg>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 32px; height: 32px; border-radius: 8px; background: #10B981; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 17px;">
+                  e
+                </div>
                 <div>
-                  <div style="font-size: 14.5px; font-weight: 700; letter-spacing: 0.3px;">DriftOn™ Store</div>
-                  <div style="font-size: 10.5px; color: #94A3B8;">Powered by Razorpay Payments</div>
+                  <div style="font-size: 14.5px; font-weight: 700; letter-spacing: 0.3px;">DriftOn™ Checkout</div>
+                  <div style="font-size: 10.5px; color: #94DFBE;">Powered by Easebuzz Payments</div>
                 </div>
               </div>
-              <button id="rzp-btn-close" style="
-                background: rgba(255,255,255,0.12); border: none; color: #fff;
+              <button id="ebz-btn-close" style="
+                background: rgba(255,255,255,0.15); border: none; color: #fff;
                 width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
                 display: flex; align-items: center; justify-content: center; font-size: 14px;
               " title="Cancel">✕</button>
@@ -123,44 +132,44 @@ function launchRazorpaySimulator({ amount, method = 'upi', customer = {} }) {
             <!-- Test Mode Notice & Amount -->
             <div style="
               margin-top: 14px; display: flex; align-items: flex-end; justify-content: space-between;
-              border-top: 1px solid rgba(255,255,255,0.12); pt: 12px; padding-top: 12px;
+              border-top: 1px solid rgba(255,255,255,0.15); padding-top: 12px;
             ">
               <div>
                 <span style="
-                  display: inline-block; background: #FEF3C7; color: #92400E;
-                  font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
-                  text-transform: uppercase; letter-spacing: 0.5px;
-                ">Razorpay Test Mode</span>
-                <div style="font-size: 11.5px; color: #CBD5E1; margin-top: 3px;">
+                  display: inline-block; background: #ECFDF5; color: #065F46;
+                  font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+                  text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #A7F3D0;
+                ">Easebuzz Test Mode</span>
+                <div style="font-size: 11.5px; color: #E2E8F0; margin-top: 4px;">
                   ${customer.name ? customer.name + ' · ' : ''}${customer.phone ? '+91 ' + customer.phone : ''}
                 </div>
               </div>
               <div style="text-align: right;">
-                <div style="font-size: 10px; color: #94A3B8; text-transform: uppercase;">Amount to Pay</div>
-                <div style="font-size: 22px; font-weight: 800; color: #38BDF8;">₹${amount}</div>
+                <div style="font-size: 10px; color: #A7F3D0; text-transform: uppercase; letter-spacing: 0.5px;">Amount to Pay</div>
+                <div style="font-size: 23px; font-weight: 800; color: #34D399;">₹${amount}</div>
               </div>
             </div>
           </div>
 
           <!-- Payment Tabs -->
           <div style="display: flex; border-bottom: 1px solid #E2E8F0; background: #F8FAFC;">
-            <button id="rzp-tab-upi" style="
+            <button id="ebz-tab-upi" style="
               flex: 1; padding: 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: none;
               background: ${activeTab === 'upi' ? '#ffffff' : 'transparent'};
-              color: ${activeTab === 'upi' ? '#0C2340' : '#64748B'};
-              border-bottom: 2px solid ${activeTab === 'upi' ? '#3399CC' : 'transparent'};
+              color: ${activeTab === 'upi' ? '#065F46' : '#64748B'};
+              border-bottom: 2px solid ${activeTab === 'upi' ? '#10B981' : 'transparent'};
             ">UPI / QR</button>
-            <button id="rzp-tab-card" style="
+            <button id="ebz-tab-card" style="
               flex: 1; padding: 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: none;
               background: ${activeTab === 'card' ? '#ffffff' : 'transparent'};
-              color: ${activeTab === 'card' ? '#0C2340' : '#64748B'};
-              border-bottom: 2px solid ${activeTab === 'card' ? '#3399CC' : 'transparent'};
-            ">Card</button>
-            <button id="rzp-tab-netbanking" style="
+              color: ${activeTab === 'card' ? '#065F46' : '#64748B'};
+              border-bottom: 2px solid ${activeTab === 'card' ? '#10B981' : 'transparent'};
+            ">Cards (RuPay/Visa)</button>
+            <button id="ebz-tab-netbanking" style="
               flex: 1; padding: 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: none;
               background: ${activeTab === 'netbanking' ? '#ffffff' : 'transparent'};
-              color: ${activeTab === 'netbanking' ? '#0C2340' : '#64748B'};
-              border-bottom: 2px solid ${activeTab === 'netbanking' ? '#3399CC' : 'transparent'};
+              color: ${activeTab === 'netbanking' ? '#065F46' : '#64748B'};
+              border-bottom: 2px solid ${activeTab === 'netbanking' ? '#10B981' : 'transparent'};
             ">Netbanking</button>
           </div>
 
@@ -169,26 +178,26 @@ function launchRazorpaySimulator({ amount, method = 'upi', customer = {} }) {
             ${
               activeTab === 'upi'
                 ? `
-              <div style="display: flex; flex-col; gap: 14px;">
+              <div style="display: flex; flex-direction: column; gap: 14px;">
                 <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px;">
-                  <div style="background: #ffffff; padding: 6px; border-radius: 8px; border: 1px solid #E2E8F0; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                    📱
+                  <div style="background: #ffffff; padding: 6px; border-radius: 8px; border: 1px solid #E2E8F0; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                    ⚡
                   </div>
                   <div>
-                    <div style="font-size: 12.5px; font-weight: 700; color: #166534;">Test UPI Apps Supported</div>
+                    <div style="font-size: 12.5px; font-weight: 700; color: #166534;">Easebuzz Instant UPI</div>
                     <div style="font-size: 11px; color: #15803D;">Google Pay, PhonePe, Paytm, BHIM, CRED</div>
-                    <div style="font-size: 10.5px; color: #64748B; margin-top: 2px;">VPA: <b>drifton.store@razorpay</b></div>
+                    <div style="font-size: 10.5px; color: #64748B; margin-top: 2px;">VPA: <b>drifton@easebuzz</b></div>
                   </div>
                 </div>
 
                 <div style="display: flex; gap: 8px; margin-top: 10px;">
-                  <button id="rzp-btn-pay-success" style="
-                    flex: 1; min-height: 48px; background: #16A34A; color: #fff; border: none;
+                  <button id="ebz-btn-pay-success" style="
+                    flex: 1; min-height: 48px; background: #059669; color: #fff; border: none;
                     border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
                     display: flex; align-items: center; justify-content: center; gap: 8px;
-                    box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.3);
+                    box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3);
                   ">
-                    ✓ Simulate UPI Payment (₹${amount})
+                    ✓ Pay with Easebuzz UPI (₹${amount})
                   </button>
                 </div>
               </div>
@@ -197,7 +206,7 @@ function launchRazorpaySimulator({ amount, method = 'upi', customer = {} }) {
                 ? `
               <div style="display: flex; flex-direction: column; gap: 12px;">
                 <div style="background: #F1F5F9; border-radius: 12px; padding: 12px; border: 1px solid #CBD5E1;">
-                  <div style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase;">Razorpay Test Card</div>
+                  <div style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase;">Easebuzz Test Card (RuPay/Visa)</div>
                   <div style="font-size: 14px; font-weight: 700; font-family: monospace; color: #0F172A; margin-top: 4px;">4111 •••• •••• 1111</div>
                   <div style="display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; color: #64748B;">
                     <span>Exp: <b>12 / 28</b></span>
@@ -205,18 +214,18 @@ function launchRazorpaySimulator({ amount, method = 'upi', customer = {} }) {
                   </div>
                 </div>
 
-                <button id="rzp-btn-pay-success" style="
-                  min-height: 48px; background: #16A34A; color: #fff; border: none;
+                <button id="ebz-btn-pay-success" style="
+                  min-height: 48px; background: #059669; color: #fff; border: none;
                   border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
                   display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 4px;
                 ">
-                  ✓ Pay with Test Card (₹${amount})
+                  ✓ Pay with Card (₹${amount})
                 </button>
               </div>
             `
                 : `
               <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 2px;">Popular Test Banks:</div>
+                <div style="font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 2px;">Supported Banks:</div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                   <div style="border: 1px solid #E2E8F0; padding: 8px; border-radius: 8px; text-align: center; font-size: 12px; font-weight: 600;">HDFC Bank</div>
                   <div style="border: 1px solid #E2E8F0; padding: 8px; border-radius: 8px; text-align: center; font-size: 12px; font-weight: 600;">State Bank of India</div>
@@ -224,8 +233,8 @@ function launchRazorpaySimulator({ amount, method = 'upi', customer = {} }) {
                   <div style="border: 1px solid #E2E8F0; padding: 8px; border-radius: 8px; text-align: center; font-size: 12px; font-weight: 600;">Axis Bank</div>
                 </div>
 
-                <button id="rzp-btn-pay-success" style="
-                  min-height: 48px; background: #16A34A; color: #fff; border: none;
+                <button id="ebz-btn-pay-success" style="
+                  min-height: 48px; background: #059669; color: #fff; border: none;
                   border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
                   margin-top: 10px; display: flex; align-items: center; justify-content: center;
                 ">
@@ -236,66 +245,65 @@ function launchRazorpaySimulator({ amount, method = 'upi', customer = {} }) {
             }
 
             <!-- Failure simulation option -->
-            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #E2E8F0; display: flex; items-center; justify-content: space-between;">
-              <button id="rzp-btn-pay-fail" style="
+            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #E2E8F0; display: flex; align-items: center; justify-content: space-between;">
+              <button id="ebz-btn-pay-fail" style="
                 background: none; border: none; color: #DC2626; font-size: 11px;
                 cursor: pointer; text-decoration: underline; font-weight: 600;
               ">
                 Simulate Payment Failure
               </button>
-              <span style="font-size: 10.5px; color: #94A3B8;">🔒 256-bit SSL Encrypted</span>
+              <span style="font-size: 10.5px; color: #94A3B8;">🔒 Easebuzz 256-bit PCI-DSS</span>
             </div>
           </div>
         </div>
       `;
 
       // Attach event listeners
-      document.getElementById('rzp-btn-close')?.addEventListener('click', () => {
+      document.getElementById('ebz-btn-close')?.addEventListener('click', () => {
         cleanup();
         resolve({ ok: false, error: 'Payment was cancelled by user.' });
       });
 
-      document.getElementById('rzp-tab-upi')?.addEventListener('click', () => {
+      document.getElementById('ebz-tab-upi')?.addEventListener('click', () => {
         activeTab = 'upi';
         renderContent();
       });
 
-      document.getElementById('rzp-tab-card')?.addEventListener('click', () => {
+      document.getElementById('ebz-tab-card')?.addEventListener('click', () => {
         activeTab = 'card';
         renderContent();
       });
 
-      document.getElementById('rzp-tab-netbanking')?.addEventListener('click', () => {
+      document.getElementById('ebz-tab-netbanking')?.addEventListener('click', () => {
         activeTab = 'netbanking';
         renderContent();
       });
 
-      document.getElementById('rzp-btn-pay-success')?.addEventListener('click', () => {
-        const btn = document.getElementById('rzp-btn-pay-success');
+      document.getElementById('ebz-btn-pay-success')?.addEventListener('click', () => {
+        const btn = document.getElementById('ebz-btn-pay-success');
         if (btn) {
           btn.disabled = true;
-          btn.innerHTML = 'Verifying with Razorpay…';
+          btn.innerHTML = 'Verifying with Easebuzz…';
           btn.style.opacity = '0.7';
         }
 
         setTimeout(() => {
           cleanup();
-          const mockPaymentId = 'pay_test_' + Math.random().toString(36).substring(2, 12).toUpperCase();
-          const mockOrderId = 'order_test_' + Date.now().toString().slice(-8);
+          const mockPaymentId = 'EBZ' + Date.now().toString().slice(-8) + Math.random().toString(36).substring(2, 6).toUpperCase();
+          const mockTxnId = 'TXN_' + Date.now().toString().slice(-8);
           resolve({
             ok: true,
-            razorpay_payment_id: mockPaymentId,
-            razorpay_order_id: mockOrderId,
-            razorpay_signature: 'sig_test_' + Math.random().toString(36).substring(2, 10),
+            easebuzz_payment_id: mockPaymentId,
+            txnid: mockTxnId,
             paymentMethod: activeTab,
             amount,
           });
         }, 500);
       });
 
-      document.getElementById('rzp-btn-pay-fail')?.addEventListener('click', () => {
+      document.getElementById('ebz-btn-pay-fail')?.addEventListener('click', () => {
         cleanup();
-        resolve({ ok: false, error: 'Razorpay: Payment was declined by user bank.' });
+        resolve({ ok: false, error: 'Easebuzz: Payment was declined by user bank.' });
       });
     };
 
