@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { formatINR } from '../../data/products.js';
-import { QtyStepper } from '../CartDrawer.jsx';
 import { Stars } from '../Reviews.jsx';
 
 /** Bottom bar that slides in once the main "Add to cart" button scrolls out of view. */
-export default function StickyBuyBar({ product, rating, price, qty, setQty, onAdd, onBuy, watchId }) {
+export default function StickyBuyBar({ product, rating, price, onAdd, onBuy, watchId }) {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -26,10 +25,9 @@ export default function StickyBuyBar({ product, rating, price, qty, setQty, onAd
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <span className="hidden md:block"><QtyStepper value={qty} onChange={(q) => setQty(Math.max(1, q))} size="sm" /></span>
           <b className="hidden font-head text-xl sm:block">{formatINR(price)}</b>
-          <button className="btn-line min-h-11 px-4" onClick={onAdd}>Add to cart</button>
-          <button className="btn-primary min-h-11 px-5" onClick={onBuy}>Buy now</button>
+          <button className="btn-line min-h-11 px-4 text-sm font-semibold" onClick={onAdd}>Add to cart</button>
+          <button className="btn-primary min-h-11 px-5 text-sm font-semibold" onClick={onBuy}>Buy now</button>
         </div>
       </div>
     </div>

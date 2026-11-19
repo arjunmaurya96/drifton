@@ -1,14 +1,23 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { products, packs, sampleReviews, getProductBySlug, formatINR, makeLine, UNIT_PRICE, DELIVERY_FEE } from '../data/products.js';
+import { products, packs, productInfo, sampleReviews, getProductBySlug, formatINR, makeLine, UNIT_PRICE } from '../data/products.js';
 import { useStore } from '../context/StoreContext.jsx';
 import ProductCard from '../components/ProductCard.jsx';
+import ProductMarquee from '../components/ProductMarquee.jsx';
 import ProductGallery from '../components/product/ProductGallery.jsx';
-import ReviewsBlock from '../components/product/ReviewsBlock.jsx';
 import StickyBuyBar from '../components/product/StickyBuyBar.jsx';
 import { Stars } from '../components/Reviews.jsx';
 import NotFound from './NotFound.jsx';
-import { Truck, Shield, Return } from '../components/Icons.jsx';
+import { Truck, Shield, Return, Gem, CheckCircle, Drop, Clock, Box, Leaf } from '../components/Icons.jsx';
+
+const loveIcons = {
+  gem: () => <Gem size={30} />,
+  check: () => <CheckCircle size={28} />,
+  drop: () => <Drop size={28} />,
+  clock: () => <Clock size={28} />,
+  box: () => <Box size={28} />,
+  leaf: () => <Leaf size={28} />,
+};
 
 const variantColors = {
   palash: 'Botanical Orange',
@@ -23,7 +32,6 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const { addToCart, cart, openBuy } = useStore();
 
-  const [qty] = useState(1);
   const defaultPack = packs[0];
 
   useEffect(() => {
@@ -69,17 +77,29 @@ export default function ProductDetail() {
 
         {/* Main Product Hero Grid */}
         <div className="grid grid-cols-1 items-start gap-8 pb-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,.9fr)] lg:gap-10 xl:gap-12">
-          {/* Left Column: Product Gallery & Disclaimer */}
+          {/* Left Column: Big Product Image Gallery + Illustration Disclaimer + Description */}
           <div className="flex flex-col">
             <ProductGallery key={product.id} media={media} name={product.name} badge={product.badge} bg={product.bg} />
-            <p className="mt-3.5 px-2 text-center text-[12.5px] font-medium leading-relaxed text-muted-2 sm:text-[13px]">
+            
+            {/* Disclaimer text right below big image */}
+            <p className="mt-3 px-2 text-center text-[12.5px] font-medium leading-relaxed text-muted-2 sm:text-[13px]">
               Images are for illustration. Actual product may vary slightly in colour, design or packaging.
             </p>
+
+            {/* Description Card right below illustration text */}
+            <div className="mt-5 rounded-2xl border border-line bg-page/70 p-5 shadow-sm">
+              <h3 className="mb-2 font-head text-[15px] font-bold uppercase tracking-wider text-navy-900">
+                Description
+              </h3>
+              <p className="text-[14.5px] leading-relaxed text-muted">
+                {product.description} DriftOn is a 100% natural alum crystal roll on designed for 24-hr odor defense with 0% alcohol, no aluminum chlorohydrate, and leaves no white marks.
+              </p>
+            </div>
           </div>
 
-          {/* Right Column: Front Product Information & Buy Box */}
+          {/* Right Column: In front of product ("product ke samne") */}
           <div className="flex flex-col gap-5 rounded-[28px] border border-line bg-white p-6 shadow-[0_24px_60px_-44px_rgba(15,26,60,.4)] sm:p-7">
-            {/* Tag, Title & Reviews */}
+            {/* Category Tag, Title & Reviews */}
             <div className="flex flex-col gap-2">
               <span className="inline-flex w-fit items-center gap-2 rounded-full px-3 py-1 text-[12px] font-bold uppercase tracking-widest" style={{ color: product.accent, background: product.bg }}>
                 <span className="size-1.5 rounded-full" style={{ background: product.accent }} />
@@ -88,14 +108,14 @@ export default function ProductDetail() {
               <h1 className="text-[28px] font-extrabold leading-[1.12] tracking-tight text-navy-900 sm:text-[34px]">
                 {product.name}
               </h1>
-              <a href="#product-reviews" className="flex items-center gap-2 text-sm font-medium text-muted-2 hover:text-navy-900">
+              <div className="flex items-center gap-2 text-sm font-medium text-muted-2">
                 <Stars value={rating} size={17} />
                 <span>{rating.toFixed(1)} · {reviews.length} verified reviews</span>
-              </a>
+              </div>
             </div>
 
             {/* Pricing Box */}
-            <div className="flex flex-col gap-1 rounded-2xl bg-page px-4.5 py-3.5 border border-line">
+            <div className="flex flex-col gap-1 rounded-2xl border border-line bg-page px-4.5 py-3.5">
               <div className="flex items-baseline gap-3">
                 <b className="font-head text-[34px] font-extrabold text-navy-900">{formatINR(unit)}</b>
                 <span className="text-[14px] font-semibold text-muted">+ delivery</span>
@@ -136,12 +156,12 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            {/* Product Specifications: Colour, Weight & Structure */}
-            <div className="grid grid-cols-3 gap-2 rounded-2xl border border-line bg-page p-3 text-center">
+            {/* Product Specifications: ONLY Colour, Weight & Structure */}
+            <div className="grid grid-cols-3 gap-2 rounded-2xl border border-line bg-page p-3.5 text-center">
               <div className="flex flex-col gap-0.5">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-muted-2">Colour</span>
                 <b className="text-[13px] font-bold text-navy-900 sm:text-[14px]">
-                  {variantColors[product.id] || 'Clear Crystal'}
+                  {variantColors[product.id] || 'Natural'}
                 </b>
               </div>
               <div className="flex flex-col gap-0.5 border-x border-line px-1">
@@ -154,25 +174,17 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            {/* Description Box */}
-            <div className="flex flex-col gap-1.5 rounded-2xl border border-line bg-page/70 p-4">
-              <span className="text-[11.5px] font-bold uppercase tracking-wider text-navy-900">Description</span>
-              <p className="text-[14px] leading-relaxed text-muted">
-                {product.description} DriftOn is a 100% natural alum crystal roll on designed for 24-hr odor defense with 0% alcohol and no white marks.
-              </p>
-            </div>
-
-            {/* Action Buttons: ONLY Add to cart and Buy now */}
-            <div id="main-buy" className="flex flex-col sm:flex-row gap-3 pt-1">
+            {/* Action Buttons: ONLY Add to Cart & Buy Now (No Increment Stepper, No Pack Size) */}
+            <div id="main-buy" className="flex flex-col sm:flex-row gap-3 pt-2">
               <button
-                className="btn-navy min-h-[52px] flex-1 text-[15px] font-bold shadow-sm transition hover:bg-navy-900"
+                className="btn-navy min-h-[52px] flex-1 text-[15.5px] font-bold shadow-sm transition hover:bg-navy-900"
                 onClick={add}
               >
                 Add to cart · {formatINR(unit)}
                 {inCart > 0 && <span className="ml-1.5 text-xs font-normal text-mint">({inCart} in cart)</span>}
               </button>
               <button
-                className="btn-primary min-h-[52px] flex-1 text-[15px] font-bold shadow-md transition hover:bg-brand-dark"
+                className="btn-primary min-h-[52px] flex-1 text-[15.5px] font-bold shadow-md transition hover:bg-brand-dark"
                 onClick={buy}
               >
                 Buy now
@@ -198,16 +210,43 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      {/* Customer Reviews Section */}
-      <ReviewsBlock reviews={reviews} />
+      {/* 1. Blinking Benefits Slider */}
+      <ProductMarquee dark />
 
-      {/* You May Also Like Section */}
-      <section className="pb-16 pt-4">
+      {/* 2. Why you'll love it? Section */}
+      <section className="bg-navy-900 py-12 text-white">
+        <div className="container-x">
+          <h2 className="mb-8 text-center font-head text-3xl font-bold tracking-tight sm:text-4xl">
+            Why you'll <span className="text-mint">love it?</span>
+          </h2>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+            {productInfo.loveIt.map(({ title, icon }) => {
+              const I = loveIcons[icon];
+              return (
+                <div
+                  key={title}
+                  className="flex flex-col items-center gap-3 rounded-2xl bg-white/5 p-5 text-center ring-1 ring-white/10 transition duration-300 hover:bg-white/10 hover:-translate-y-1"
+                >
+                  <span className="flex size-13 items-center justify-center rounded-full bg-mint text-navy-900 shadow-sm">
+                    <I />
+                  </span>
+                  <b className="font-head text-[15.5px] font-semibold leading-snug">{title}</b>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. You May Also Like / More from DriftOn Section */}
+      <section className="pb-16 pt-10">
         <div className="container-wide">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-4 px-2">
+          <div className="mb-7 flex flex-wrap items-end justify-between gap-4 px-2">
             <div className="flex flex-col gap-2">
               <span className="eyebrow">Other Variants</span>
-              <h2 className="h2 text-3xl sm:text-4xl">More from <span className="text-brand">DriftOn</span></h2>
+              <h2 className="h2 text-3xl sm:text-4xl">
+                More from <span className="text-brand">DriftOn</span>
+              </h2>
             </div>
             <button className="btn-line" onClick={() => navigate('/#shop')}>View all</button>
           </div>
@@ -217,8 +256,15 @@ export default function ProductDetail() {
         </div>
       </section>
 
-      {/* Sticky Quick Buy Bar for Mobile & Desktop Scroll */}
-      <StickyBuyBar product={product} rating={rating} price={unit} qty={qty} setQty={() => {}} onAdd={add} onBuy={buy} watchId="main-buy" />
+      {/* Sticky Bottom Bar (No increment/decrement stepper) */}
+      <StickyBuyBar
+        product={product}
+        rating={rating}
+        price={unit}
+        onAdd={add}
+        onBuy={buy}
+        watchId="main-buy"
+      />
     </>
   );
 }
