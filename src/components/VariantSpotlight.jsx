@@ -127,12 +127,12 @@ export default function VariantSpotlight() {
       {/* Desktop Left Words: text-left, anchored from left, Help In directly over Deep */}
       <div
         key={`l-${i}`}
-        className="pointer-events-none absolute left-[3%] top-[23%] z-10 hidden max-w-[36vw] text-left animate-from-left lg:block xl:left-[4.5%]"
+        className="pointer-events-none absolute left-[2.5%] top-[23%] z-10 hidden max-w-[37vw] text-left animate-from-left lg:block xl:left-[3.5%]"
       >
-        <span className="block font-display text-[clamp(32px,3.4vw,56px)] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.8px_white]">
+        <span className="block font-display text-[clamp(38px,4.2vw,68px)] leading-none tracking-wider text-transparent [-webkit-text-stroke:2px_white]">
           {look.left[0]}
         </span>
-        <span className="block font-display text-[clamp(45px,5.1vw,86px)] leading-[0.92] tracking-wide text-white drop-shadow-[0_8px_32px_rgba(0,0,0,0.7)]">
+        <span className="block font-display text-[clamp(52px,5.8vw,98px)] leading-[0.92] tracking-wide text-white drop-shadow-[0_8px_32px_rgba(0,0,0,0.7)]">
           {look.left[1]}
         </span>
       </div>
@@ -140,13 +140,13 @@ export default function VariantSpotlight() {
       {/* Desktop Right Words: text-right, anchored from right, Helps In directly over Order */}
       <div
         key={`r-${i}`}
-        className="pointer-events-none absolute right-[3%] top-[23%] z-10 hidden max-w-[36vw] text-right animate-from-right lg:block xl:right-[4.5%]"
+        className="pointer-events-none absolute right-[2.5%] top-[23%] z-10 hidden max-w-[37vw] text-right animate-from-right lg:block xl:right-[3.5%]"
       >
-        <span className="block font-display text-[clamp(32px,3.4vw,56px)] leading-none tracking-wider text-transparent [-webkit-text-stroke:1.8px_white]">
+        <span className="block font-display text-[clamp(38px,4.2vw,68px)] leading-none tracking-wider text-transparent [-webkit-text-stroke:2px_white]">
           {look.right[0]}
         </span>
         <span
-          className="block font-display text-[clamp(45px,5.1vw,86px)] leading-[0.92] tracking-wide"
+          className="block font-display text-[clamp(52px,5.8vw,98px)] leading-[0.92] tracking-wide"
           style={{ color: look.accent, textShadow: `0 0 35px ${look.glow}88` }}
         >
           {look.right[1]}
