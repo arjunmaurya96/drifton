@@ -43,7 +43,7 @@ export default function VariantSpotlight() {
       aria-label="Choose your variant"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      className="relative h-[78svh] max-h-[740px] min-h-[520px] overflow-hidden text-white"
+      className="relative h-[100svh] max-h-[920px] min-h-[640px] overflow-hidden text-white"
     >
       {/* backgrounds (cross-fade) */}
       {products.map((p, k) => {
@@ -82,10 +82,10 @@ export default function VariantSpotlight() {
         </span>
       </div>
 
-      {/* big words right: REDUCE right-aligned */}
+      {/* big words right: ZERO replaced with REDUCE */}
       <div
         key={`r-${i}`}
-        className="pointer-events-none absolute left-[61%] top-[24%] z-10 hidden animate-from-right whitespace-nowrap lg:block"
+        className="absolute left-[61%] top-[26%] z-10 hidden animate-from-right whitespace-nowrap lg:block"
       >
         <span className="block font-display text-[80px] leading-none tracking-wide text-transparent [-webkit-text-stroke:2px_white] xl:text-[110px]">
           {look.right[0]}
