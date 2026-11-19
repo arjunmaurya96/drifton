@@ -24,6 +24,39 @@ export default function Orders() {
   const [openId, setOpenId] = useState(null);
   const [tracking, setTracking] = useState('');
   const [invoiceOrder, setInvoiceOrder] = useState(null);
+  const [shippingBusy, setShippingBusy] = useState(false);
+
+  const autoShipWithEkart = async (o) => {
+    if (!o) return;
+    setShippingBusy(true);
+    try {
+      const res = await fetch('/api/ekart-ship', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: o.id,
+          customer: o.customer,
+          phone: o.phone,
+          address: o.address,
+          pin: o.pin,
+          total: o.total,
+          payment: o.payment,
+          sticks: o.sticks,
+        }),
+      });
+      const resData = await res.json();
+      if (resData && resData.trackingNumber) {
+        setTracking(resData.trackingNumber);
+        update('orders', o.id, { tracking: resData.trackingNumber, status: 'Shipped' }, `Shipped with Ekart: ${resData.trackingNumber}`);
+        notify(`Ekart AWB Created: ${resData.trackingNumber}`);
+      } else {
+        notify(resData?.error || 'Could not generate Ekart AWB');
+      }
+    } catch {
+      notify('Ekart shipment service unavailable');
+    }
+    setShippingBusy(false);
+  };
 
   const list = useMemo(() => data.orders.filter((o) =>
     (tab === 'all' || o.status === tab) &&
@@ -208,11 +241,38 @@ export default function Orders() {
             </section>
 
             <section className="rounded-2xl border border-[#EEF0F5] p-4">
-              <h3 className="mb-3 text-[12px] font-bold uppercase tracking-wider text-muted-2">Shipping (Ekart)</h3>
+              <div className="mb-3 flex items-center justify-between">
+                <h3 className="text-[12px] font-bold uppercase tracking-wider text-muted-2">Shipping (Ekart Logistics)</h3>
+                <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">API Connected</span>
+              </div>
+
+              {/* 1-Click Ekart Auto Ship Button */}
+              <button
+                type="button"
+                disabled={shippingBusy}
+                onClick={() => autoShipWithEkart(order)}
+                className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl bg-navy-900 px-4 py-2.5 text-[13px] font-semibold text-white shadow-sm transition hover:bg-navy-700 disabled:opacity-50"
+              >
+                <Icon.truck size={16} />
+                {shippingBusy ? 'Generating Ekart AWB…' : '⚡ 1-Click Auto-Ship with Ekart'}
+              </button>
+
               <div className="flex gap-2">
-                <Field label="Tracking number" className="flex-1"><input className={inputCls} value={tracking} onChange={(e) => setTracking(e.target.value)} placeholder="e.g. EK1234567890" /></Field>
+                <Field label="Tracking number (AWB)" className="flex-1">
+                  <input className={inputCls} value={tracking} onChange={(e) => setTracking(e.target.value)} placeholder="e.g. FMPC1234567890" />
+                </Field>
                 <Btn className="mt-[26px]" onClick={() => update('orders', order.id, { tracking }, 'Tracking saved')}>Save</Btn>
               </div>
+
+              {order.tracking && (
+                <div className="mt-2.5 flex items-center justify-between rounded-xl bg-[#EAF0FF] px-3.5 py-2 text-[12.5px] text-[#2647B8]">
+                  <span>Live AWB: <b>{order.tracking}</b></span>
+                  <a href={`https://www.ekartlogistics.com/shipmenttrack/${encodeURIComponent(order.tracking)}`} target="_blank" rel="noreferrer" className="font-semibold underline hover:text-navy-900">
+                    Track Live on Ekart ↗
+                  </a>
+                </div>
+              )}
+
               <label className="mt-3 flex items-center gap-2 text-[13.5px]">
                 <span className="font-semibold">Status</span>
                 <select value={order.status} onChange={(e) => update('orders', order.id, { status: e.target.value }, `Status: ${e.target.value}`)} className="min-h-9 rounded-lg border border-[#E0E4EE] px-2 text-[13.5px]">
