@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { products, bannerSlides, formatINR } from '../data/products.js';
-import { Arrow } from './Icons.jsx';
+import { products, bannerSlides } from '../data/products.js';
 
 // Look of each product when it is in the centre. Words are shown big on the left and right.
 const looks = {
@@ -44,7 +43,7 @@ export default function VariantSpotlight() {
       aria-label="Choose your variant"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      className="relative h-[100svh] max-h-[920px] min-h-[640px] overflow-hidden text-white"
+      className="relative h-[78svh] max-h-[740px] min-h-[520px] overflow-hidden text-white"
     >
       {/* backgrounds (cross-fade) */}
       {products.map((p, k) => {
@@ -83,10 +82,10 @@ export default function VariantSpotlight() {
         </span>
       </div>
 
-      {/* big words right: ZERO replaced with REDUCE */}
+      {/* big words right: REDUCE right-aligned */}
       <div
         key={`r-${i}`}
-        className="absolute left-[61%] top-[26%] z-10 hidden animate-from-right whitespace-nowrap lg:block"
+        className="pointer-events-none absolute left-[61%] top-[24%] z-10 hidden animate-from-right whitespace-nowrap lg:block"
       >
         <span className="block font-display text-[80px] leading-none tracking-wide text-transparent [-webkit-text-stroke:2px_white] xl:text-[110px]">
           {look.right[0]}
@@ -97,21 +96,6 @@ export default function VariantSpotlight() {
         >
           {look.right[1]}
         </span>
-        <div className="mt-5 flex items-center gap-4">
-          <span>
-            <b className="block font-jost text-lg font-medium">{center.name}</b>
-            <span className="font-jost text-white/80">
-              {formatINR(center.price)}{' '}
-              <span className="text-white/50">· 3rd roll on just ₹300</span>
-            </span>
-          </span>
-          <Link
-            to={`/product/${center.slug}`}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-6 font-jost text-sm font-semibold uppercase tracking-wide text-navy-900 hover:bg-mint hover:text-navy-900"
-          >
-            Shop now <Arrow size={16} />
-          </Link>
-        </div>
       </div>
 
       {/* side variants - clickable to switch anytime */}
@@ -171,16 +155,6 @@ export default function VariantSpotlight() {
           className="relative h-full w-auto animate-pop object-contain"
         />
       </Link>
-
-      {/* mobile CTA */}
-      <div className="absolute inset-x-0 top-[33%] z-20 flex justify-center lg:hidden">
-        <Link
-          to={`/product/${center.slug}`}
-          className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-6 font-jost text-sm font-semibold uppercase text-navy-900"
-        >
-          Shop {center.short}
-        </Link>
-      </div>
     </section>
   );
 }
