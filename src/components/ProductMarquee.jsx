@@ -16,7 +16,7 @@ export default function ProductMarquee({ dark = false }) {
   const loop = [...items, ...items, ...items, ...items];
 
   return (
-    <div className={`overflow-hidden border-b py-3.5 sm:py-4.5 ${dark ? 'border-navy-700 bg-navy-900' : 'border-line bg-white'}`}>
+    <div className={`overflow-hidden border-b py-1 sm:py-1.5 ${dark ? 'border-navy-700 bg-navy-900' : 'border-line bg-white'}`}>
       <div className="flex w-max animate-marquee hover:[animation-play-state:paused]" style={{ animationDuration: '34s' }}>
         {loop.map((it, i) => (
           <Link
@@ -34,7 +34,7 @@ export default function ProductMarquee({ dark = false }) {
               decoding="async"
               src={it.product.image}
               alt={it.product.name}
-              className="h-14 sm:h-16 w-auto object-contain filter drop-shadow-[0_8px_16px_rgba(15,26,60,0.16)] transition-transform duration-300 group-hover:scale-110"
+              className="h-14 sm:h-16 w-auto object-contain filter drop-shadow-[0_4px_10px_rgba(15,26,60,0.14)] transition-transform duration-300 group-hover:scale-105"
             />
             <span className="whitespace-nowrap font-head text-[20px] font-bold tracking-tight transition-colors sm:text-[25px] animate-soft-blink">
               {it.text}
