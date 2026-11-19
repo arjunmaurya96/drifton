@@ -33,41 +33,14 @@ const Badge = ({ n }) => (
   <span className="absolute right-0.5 top-1 flex h-[19px] min-w-[19px] items-center justify-center rounded-full bg-brand px-1.5 text-[11px] font-bold text-white">{n}</span>
 );
 
-/**
- * Hides when you scroll down, slides back in as soon as you scroll up a little.
- */
-function useHideOnScroll() {
-  const [hidden, setHidden] = useState(false);
-  useEffect(() => {
-    let lastY = window.scrollY;
-    let ticking = false;
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const y = window.scrollY;
-        if (y <= 2) setHidden(false); // back at the very top
-        else if (y > lastY + 1) setHidden(true); // any scroll down: slide the whole header (top bar + nav) up
-        else if (y < lastY - 1) setHidden(false); // any scroll up: slide it back down
-        lastY = y;
-        ticking = false;
-      });
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-  return hidden;
-}
-
 export default function Header() {
   const { count, openAuth, openCart, wishlist, user, userProfile, logout } = useStore();
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const hidden = useHideOnScroll() && !open && !searchOpen;
   const { pathname } = useLocation();
   const ref = useRef(null);
   const [h, setH] = useState(118);
-  // header is fixed (floats over the page) — measure it so other pages can leave room under it
+  // header is permanently fixed at the top — measure it so other pages can leave room under it
   useEffect(() => {
     const el = ref.current; if (!el) return;
     const measure = () => setH((el.querySelector('[data-header-bar]')?.offsetHeight || 0) + (el.querySelector('[data-header-nav]')?.offsetHeight || 0));
@@ -79,7 +52,7 @@ export default function Header() {
     <>
     {/* spacer on every page except home, where the hero sits right under the header */}
     {pathname !== '/' && <div aria-hidden="true" style={{ height: h }} />}
-    <header ref={ref} className={`fixed inset-x-0 top-0 z-40 border-b border-line bg-white/95 backdrop-blur transition-transform duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${hidden ? '-translate-y-full' : 'translate-y-0 shadow-[0_8px_24px_-18px_rgba(15,26,60,.35)]'}`}>
+    <header ref={ref} className="fixed inset-x-0 top-0 z-40 border-b border-line bg-white/95 backdrop-blur shadow-[0_8px_24px_-18px_rgba(15,26,60,.28)]">
       <div data-header-bar><AnnouncementBar /></div>
       <div data-header-nav className="container-x flex h-[78px] items-center justify-between gap-5">
         <Link to="/" aria-label="Drifton home" className="shrink-0">
