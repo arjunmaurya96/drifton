@@ -7,7 +7,7 @@ import ProductMarquee from '../components/ProductMarquee.jsx';
 import ProductGallery from '../components/product/ProductGallery.jsx';
 import { Stars } from '../components/Reviews.jsx';
 import NotFound from './NotFound.jsx';
-import { Truck, Shield, Return, Gem, CheckCircle, Drop, Clock, Box, Leaf } from '../components/Icons.jsx';
+import { Truck, Shield, Return, Gem, CheckCircle, Drop, Clock, Box, Leaf, Sparkle, Flower } from '../components/Icons.jsx';
 
 const loveIcons = {
   gem: () => <Gem size={30} />,
@@ -16,6 +16,8 @@ const loveIcons = {
   clock: () => <Clock size={28} />,
   box: () => <Box size={28} />,
   leaf: () => <Leaf size={28} />,
+  sparkle: () => <Sparkle size={26} />,
+  flower: () => <Flower size={30} />,
 };
 
 const variantColors = {
