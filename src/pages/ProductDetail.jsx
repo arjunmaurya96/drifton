@@ -72,7 +72,7 @@ export default function ProductDetail() {
           <span>/</span>
           <Link to="/#shop" className="text-muted-2 hover:text-brand">Shop</Link>
           <span>/</span>
-          <b className="font-semibold text-navy-900">{product.name}</b>
+          <b className="font-semibold text-navy-900">{product.name.replace(/^DriftOn[™®]?\s*/i, '')}</b>
         </nav>
 
         {/* Main Product Hero Grid */}
@@ -87,7 +87,7 @@ export default function ProductDetail() {
             {/* Title & Reviews */}
             <div className="flex flex-col gap-2">
               <h1 className="text-[28px] font-extrabold leading-[1.12] tracking-tight text-navy-900 sm:text-[34px]">
-                {product.name}
+                {product.name.replace(/^DriftOn[™®]?\s*/i, '')}
               </h1>
               <div className="flex items-center gap-2 text-sm font-medium text-muted-2">
                 <Stars value={rating} size={17} />
@@ -208,7 +208,7 @@ export default function ProductDetail() {
                 </span>
                 <h2 className="font-head text-[28px] font-extrabold tracking-tight text-navy-900 sm:text-[36px] xl:text-[40px] leading-tight">
                   <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
-                    {product.name}.
+                    {product.name.replace(/^DriftOn[™®]?\s*/i, '')}.
                     <span
                       aria-hidden="true"
                       className="absolute bottom-0 left-0 h-[3.5px] w-full rounded-full bg-gradient-to-r from-brand via-mint to-transparent"

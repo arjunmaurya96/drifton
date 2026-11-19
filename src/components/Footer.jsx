@@ -39,7 +39,7 @@ export default function Footer() {
             <Link to="/#shop" className={fl}>All products</Link>
             <Link to="/#why" className={fl}>Why Drifton</Link>
             <Link to="/#how" className={fl}>How to use</Link>
-            <Link to="/#refer" className={fl}>Refer &amp; Earn</Link>
+            {/* <Link to="/#refer" className={fl}>Refer &amp; Earn</Link> */}
           </Col>
           <Col title="Help">
             <a href={business.trackUrl} target="_blank" rel="noreferrer" className={fl}>Track order</a>

@@ -210,9 +210,9 @@ export const productInfo = {
     { title: 'Natural alum crystal', icon: 'gem' },
     { title: 'No Alcohol', icon: 'check' },
     { title: '100% Natural', icon: 'drop' },
-    { title: 'Long lasting roll on', icon: 'clock' },
-    { title: 'Travel friendly', icon: 'box' },
-    { title: 'Botanical blends', icon: 'leaf' },
+    { title: 'Travel Friendly', icon: 'clock' },
+    { title: 'Mild Fragrance', icon: 'box' },
+    { title: 'Botanical Blends', icon: 'leaf' },
   ],
   howItWorks: [
     { title: 'Mineral freshness', text: 'Alum is a mineral salt that has been used for generations as a simple way to keep underarm odour in check.' },

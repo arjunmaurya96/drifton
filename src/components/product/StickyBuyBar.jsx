@@ -20,7 +20,7 @@ export default function StickyBuyBar({ product, rating, price, onAdd, onBuy, wat
         <div className="flex min-w-0 items-center gap-3">
           <img src={product.image} alt="" className="size-14 rounded-2xl bg-page object-contain p-1" />
           <div className="hidden min-w-0 sm:block">
-            <b className="block truncate font-head font-semibold">{product.name}</b>
+            <b className="block truncate font-head font-semibold">{product.name.replace(/^DriftOn[™®]?\s*/i, '')}</b>
             <span className="flex items-center gap-2 text-sm text-muted-2"><Stars value={rating} size={14} /> {rating.toFixed(1)}</span>
           </div>
         </div>
