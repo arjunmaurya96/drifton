@@ -81,7 +81,7 @@ export default function Reviews() {
   };
 
   return (
-    <section id="reviews" className="relative overflow-hidden bg-[#FAFCFF] py-16 sm:py-24 border-t border-slate-200/70">
+    <section id="reviews" className="relative overflow-hidden bg-[#FAFCFF] py-10 sm:py-14 border-t border-slate-200/70">
       {/* Background ambient glow */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -left-[8%] top-0 h-[450px] w-[500px] rounded-full bg-brand/5 blur-3xl" />
@@ -91,14 +91,8 @@ export default function Reviews() {
 
       <div className="container-x relative z-10">
         {/* Header Section */}
-        <div className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div className="flex flex-col items-start gap-2.5">
-            <span className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-bold tracking-wide ${
-              isLive ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700' : 'border-brand/20 bg-brand/10 text-brand'
-            }`}>
-              <span className={`size-2 rounded-full ${isLive ? 'bg-emerald-500' : 'bg-brand'} animate-pulse`} />
-              {isLive ? 'LIVE GOOGLE SYNC · VERIFIED' : 'GOOGLE REVIEWS & COMMUNITY'}
-            </span>
+        <div className="mb-7 flex flex-col md:flex-row md:items-end md:justify-between gap-5">
+          <div className="flex flex-col items-start gap-2">
             <h2 className="font-head text-[34px] font-extrabold tracking-tight text-navy-900 sm:text-[42px] xl:text-[48px]">
               Join Our{' '}
               <span className="relative inline-block bg-gradient-to-r from-brand via-brand-dark to-navy-900 bg-clip-text text-transparent">
