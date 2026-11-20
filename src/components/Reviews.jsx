@@ -28,10 +28,28 @@ const GoogleIcon = ({ size = 18 }) => (
 );
 
 export default function Reviews() {
-  const reviews = sampleReviews.slice(0, 6);
+  const [reviews, setReviews] = useState(() => sampleReviews.slice(0, 6));
+  const [isLive, setIsLive] = useState(false);
+  const [stats, setStats] = useState({ rating: 4.8, count: 126 });
   const scrollRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
+
+  // Fetch real-time live reviews from Google Places API
+  useEffect(() => {
+    fetch('/api/google-reviews')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.live && Array.isArray(data.reviews) && data.reviews.length > 0) {
+          setReviews(data.reviews);
+          setIsLive(true);
+          if (data.rating) setStats({ rating: data.rating, count: data.reviewCount || 126 });
+        }
+      })
+      .catch(() => {
+        // Gracefully stay on verified reviews
+      });
+  }, []);
 
   // Auto-scroll loop every 3.2 seconds (pauses when user hovers)
   useEffect(() => {
@@ -75,9 +93,11 @@ export default function Reviews() {
         {/* Header Section */}
         <div className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <div className="flex flex-col items-start gap-2.5">
-            <span className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/10 px-3.5 py-1 text-xs font-bold tracking-wide text-brand">
-              <span className="size-2 rounded-full bg-brand animate-pulse" />
-              GOOGLE REVIEWS &amp; COMMUNITY
+            <span className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-bold tracking-wide ${
+              isLive ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700' : 'border-brand/20 bg-brand/10 text-brand'
+            }`}>
+              <span className={`size-2 rounded-full ${isLive ? 'bg-emerald-500' : 'bg-brand'} animate-pulse`} />
+              {isLive ? 'LIVE GOOGLE SYNC · VERIFIED' : 'GOOGLE REVIEWS & COMMUNITY'}
             </span>
             <h2 className="font-head text-[34px] font-extrabold tracking-tight text-navy-900 sm:text-[42px] xl:text-[48px]">
               Join Our{' '}
@@ -107,9 +127,11 @@ export default function Reviews() {
               <div className="flex flex-col leading-tight">
                 <span className="flex items-center gap-1 text-[13px] font-bold text-navy-900">
                   <Star size={14} className="text-[#F5A623] inline" />
-                  4.8 / 5.0
+                  {stats.rating.toFixed(1)} / 5.0
                 </span>
-                <span className="text-[11px] font-medium text-muted-2">Google Reviews ↗</span>
+                <span className="text-[11px] font-medium text-muted-2">
+                  {stats.count ? `${stats.count} Reviews ↗` : 'Google Reviews ↗'}
+                </span>
               </div>
             </a>
 
@@ -194,9 +216,13 @@ export default function Reviews() {
                 {/* Bottom Bar: Customer Avatar + Direct Google Link */}
                 <div className="mt-3 flex items-center justify-between gap-2 border-t border-slate-100 pt-3">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-navy-900 to-brand text-[11px] font-bold text-white shadow-2xs">
-                      {(r.author || 'User').split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()}
-                    </span>
+                    {r.profilePhoto ? (
+                      <img src={r.profilePhoto} alt={r.author} className="size-9 shrink-0 rounded-full object-cover ring-1 ring-slate-200" />
+                    ) : (
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-navy-900 to-brand text-[11px] font-bold text-white shadow-2xs">
+                        {(r.author || 'User').split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()}
+                      </span>
+                    )}
                     <div className="min-w-0">
                       <b className="block truncate text-[13px] font-bold text-navy-900 leading-tight">
                         {r.author}
