@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.GOOGLE_PLACES_API_KEY || process.env.VITE_GOOGLE_PLACES_API_KEY;
   const placeId = process.env.GOOGLE_PLACE_ID || process.env.VITE_GOOGLE_PLACE_ID;
-  const cid = process.env.GOOGLE_PLACE_CID || '11835560949615567689'; // DriftOn Google CID
+  const cid = process.env.GOOGLE_PLACE_CID || '11835592498425439049'; // Exact DriftOn Google Maps CID
 
   if (!apiKey) {
     return res.status(200).json({
