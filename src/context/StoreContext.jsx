@@ -367,7 +367,23 @@ export function StoreProvider({ children }) {
       authMode, openAuth: setAuthMode, closeAuth: () => setAuthMode(null),
       cartOpen, openCart: () => setCartOpen(true), closeCart: () => setCartOpen(false),
       toast, notify,
-      buy, openBuy: (lines, fromCart = false) => setBuy({ lines, fromCart }), closeBuy: () => setBuy(null),
+      buy,
+      openBuy: (lines, fromCart = false) => {
+        if (lines && lines.length > 0 && !fromCart) {
+          setCart((prev) => {
+            const copy = [...prev];
+            for (const line of lines) {
+              const idx = copy.findIndex((l) => l.id === line.id && l.sticks === line.sticks);
+              if (idx >= 0) copy[idx] = { ...copy[idx], qty: line.qty };
+              else copy.push(line);
+            }
+            return copy;
+          });
+        }
+        setCartOpen(false);
+        setCheckoutOpen(true);
+      },
+      closeBuy: () => setBuy(null),
       checkoutOpen, openCheckout: () => { setCartOpen(false); setCheckoutOpen(true); }, closeCheckout: () => setCheckoutOpen(false),
       // User Profile & Authentication exports
       user, userProfile, userOrders, authLoading,

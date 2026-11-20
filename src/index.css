@@ -39,6 +39,21 @@
   --animate-pop: pop-in .8s cubic-bezier(.2,.8,.2,1) both;
   --animate-glow-blink: glow-blink 0.7s ease-in-out infinite;
   --animate-soft-blink: soft-blink 0.7s ease-in-out infinite;
+  --animate-confetti: confetti 3s linear infinite;
+
+  @keyframes confetti {
+    0% {
+      transform: translateY(-40px) rotate(0deg);
+      opacity: 1;
+    }
+    85% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(105vh) rotate(720deg);
+      opacity: 0;
+    }
+  }
 
   @keyframes glow-blink {
     0%, 100% {

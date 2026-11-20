@@ -32,7 +32,11 @@ export const priceFor = (n, naturals = 0) => {
 };
 
 // Coupons — DUMMY codes, confirm with the client
-export const coupons = { DRIFTON100: { off: 100, note: '₹100 off (single-stick orders, not with combos)' } };
+export const coupons = {
+  FIRST50: { off: 50, note: '₹50 off on your order' },
+  DRIFTON100: { off: 100, note: '₹100 off (single-stick orders, not with combos)' },
+  WELCOME50: { off: 50, note: '₹50 welcome discount' },
+};
 
 // The real combos from the client (each = 2 roll ons for ₹800)
 export const combos = [

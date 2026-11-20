@@ -8,6 +8,7 @@ import { firebaseReady } from '../lib/firebaseReady.js';
 import { business } from '../data/site.js';
 import { QtyStepper, PriceRows, CartOffers } from './CartDrawer.jsx';
 import { Close, Lock, CheckCircle, Shield, Truck, Plus, Trash, ChevronLeft } from './Icons.jsx';
+import ConfettiBoom from './ConfettiBoom.jsx';
 
 // =====================================================================
 //  Quick checkout (opens from "Add to cart" or CartDrawer).
@@ -92,6 +93,7 @@ export default function CheckoutModal() {
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   const [order, setOrder] = useState(null);
+  const [boom, setBoom] = useState({ show: false, code: '', savings: 0 });
 
   const closeRef = useRef(closeCheckout);
   closeRef.current = closeCheckout;
@@ -143,9 +145,21 @@ export default function CheckoutModal() {
 
   const apply = () => {
     const c = code.trim().toUpperCase();
-    if (coupons[c] && sum.comboSaving > 0) { setApplied(''); setCodeMsg('Your combo already has free delivery. Coupons can be used on single-stick orders.'); }
-    else if (coupons[c]) { setApplied(c); setCodeMsg(`${c} applied — ${coupons[c].note}`); }
-    else { setApplied(''); setCodeMsg('This coupon code is not valid.'); }
+    if (coupons[c]) {
+      const discount = coupons[c].off;
+      setApplied(c);
+      setCodeMsg(`${c} applied — ${coupons[c].note}`);
+      setBoom({ show: true, code: c, savings: discount });
+    } else {
+      setApplied('');
+      setCodeMsg('This coupon code is not valid.');
+    }
+  };
+
+  const removeCoupon = () => {
+    setApplied('');
+    setCodeMsg('');
+    setCode('');
   };
 
   // 1-Click Google Sign In
@@ -488,8 +502,44 @@ export default function CheckoutModal() {
                   <span className="text-muted">Total · {sum.sticks} {sum.sticks === 1 ? 'stick' : 'sticks'} <span className="text-xs underline">details</span></span>
                   <b className="font-head text-xl">{formatINR(total)}</b>
                 </summary>
-                <PriceRows s={sum} className="mt-2" />
-                {fee > 0 && <div className="mt-1.5 flex justify-between text-[14.5px] text-muted"><span>COD fee</span><span>{formatINR(fee)}</span></div>}
+                <PriceRows s={sum} className="mt-2" showDelivery={step === 2} />
+                {fee > 0 && step === 2 && <div className="mt-1.5 flex justify-between text-[14.5px] text-muted"><span>COD fee</span><span>{formatINR(fee)}</span></div>}
+
+                {/* Coupon Code Section with Celebration Trigger */}
+                <div className="mt-3 border-t border-line/70 pt-2.5">
+                  {applied ? (
+                    <div className="flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2 text-xs font-semibold text-emerald-800">
+                      <span className="flex items-center gap-1.5">
+                        <span className="rounded-full bg-emerald-600 px-1.5 py-0.5 text-[10px] text-white font-bold">COUPON</span>
+                        <span><b>{applied}</b> applied · Saved {formatINR(sum.couponOff || coupons[applied]?.off || 50)}</span>
+                      </span>
+                      <button type="button" onClick={removeCoupon} className="font-bold text-red-600 hover:underline cursor-pointer">
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-1.5">
+                      <div className="flex items-center gap-2">
+                        <input
+                          value={code}
+                          onChange={(e) => setCode(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), apply())}
+                          placeholder="Coupon code (e.g. FIRST50)"
+                          className="min-h-10 flex-1 rounded-xl border border-line-strong bg-white px-3 text-xs uppercase outline-none focus:border-navy-700"
+                        />
+                        <button
+                          type="button"
+                          onClick={apply}
+                          disabled={!code.trim()}
+                          className="btn-navy min-h-10 px-4 text-xs font-bold disabled:opacity-50 cursor-pointer"
+                        >
+                          Apply
+                        </button>
+                      </div>
+                      {codeMsg && <p className="text-[11.5px] font-medium text-brand">{codeMsg}</p>}
+                    </div>
+                  )}
+                </div>
               </details>
 
               {step === 1 && (
@@ -521,6 +571,14 @@ export default function CheckoutModal() {
           </>
         )}
       </div>
+
+      {/* Confetti Explosion Celebration Modal on Offer/Coupon Apply */}
+      <ConfettiBoom
+        show={boom.show}
+        code={boom.code}
+        savings={boom.savings}
+        onClose={() => setBoom({ show: false, code: '', savings: 0 })}
+      />
     </div>
   );
 }

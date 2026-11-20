@@ -9,7 +9,6 @@ import AuthModal from './components/AuthModal.jsx';
 import CartDrawer from './components/CartDrawer.jsx';
 import Toast from './components/Toast.jsx';
 import Home from './pages/Home.jsx';
-import BuyNowModal from './components/BuyNowModal.jsx';
 import CheckoutModal from './components/CheckoutModal.jsx';
 
 // Lazy loading: other pages are downloaded only when someone opens them (faster first load)
@@ -117,7 +116,6 @@ export default function App() {
       <Footer />
       <AuthModal />
       <CartDrawer />
-      <BuyNowModal />
       <CheckoutModal />
       <Toast />
     </>
