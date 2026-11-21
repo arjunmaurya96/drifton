@@ -88,7 +88,7 @@ export function PriceRows({ s, className = '', showDelivery = false }) {
 }
 
 export default function CartDrawer() {
-  const { cart, cartOpen, closeCart, updateQty, summary, openBuy, addToCart, count } = useStore();
+  const { cart, cartOpen, closeCart, updateQty, summary, openBuy, openCheckout, addToCart, count } = useStore();
   if (!cartOpen) return null;
 
   return (
