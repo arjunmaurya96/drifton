@@ -18,6 +18,13 @@ export const Heart = ({ size = 20, filled = false }) => (
   </svg>
 );
 export const Bag = ({ size = 22 }) => (<svg {...base(size)}><path d="M5 7h14l-1.2 11.2a2 2 0 01-2 1.8H8.2a2 2 0 01-2-1.8L5 7z" /><path d="M9 7V6a3 3 0 016 0v1" /></svg>);
+export const Cart = ({ size = 22, sw = 1.8 }) => (
+  <svg {...base(size, sw)}>
+    <circle cx="9" cy="20" r="1.5" />
+    <circle cx="19" cy="20" r="1.5" />
+    <path d="M1 1h3.5l2.6 12.5a2 2 0 002 1.5h9.8a2 2 0 002-1.5L22.5 5H5.2" />
+  </svg>
+);
 export const Arrow = ({ size = 18 }) => (<svg {...base(size, 2)}><path d="M5 12h14M13 6l6 6-6 6" /></svg>);
 export const ChevronLeft = ({ size = 18 }) => (<svg {...base(size, 2)}><path d="M15 6l-6 6 6 6" /></svg>);
 export const ChevronRight = ({ size = 18 }) => (<svg {...base(size, 2)}><path d="M9 6l6 6-6 6" /></svg>);

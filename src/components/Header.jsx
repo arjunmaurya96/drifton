@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { business } from '../data/site.js';
 import { useStore } from '../context/StoreContext.jsx';
-import { Search, Heart, Bag, Menu, Close } from './Icons.jsx';
+import { Search, Heart, Cart, Menu, Close } from './Icons.jsx';
 import SearchOverlay from './SearchOverlay.jsx';
 import AnnouncementBar from './AnnouncementBar.jsx';
 
@@ -69,8 +69,8 @@ export default function Header() {
             <Heart size={21} />
             {wishlist.length > 0 && <Badge n={wishlist.length} />}
           </button>
-          <button className="icon-btn" aria-label={`Cart, ${count} items`} onClick={openCart}>
-            <Bag />
+          <button className="icon-btn" aria-label={`Cart, ${count} items`} onClick={openCart} title="Your cart">
+            <Cart size={22} />
             <Badge n={count} />
           </button>
           <span className="mx-2 hidden h-6 w-px bg-[#E0E4EF] sm:block" />

@@ -1,16 +1,33 @@
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
 import { formatINR } from '../data/products.js';
+import { Cart } from './Icons.jsx';
 
 /**
  * Product card, phitku style: a full-bleed photo of the product with its own natural
  * ingredient (palash flowers, rose, charcoal, crystals) and the name, price and
- * ADD TO CART sitting on the photo. Fixed — no hover effects.
+ * sleek cart + buy now buttons.
  */
 export default function ProductCard({ product, className = 'h-[500px] sm:h-[560px]', quickCheckout = false }) {
-  const { addToCart, cart, openCheckout } = useStore();
+  const { addToCart, cart, openCheckout, openCart } = useStore();
   // quickCheckout (home page): add the stick and open the checkout popup straight away
-  const onAdd = () => (quickCheckout ? (addToCart(product, 1, undefined, true), openCheckout()) : addToCart(product));
+  const onBuyNow = (e) => {
+    e?.preventDefault?.();
+    if (quickCheckout) {
+      addToCart(product, 1, undefined, true);
+      openCheckout();
+    } else {
+      addToCart(product);
+    }
+  };
+
+  const onAddToCart = (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+    addToCart(product);
+    openCart();
+  };
+
   const url = `/product/${product.slug}`;
   const inCart = cart.some((l) => l.id === product.id);
 
@@ -26,16 +43,45 @@ export default function ProductCard({ product, className = 'h-[500px] sm:h-[560p
         <span className="absolute bottom-4 left-1/2 -translate-x-1/2 translate-y-3 rounded-full bg-black/55 px-4 py-2 font-jost text-[13px] font-medium text-white opacity-0 backdrop-blur transition duration-500 lg:group-hover/c:translate-y-0 lg:group-hover/c:opacity-100">View details →</span>
       </Link>
 
-      {/* info strip */}
-      <div className="flex h-[78px] shrink-0 items-center gap-3 border-t border-line bg-white px-4 sm:px-5">
+      {/* info strip with sleek cart icon button & buy now */}
+      <div className="flex h-[78px] shrink-0 items-center gap-2.5 border-t border-line bg-white px-3.5 sm:px-4">
         <span className="min-w-0 flex-1">
-          <Link to={url} className="block truncate font-jost leading-tight text-navy-900 hover:text-navy-700"><b className="text-[17px] font-semibold">{product.short}</b> <span className="text-[13px] font-medium text-muted">Alum Roll On</span></Link>
-          <span className="mt-0.5 block font-jost text-[15px]">
+          <Link to={url} className="block truncate font-jost leading-tight text-navy-900 hover:text-navy-700">
+            <b className="text-[16px] sm:text-[17px] font-semibold">{product.short}</b>{' '}
+            <span className="text-[12.5px] sm:text-[13px] font-medium text-muted">Alum Roll On</span>
+          </Link>
+          <span className="mt-0.5 block font-jost text-[14.5px] sm:text-[15px]">
             <b className="font-semibold text-navy-900">{formatINR(product.price)}</b>
           </span>
         </span>
-        <button onClick={onAdd} aria-label={`Add ${product.name} to cart`}
-          className="shrink-0 whitespace-nowrap rounded-full bg-navy-900 px-4 py-3 font-jost text-[13.5px] font-semibold uppercase tracking-wide text-white transition hover:bg-navy-700">
+
+        {/* Patla sa Cart Button (Add to cart & open side drawer) */}
+        <button
+          type="button"
+          onClick={onAddToCart}
+          aria-label={`Add ${product.name} to cart`}
+          title={inCart ? `${product.name} is in cart (Click to view)` : `Add ${product.name} to cart`}
+          className={`relative flex size-11 shrink-0 items-center justify-center rounded-full border-[1.5px] transition hover:scale-105 active:scale-95 cursor-pointer shadow-xs ${
+            inCart
+              ? 'border-brand bg-mint-soft text-brand-dark'
+              : 'border-line-strong bg-white text-navy-900 hover:border-navy-900 hover:bg-page'
+          }`}
+        >
+          <Cart size={19} />
+          {inCart && (
+            <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-brand text-[9.5px] font-bold text-white shadow-xs">
+              ✓
+            </span>
+          )}
+        </button>
+
+        {/* Buy Now Button (Direct checkout) */}
+        <button
+          type="button"
+          onClick={onBuyNow}
+          aria-label={`Buy ${product.name} now`}
+          className="shrink-0 whitespace-nowrap rounded-full bg-navy-900 px-4 py-2.5 sm:px-5 sm:py-3 font-jost text-[13px] sm:text-[13.5px] font-semibold uppercase tracking-wide text-white transition hover:bg-navy-700 hover:scale-105 active:scale-95 cursor-pointer shadow-sm"
+        >
           Buy now
         </button>
       </div>
