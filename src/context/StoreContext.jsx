@@ -239,6 +239,26 @@ export function StoreProvider({ children }) {
     }
   }, [notify]);
 
+  const loginWithOtp = useCallback((email, phone, name = '') => {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const demoUser = {
+      uid: 'user_' + (cleanEmail ? cleanEmail.replace(/[^a-z0-9]/g, '_') : Date.now()),
+      displayName: name || (cleanEmail ? cleanEmail.split('@')[0] : 'Customer'),
+      email: cleanEmail,
+      phone: phone || '',
+    };
+    setUser(demoUser);
+    localStorage.setItem('drifton_user_demo', JSON.stringify(demoUser));
+    notify(`Logged in as ${demoUser.displayName}!`);
+    setAuthMode(null);
+    if (afterAuthCallback.current) {
+      const fn = afterAuthCallback.current;
+      afterAuthCallback.current = null;
+      fn();
+    }
+    return { ok: true, user: demoUser };
+  }, [notify]);
+
   const signupWithEmail = useCallback(async (email, password, name, phone) => {
     if (!firebaseReady || !auth) {
       const demoUser = {
@@ -387,13 +407,13 @@ export function StoreProvider({ children }) {
       checkoutOpen, openCheckout: () => { setCartOpen(false); setCheckoutOpen(true); }, closeCheckout: () => setCheckoutOpen(false),
       // User Profile & Authentication exports
       user, userProfile, userOrders, authLoading,
-      loginWithGoogle, loginWithEmail, signupWithEmail, logout,
+      loginWithGoogle, loginWithEmail, signupWithEmail, loginWithOtp, logout,
       updateUserProfile, recordUserOrder, requireAuth,
     };
   }, [
     cart, wishlist, authMode, cartOpen, toast, addToCart, toggleWish, notify, clearCart, buy, checkoutOpen,
     user, userProfile, userOrders, authLoading,
-    loginWithGoogle, loginWithEmail, signupWithEmail, logout,
+    loginWithGoogle, loginWithEmail, signupWithEmail, loginWithOtp, logout,
     updateUserProfile, recordUserOrder, requireAuth,
   ]);
 

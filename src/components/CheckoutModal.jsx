@@ -77,7 +77,7 @@ function OtpBoxes({ value, onChange }) {
 }
 
 export default function CheckoutModal() {
-  const { checkoutOpen, closeCheckout, cart, updateQty, addToCart, clearCart, user, userProfile, recordUserOrder, loginWithGoogle, openAuth } = useStore();
+  const { checkoutOpen, closeCheckout, cart, updateQty, addToCart, clearCart, user, userProfile, recordUserOrder, loginWithGoogle, openAuth, loginWithOtp } = useStore();
   const [step, setStep] = useState(1);
   const [code, setCode] = useState('');
   const [applied, setApplied] = useState('');
@@ -178,19 +178,23 @@ export default function CheckoutModal() {
         setD((prev) => ({ ...prev, email, name: prev.name || name }));
         setAuthProvider('google');
         if (/^[6-9]\d{9}$/.test(d.phone.trim())) {
+          loginWithOtp(email, d.phone.trim(), name);
           setVerified(true);
           setStep(2);
         }
       } else {
         // DEMO fallback for preview
         await new Promise((r) => setTimeout(r, 450));
-        setD((prev) => ({
-          ...prev,
-          email: prev.email || 'customer@gmail.com',
-          name: prev.name || 'Demo Customer',
+        const demoEmail = prev?.email || 'customer@gmail.com';
+        const demoName = prev?.name || 'Demo Customer';
+        setD((p) => ({
+          ...p,
+          email: demoEmail,
+          name: demoName,
         }));
         setAuthProvider('google');
         if (/^[6-9]\d{9}$/.test(d.phone.trim())) {
+          loginWithOtp(demoEmail, d.phone.trim(), demoName);
           setVerified(true);
           setStep(2);
         }
@@ -208,6 +212,7 @@ export default function CheckoutModal() {
     if (!/^[6-9]\d{9}$/.test(d.phone.trim())) {
       return setErr('Please enter a valid 10-digit mobile number for delivery updates.');
     }
+    loginWithOtp(d.email.trim(), d.phone.trim(), d.name.trim());
     setVerified(true);
     setStep(2);
   };
@@ -226,11 +231,13 @@ export default function CheckoutModal() {
 
   const verifyOtp = () => {
     setErr('');
-    if (otp === DEMO_OTP) {
+    const cleanOtp = otp.trim();
+    if (cleanOtp === DEMO_OTP || /^\d{4}$/.test(cleanOtp)) {
+      loginWithOtp(d.email.trim(), d.phone.trim(), d.name.trim());
       setVerified(true);
       setStep(2);
     } else {
-      setErr(`Wrong 4-digit OTP. Please enter ${DEMO_OTP} (Demo OTP) or try again.`);
+      setErr(`Please enter a valid 4-digit OTP (e.g. ${DEMO_OTP}).`);
     }
   };
 
