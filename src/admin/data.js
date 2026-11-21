@@ -116,8 +116,11 @@ export const initialData = {
     { id: 'third', title: '3rd roll on', desc: 'After 2 roll ons, the 3rd (any variant) costs:', value: THIRD_PRICE, unit: '₹', active: true },
     { id: 'delivery', title: 'Delivery charge', desc: 'On single roll on orders. Free on 2 or more.', value: DELIVERY_FEE, unit: '₹', active: true },
   ],
-  coupons: Object.entries(coupons).map(([code, c]) => ({ code, off: c.off, note: c.note, uses: 23, active: true }))
-    .concat([{ code: 'INSTA50', off: 50, note: 'Instagram follower discount', uses: 8, active: true }, { code: 'DIWALI150', off: 150, note: 'Festive offer (expired)', uses: 41, active: false }]),
+  coupons: Object.entries(coupons).map(([code, c]) => ({ code, off: c.off, note: c.note, validFrom: c.validFrom || null, validUntil: c.validUntil || null, uses: 23, active: true }))
+    .concat([
+      { code: 'INSTA@50', off: 50, note: 'Instagram follower discount', validFrom: null, validUntil: null, uses: 8, active: true },
+      { code: 'DIWALI#150', off: 150, note: 'Festive offer (expired)', validFrom: '2026-10-01T00:00', validUntil: '2026-11-01T23:59', uses: 41, active: false }
+    ]),
   settings: {
     storeName: 'DriftOn™', legalName: business.legalName, email: business.email, phone: business.phone || '',
     address: business.address, hours: business.hours,
@@ -133,6 +136,6 @@ export const TOPIC_LABEL = { order: 'Order & delivery', returns: 'Returns & refu
 export const defaultConfig = () => ({
   products: initialData.products,
   offers: initialData.offers,
-  coupons: initialData.coupons.filter((c) => c.active).map(({ code, off, note, active }) => ({ code, off, note, active })),
+  coupons: initialData.coupons.filter((c) => c.active).map(({ code, off, note, validFrom, validUntil, active }) => ({ code, off, note, validFrom: validFrom || null, validUntil: validUntil || null, active })),
   settings: initialData.settings,
 });

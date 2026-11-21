@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
-import { formatINR, summarize, coupons } from '../data/products.js';
+import { formatINR, summarize, coupons, getCouponStatus } from '../data/products.js';
 import { createPayment } from '../lib/payment.js';
 import { saveOrder } from '../lib/api.js';
 import { QtyStepper, PriceRows } from './CartDrawer.jsx';
@@ -75,16 +75,31 @@ export default function BuyNowModal() {
   const total = sum.total + fee;
 
   const apply = () => {
-    const c = code.trim().toUpperCase();
-    if (coupons[c] && sum.comboSaving > 0) {
+    const c = code.trim();
+    if (!c) return;
+    const matchedKey = Object.keys(coupons).find((k) => k.toUpperCase() === c.toUpperCase());
+    const cp = matchedKey ? coupons[matchedKey] : null;
+    if (!cp) {
+      setApplied('');
+      return setCodeMsg('This coupon code is not valid.');
+    }
+    const status = getCouponStatus(cp);
+    if (!status.valid) {
+      setApplied('');
+      if (status.reason === 'not_started') {
+        return setCodeMsg(`This coupon will be active starting ${status.from}.`);
+      } else if (status.reason === 'expired') {
+        return setCodeMsg(`This coupon has expired on ${status.until}.`);
+      } else {
+        return setCodeMsg('This coupon is currently inactive.');
+      }
+    }
+    if (sum.comboSaving > 0) {
       setApplied('');
       setCodeMsg('Your combo already has free delivery. Coupons can be used on single-stick orders.');
-    } else if (coupons[c]) {
-      setApplied(c);
-      setCodeMsg(`${c} applied — ${coupons[c].note}`);
     } else {
-      setApplied('');
-      setCodeMsg('This coupon code is not valid.');
+      setApplied(matchedKey);
+      setCodeMsg(`${matchedKey} applied — ${cp.note || `₹${cp.off} off`}`);
     }
   };
 

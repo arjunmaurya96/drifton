@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
-import { products, formatINR, summarize, coupons, UNIT_PRICE, COMBO_PRICE, THIRD_PRICE } from '../data/products.js';
+import { products, formatINR, summarize, coupons, getCouponStatus, UNIT_PRICE, COMBO_PRICE, THIRD_PRICE } from '../data/products.js';
 import { createPayment } from '../lib/payment.js';
 import { saveOrder } from '../lib/api.js';
 import { firebaseReady } from '../lib/firebaseReady.js';
@@ -172,23 +172,36 @@ export default function CheckoutModal() {
   };
 
   const apply = () => {
-    const c = code.trim().toUpperCase();
-    if (coupons[c]) {
-      const discount = coupons[c].off;
-      setApplied(c);
-      setCodeMsg(`${c} applied — ${coupons[c].note}`);
-      setBoom({
-        show: true,
-        code: c,
-        title: 'Hurray! 🎉',
-        message: `${c} coupon applied successfully!`,
-        subtext: `You saved ₹${discount} with this coupon!`,
-        savings: discount,
-      });
-    } else {
+    const c = code.trim();
+    if (!c) return;
+    const matchedKey = Object.keys(coupons).find((k) => k.toUpperCase() === c.toUpperCase());
+    const cp = matchedKey ? coupons[matchedKey] : null;
+    if (!cp) {
       setApplied('');
-      setCodeMsg('This coupon code is not valid.');
+      return setCodeMsg('This coupon code is not valid.');
     }
+    const status = getCouponStatus(cp);
+    if (!status.valid) {
+      setApplied('');
+      if (status.reason === 'not_started') {
+        return setCodeMsg(`This coupon will be active starting ${status.from}.`);
+      } else if (status.reason === 'expired') {
+        return setCodeMsg(`This coupon has expired on ${status.until}.`);
+      } else {
+        return setCodeMsg('This coupon is currently inactive.');
+      }
+    }
+    const discount = cp.off;
+    setApplied(matchedKey);
+    setCodeMsg(`${matchedKey} applied — ${cp.note || `₹${discount} off`}`);
+    setBoom({
+      show: true,
+      code: matchedKey,
+      title: 'Hurray! 🎉',
+      message: `${matchedKey} coupon applied successfully!`,
+      subtext: `You saved ₹${discount} with this coupon!`,
+      savings: discount,
+    });
   };
 
   const removeCoupon = () => {

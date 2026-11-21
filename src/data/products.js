@@ -331,6 +331,39 @@ export const makeLine = (product, qty = 1, pack = packs[0]) => ({
   pack: pack.label, sticks: pack.multiplier, unitPrice: UNIT_PRICE * pack.multiplier, qty,
 });
 
+// Check coupon time & date validity
+export function getCouponStatus(coupon) {
+  if (!coupon) return { valid: false, reason: 'invalid' };
+  if (coupon.active === false) return { valid: false, reason: 'inactive' };
+
+  const now = Date.now();
+  if (coupon.validFrom) {
+    const fromTime = new Date(coupon.validFrom).getTime();
+    if (!isNaN(fromTime) && now < fromTime) {
+      return {
+        valid: false,
+        reason: 'not_started',
+        from: new Date(coupon.validFrom).toLocaleString('en-IN', {
+          day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
+        }),
+      };
+    }
+  }
+  if (coupon.validUntil) {
+    const untilTime = new Date(coupon.validUntil).getTime();
+    if (!isNaN(untilTime) && now > untilTime) {
+      return {
+        valid: false,
+        reason: 'expired',
+        until: new Date(coupon.validUntil).toLocaleString('en-IN', {
+          day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
+        }),
+      };
+    }
+  }
+  return { valid: true };
+}
+
 // Order summary with the automatic combo price, delivery and coupon
 export const summarize = (lines, couponCode = '') => {
   const sticks = lines.reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
@@ -339,11 +372,30 @@ export const summarize = (lines, couponCode = '') => {
   const items = priceFor(sticks, naturals);
   const comboSaving = full - items;
   const delivery = sticks === 0 || sticks >= 2 || !OFFERS_ON.delivery ? 0 : DELIVERY_FEE;
-  const coupon = coupons[couponCode.trim().toUpperCase()];
-  // Client: a combo gets ONE benefit — free delivery OR ₹100 off. Combos get free delivery, so the coupon is not added on top.
-  const couponBlocked = Boolean(coupon) && comboSaving > 0;
-  const couponOff = coupon && !couponBlocked ? Math.min(coupon.off, items) : 0;
-  return { sticks, naturals, full, items, comboSaving, delivery, couponBlocked, coupon: coupon && !couponBlocked ? couponCode.trim().toUpperCase() : '', couponOff, total: items + delivery - couponOff };
+
+  // Case-insensitive match, supporting special characters like @, #, -, _, !, etc.
+  const cleanCode = (couponCode || '').trim();
+  const matchedKey = Object.keys(coupons).find((k) => k.toUpperCase() === cleanCode.toUpperCase());
+  const coupon = matchedKey ? coupons[matchedKey] : null;
+  const status = coupon ? getCouponStatus(coupon) : { valid: false, reason: 'invalid' };
+  const isCouponValid = Boolean(coupon) && status.valid;
+
+  // Client: a combo gets ONE benefit — free delivery OR coupon off.
+  const couponBlocked = isCouponValid && comboSaving > 0;
+  const couponOff = isCouponValid && !couponBlocked ? Math.min(coupon.off, items) : 0;
+  return {
+    sticks,
+    naturals,
+    full,
+    items,
+    comboSaving,
+    delivery,
+    couponBlocked,
+    couponStatus: status,
+    coupon: isCouponValid && !couponBlocked ? matchedKey : '',
+    couponOff,
+    total: items + delivery - couponOff,
+  };
 };
 
 // =====================================================================
@@ -374,6 +426,14 @@ export function applyStoreConfig(cfg) {
   COMBO_SAVING = UNIT_PRICE * 2 - COMBO_PRICE;
   if (cfg.coupons) {
     Object.keys(coupons).forEach((k) => delete coupons[k]);
-    cfg.coupons.filter((c) => c.active).forEach((c) => { coupons[c.code] = { off: Number(c.off) || 0, note: c.note || '' }; });
+    cfg.coupons.filter((c) => c.active !== false).forEach((c) => {
+      coupons[c.code] = {
+        off: Number(c.off) || 0,
+        note: c.note || '',
+        validFrom: c.validFrom || null,
+        validUntil: c.validUntil || null,
+        active: c.active !== false,
+      };
+    });
   }
 }

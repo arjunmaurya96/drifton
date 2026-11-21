@@ -78,6 +78,7 @@ const tones = {
   Contacted: 'bg-[#FFF4E5] text-[#9A5A00]', Closed: 'bg-[#EEF0F4] text-[#5A6478]',
   Published: 'bg-[#E5F5EC] text-[#17703D]', Pending: 'bg-[#FFF4E5] text-[#9A5A00]', Hidden: 'bg-[#EEF0F4] text-[#5A6478]',
   Active: 'bg-[#E5F5EC] text-[#17703D]', Inactive: 'bg-[#EEF0F4] text-[#5A6478]',
+  Scheduled: 'bg-[#EAF0FF] text-[#2647B8]', Expired: 'bg-[#FDECEC] text-[#B42318]',
 };
 export function Badge({ children, tone }) {
   return (
