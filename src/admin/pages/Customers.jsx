@@ -13,6 +13,11 @@ import InvoiceModal from '../components/InvoiceModal.jsx';
  */
 function CustomerDashboard({ customer, onBack, onUpdateOrder, products, onOpenInvoice }) {
   const [trackingMap, setTrackingMap] = useState({});
+  const [visibleCount, setVisibleCount] = useState(3);
+
+  const visibleOrders = customer.orders.slice(0, visibleCount);
+  const hasMore = visibleCount < customer.orders.length;
+  const canShowLess = visibleCount > 3;
 
   return (
     <div className="flex flex-col gap-6 animate-fade-in">
@@ -197,7 +202,7 @@ function CustomerDashboard({ customer, onBack, onUpdateOrder, products, onOpenIn
             </Card>
           ) : (
             <div className="flex flex-col gap-4">
-              {customer.orders.map((o) => {
+              {visibleOrders.map((o) => {
                 const currentTracking = trackingMap[o.id] !== undefined ? trackingMap[o.id] : (o.tracking || '');
                 return (
                   <Card key={o.id} className="p-5 shadow-xs overflow-hidden border border-[#E0E4EE]">
@@ -360,6 +365,35 @@ function CustomerDashboard({ customer, onBack, onUpdateOrder, products, onOpenIn
                   </Card>
                 );
               })}
+
+              {/* Progressive Order Pagination: 3 orders initially, then Show More (+3) */}
+              {customer.orders.length > 3 && (
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 rounded-2xl border border-line bg-white p-4 shadow-xs mt-2">
+                  <div className="text-xs text-muted-2 font-medium">
+                    Showing <b className="text-navy-900 font-bold">{visibleOrders.length}</b> of <b className="text-navy-900 font-bold">{customer.orders.length}</b> orders placed by this customer
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {canShowLess && (
+                      <button
+                        type="button"
+                        onClick={() => setVisibleCount(3)}
+                        className="rounded-xl border border-line bg-page px-3.5 py-2 text-xs font-bold text-navy-900 hover:bg-[#EEF1F8] transition cursor-pointer"
+                      >
+                        Show Less (First 3)
+                      </button>
+                    )}
+                    {hasMore && (
+                      <button
+                        type="button"
+                        onClick={() => setVisibleCount((prev) => prev + 3)}
+                        className="btn-navy min-h-9 px-4 text-xs font-bold shadow-xs hover:scale-102 active:scale-98 transition-transform cursor-pointer"
+                      >
+                        Show More Orders (+3) ↓
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
