@@ -61,15 +61,15 @@ export default function ProductCard({ product, className = 'h-[500px] sm:h-[560p
           onClick={onAddToCart}
           aria-label={`Add ${product.name} to cart`}
           title={inCart ? `${product.name} is in cart (Click to view)` : `Add ${product.name} to cart`}
-          className={`relative flex size-11 shrink-0 items-center justify-center rounded-full border-[1.5px] transition hover:scale-105 active:scale-95 cursor-pointer shadow-xs ${
+          className={`relative flex size-9.5 sm:size-10 shrink-0 items-center justify-center rounded-full border-[1.5px] transition hover:scale-105 active:scale-95 cursor-pointer shadow-xs ${
             inCart
               ? 'border-brand bg-mint-soft text-brand-dark'
               : 'border-line-strong bg-white text-navy-900 hover:border-navy-900 hover:bg-page'
           }`}
         >
-          <Cart size={19} />
+          <Cart size={17} />
           {inCart && (
-            <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-brand text-[9.5px] font-bold text-white shadow-xs">
+            <span className="absolute -top-1 -right-1 flex size-3.5 items-center justify-center rounded-full bg-brand text-[9px] font-bold text-white shadow-xs">
               ✓
             </span>
           )}
@@ -80,7 +80,7 @@ export default function ProductCard({ product, className = 'h-[500px] sm:h-[560p
           type="button"
           onClick={onBuyNow}
           aria-label={`Buy ${product.name} now`}
-          className="shrink-0 whitespace-nowrap rounded-full bg-navy-900 px-4 py-2.5 sm:px-5 sm:py-3 font-jost text-[13px] sm:text-[13.5px] font-semibold uppercase tracking-wide text-white transition hover:bg-navy-700 hover:scale-105 active:scale-95 cursor-pointer shadow-sm"
+          className="h-9.5 sm:h-10 shrink-0 whitespace-nowrap rounded-full bg-navy-900 px-3.5 sm:px-4 font-jost text-[12px] sm:text-[12.5px] font-semibold uppercase tracking-wider text-white transition hover:bg-navy-700 hover:scale-105 active:scale-95 cursor-pointer shadow-sm"
         >
           Buy now
         </button>
