@@ -38,16 +38,51 @@ const GoogleIcon = ({ size = 20 }) => (
   </svg>
 );
 
-function Stepper({ step }) {
+function Stepper({ step, user }) {
+  const stepList = user
+    ? [
+        { id: 2, label: 'Offers & Cart' },
+        { id: 3, label: 'Delivery Address' },
+        { id: 4, label: 'Payment & Delivery' },
+      ]
+    : [
+        { id: 1, label: 'Sign in' },
+        { id: 2, label: 'Offers' },
+        { id: 3, label: 'Address' },
+        { id: 4, label: 'Payment' },
+      ];
+
+  const currentIndex = stepList.findIndex((s) => s.id === step);
+
   return (
-    <ol className="flex items-center gap-2 px-5 pb-4 sm:px-7">
-      {steps.map((s, k) => (
-        <li key={s} className="flex min-w-0 flex-1 items-center gap-2">
-          <span className={`flex size-7 shrink-0 items-center justify-center rounded-full text-[13px] font-bold ${k < step ? 'bg-brand text-white' : k === step ? 'bg-navy-900 text-white' : 'bg-page text-muted-2'}`}>
-            {k < step ? '✓' : k + 1}
+    <ol className="flex items-center gap-2 px-5 pb-3 sm:px-7">
+      {stepList.map((s, k) => (
+        <li key={s.id} className="flex min-w-0 flex-1 items-center gap-2">
+          <span
+            className={`flex size-7 shrink-0 items-center justify-center rounded-full text-[12.5px] font-bold ${
+              k < currentIndex
+                ? 'bg-brand text-white'
+                : k === currentIndex
+                ? 'bg-navy-900 text-white'
+                : 'bg-page text-muted-2'
+            }`}
+          >
+            {k < currentIndex ? '✓' : k + 1}
           </span>
-          <span className={`truncate text-[13px] font-semibold ${k === step ? 'text-navy-900' : 'text-muted-2'}`}>{s}</span>
-          {k < steps.length - 1 && <span className={`h-0.5 min-w-3 flex-1 rounded ${k < step ? 'bg-brand' : 'bg-line'}`} />}
+          <span
+            className={`truncate text-[12px] font-semibold ${
+              k === currentIndex ? 'text-navy-900' : 'text-muted-2'
+            }`}
+          >
+            {s.label}
+          </span>
+          {k < stepList.length - 1 && (
+            <span
+              className={`h-0.5 min-w-2 flex-1 rounded ${
+                k < currentIndex ? 'bg-brand' : 'bg-line'
+              }`}
+            />
+          )}
         </li>
       ))}
     </ol>
@@ -289,14 +324,37 @@ export default function CheckoutModal() {
     }
   };
 
+  const goToAddress = () => {
+    setErr('');
+    setStep(3);
+  };
+
+  const goToPayment = () => {
+    setErr('');
+    if (!d.name.trim()) return setErr('Please enter your full name for delivery.');
+    const cleanPhone = (d.phone || '').replace(/\D/g, '');
+    if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+      return setErr('Please enter a valid 10-digit mobile number (e.g. 9876543210). Mobile number is mandatory to proceed with payment and courier delivery.');
+    }
+    if (!/^\d{6}$/.test((d.pin || '').trim())) return setErr('Please enter a valid 6-digit delivery pincode.');
+    if (!d.address.trim()) return setErr('Please enter your complete delivery street address.');
+    setStep(4);
+  };
+
   const pay = async () => {
     setErr('');
     if (!user) {
       setStep(1);
       return setErr('Login is required. Please sign in or create an account to make payment.');
     }
-    if (!d.name.trim() || !d.address.trim() || !/^\d{6}$/.test(d.pin)) {
-      return setErr('Please add your name, full address and 6-digit pincode.');
+    const cleanPhone = (d.phone || '').replace(/\D/g, '');
+    if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+      setStep(3);
+      return setErr('Please provide a valid 10-digit mobile number. Mobile number is mandatory to complete payment.');
+    }
+    if (!d.name.trim() || !d.address.trim() || !/^\d{6}$/.test((d.pin || '').trim())) {
+      setStep(3);
+      return setErr('Please add your full name, complete address, and 6-digit pincode.');
     }
     setBusy(true);
     const r = await createPayment({
@@ -375,19 +433,41 @@ export default function CheckoutModal() {
       <div role="dialog" aria-modal="true" aria-label="Checkout" onClick={(e) => e.stopPropagation()}
         className="relative flex max-h-[94svh] w-full max-w-[640px] animate-fade-up flex-col overflow-hidden rounded-t-[26px] bg-white shadow-2xl sm:rounded-[28px]">
         {/* header */}
-        <div className="flex items-center justify-between gap-3 px-5 pb-3 pt-4 sm:px-7 sm:pt-5">
+        <div className="flex items-center justify-between gap-3 px-5 pb-2 pt-4 sm:px-7 sm:pt-5">
           <div className="flex items-center gap-2">
-            {step === 2 && !order && (
-              <button className="icon-btn size-10" onClick={() => { setErr(''); setStep(1); }} aria-label="Back"><ChevronLeft /></button>
+            {!order && step > 1 && !(user && step === 2) && (
+              <button
+                className="icon-btn size-10"
+                onClick={() => {
+                  setErr('');
+                  setStep((prev) => (prev === 4 ? 3 : prev === 3 ? 2 : 1));
+                }}
+                aria-label="Back"
+              >
+                <ChevronLeft />
+              </button>
             )}
-            <h2 className="text-xl font-semibold sm:text-[22px]">{order ? 'Order placed' : 'Checkout'}</h2>
+            <h2 className="text-xl font-semibold sm:text-[22px]">
+              {order
+                ? 'Order placed'
+                : step === 1
+                ? 'Sign in to checkout'
+                : step === 2
+                ? 'Offers & Items'
+                : step === 3
+                ? 'Delivery Address'
+                : 'Payment & Delivery'}
+            </h2>
           </div>
           <button className="icon-btn" onClick={closeCheckout} aria-label="Close"><Close /></button>
         </div>
         {!order && (
-          <div className="bg-[linear-gradient(90deg,#0A1E4A_0%,#1B49AF_50%,#0A1E4A_100%)] px-4 py-2 text-center text-[12.5px] font-bold tracking-wide text-white sm:text-[13px]">
-            <span className="inline-block animate-glow-blink">💥 Unlock Special Discounts at Checkout!</span>
-          </div>
+          <>
+            <Stepper step={step} user={Boolean(user)} />
+            <div className="bg-[linear-gradient(90deg,#0A1E4A_0%,#1B49AF_50%,#0A1E4A_100%)] px-4 py-1.5 text-center text-[12px] font-bold tracking-wide text-white sm:text-[12.5px]">
+              <span className="inline-block animate-glow-blink">💥 Unlock Special Discounts at Checkout!</span>
+            </div>
+          </>
         )}
 
         {order ? (
@@ -516,15 +596,43 @@ export default function CheckoutModal() {
                 </div>
               )}
 
-              {/* ---------- STEP 2: Address & Payment ---------- */}
+              {/* ---------- STEP 2: Offers & Cart Items Review ---------- */}
               {step === 2 && (
                 <>
                   <div className="flex items-center justify-between rounded-2xl bg-mint-soft px-4 py-3 text-[13.5px] font-semibold text-brand-dark">
                     <div className="flex items-center gap-2">
                       <CheckCircle size={19} />
-                      <span>Verified: <b>{d.email}</b> · Phone: <b>+91 {d.phone}</b></span>
+                      <span>Account: <b>{d.email || user?.email || 'Verified Customer'}</b> {d.phone ? `· +91 ${d.phone}` : ''}</span>
                     </div>
-                    <button type="button" onClick={() => { setStep(1); setOtpSent(false); setVerified(false); }} className="text-xs font-semibold text-navy-900 underline">Change</button>
+                    {!user && (
+                      <button type="button" onClick={() => { setStep(1); setOtpSent(false); setVerified(false); }} className="text-xs font-semibold text-navy-900 underline">Change</button>
+                    )}
+                  </div>
+
+                  {/* Free Delivery Progress Banner */}
+                  <div className="rounded-2xl border border-line bg-gradient-to-r from-[#F0FDF4] to-[#ECFDF5] p-3.5 text-xs shadow-xs">
+                    {sum.sticks === 1 ? (
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex items-center justify-between font-bold text-[#166534]">
+                          <span className="flex items-center gap-1.5">
+                            <span>🚚</span>
+                            <span>Add 2nd product to get FREE Delivery!</span>
+                          </span>
+                          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-800">1 of 2</span>
+                        </div>
+                        <div className="h-1.5 w-full rounded-full bg-emerald-200 overflow-hidden">
+                          <div className="h-full w-1/2 rounded-full bg-emerald-600 transition-all duration-300" />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between font-bold text-[#166534]">
+                        <span className="flex items-center gap-1.5">
+                          <span>🎉</span>
+                          <span>FREE Delivery Unlocked on this order!</span>
+                        </span>
+                        <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[10.5px] text-white">✓ Free Delivery</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Cart Items Summary */}
@@ -564,81 +672,241 @@ export default function CheckoutModal() {
                       onAddWithCelebration={handleAddWithCelebration}
                     />
                   )}
-                  <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <legend className="mb-2.5 text-sm font-bold">Delivery address</legend>
-                    <input className={field} placeholder="Full name" aria-label="Full name" autoComplete="name" value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} />
-                    <input className={field} placeholder="Pincode" aria-label="Pincode" inputMode="numeric" maxLength={6} value={d.pin} onChange={(e) => setD({ ...d, pin: e.target.value.replace(/\D/g, '') })} />
-                    <input className={`${field} sm:col-span-2`} placeholder="House no., street, area, city" aria-label="Address" autoComplete="street-address" value={d.address} onChange={(e) => setD({ ...d, address: e.target.value })} />
+                </>
+              )}
+
+              {/* ---------- STEP 3: Delivery Address & Mandatory 10-Digit Mobile ---------- */}
+              {step === 3 && (
+                <div className="flex flex-col gap-4">
+                  <div className="rounded-2xl border border-line bg-page p-3.5 text-xs text-muted-2">
+                    Please provide complete delivery details. Ekart tracking link will be sent to your mobile number.
+                  </div>
+
+                  <fieldset className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                    <legend className="mb-1 text-sm font-bold text-navy-900">Delivery Address Details</legend>
+
+                    <div className="flex flex-col gap-1 sm:col-span-2">
+                      <label className="text-xs font-bold text-navy-900">
+                        Full Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        className={field}
+                        placeholder="Your full name"
+                        aria-label="Full name"
+                        autoComplete="name"
+                        value={d.name}
+                        onChange={(e) => setD({ ...d, name: e.target.value })}
+                      />
+                    </div>
+
+                    {/* Compulsory 10-Digit Mobile Number Field */}
+                    <div className="flex flex-col gap-1 sm:col-span-2">
+                      <label className="text-xs font-bold text-navy-900 flex items-center justify-between">
+                        <span>Mobile Number (Required for Payment & Courier Delivery) <span className="text-red-500">*</span></span>
+                        {/^[6-9]\d{9}$/.test((d.phone || '').trim()) && (
+                          <span className="text-emerald-700 font-semibold text-[11px]">✓ 10-digit number verified</span>
+                        )}
+                      </label>
+                      <div className="flex items-center rounded-xl border-[1.5px] border-line-strong bg-white focus-within:border-navy-700 focus-within:ring-4 focus-within:ring-blue-soft">
+                        <span className="flex shrink-0 items-center gap-2 whitespace-nowrap border-r border-line px-3.5 text-[14px] font-semibold text-navy-900">
+                          🇮🇳 +91
+                        </span>
+                        <input
+                          className="min-h-12 w-full min-w-0 rounded-xl bg-transparent px-3.5 text-[15px] outline-none font-semibold text-navy-900"
+                          placeholder="10-digit mobile number"
+                          aria-label="Mobile number"
+                          inputMode="numeric"
+                          autoComplete="tel-national"
+                          maxLength={10}
+                          value={d.phone}
+                          onChange={(e) => setD({ ...d, phone: e.target.value.replace(/\D/g, '') })}
+                        />
+                      </div>
+                      {(!d.phone || d.phone.replace(/\D/g, '').length !== 10) && (
+                        <span className="text-[11.5px] font-medium text-red-600">
+                          ⚠️ 10-digit mobile number is compulsory. Payment will not proceed without it.
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-bold text-navy-900">
+                        Delivery Pincode <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        className={field}
+                        placeholder="6-digit PIN code"
+                        aria-label="Pincode"
+                        inputMode="numeric"
+                        maxLength={6}
+                        value={d.pin}
+                        onChange={(e) => setD({ ...d, pin: e.target.value.replace(/\D/g, '') })}
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1 sm:col-span-2">
+                      <label className="text-xs font-bold text-navy-900">
+                        Complete Address (House No, Street, Area, City, State) <span className="text-red-500">*</span>
+                      </label>
+                      <textarea
+                        rows={2}
+                        className={`${field} py-2.5 resize-none`}
+                        placeholder="House no., building name, street, locality, city"
+                        aria-label="Address"
+                        autoComplete="street-address"
+                        value={d.address}
+                        onChange={(e) => setD({ ...d, address: e.target.value })}
+                      />
+                    </div>
                   </fieldset>
+                </div>
+              )}
+
+              {/* ---------- STEP 4: Payment & Final Delivery Charges Summary ---------- */}
+              {step === 4 && (
+                <div className="flex flex-col gap-4">
+                  {/* Delivery Address Summary with Edit Option */}
+                  <div className="flex items-center justify-between rounded-2xl border border-line bg-page p-3.5 text-[12.5px]">
+                    <div className="min-w-0">
+                      <span className="block font-bold text-navy-900 uppercase text-[11px] tracking-wider text-muted-2">
+                        Delivering to:
+                      </span>
+                      <p className="font-semibold text-navy-900 truncate">
+                        {d.name} · +91 {d.phone}
+                      </p>
+                      <p className="text-muted-2 truncate text-xs">
+                        {d.address} (PIN: {d.pin})
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setStep(3)}
+                      className="text-xs font-bold text-brand hover:underline cursor-pointer shrink-0"
+                    >
+                      Change
+                    </button>
+                  </div>
+
+                  {/* Payment Method Selection */}
                   <fieldset>
-                    <legend className="mb-2.5 text-sm font-bold">Choose payment</legend>
+                    <legend className="mb-2 text-sm font-bold text-navy-900">Choose Payment Method</legend>
                     <div className="grid grid-cols-2 gap-2.5">
                       {methods.map((m) => (
-                        <label key={m.id} className={`flex cursor-pointer flex-col gap-0.5 rounded-2xl border-[1.5px] p-3.5 ${method === m.id ? 'border-navy-700 bg-blue-soft ring-1 ring-navy-700' : 'border-line-strong hover:border-navy-700'}`}>
-                          <input type="radio" name="pay-method" value={m.id} checked={method === m.id} onChange={() => setMethod(m.id)} className="sr-only" />
-                          <b className="text-[15px]">{m.label}</b>
-                          <span className="text-[13px] text-muted-2">{m.note}</span>
+                        <label
+                          key={m.id}
+                          className={`flex cursor-pointer flex-col gap-0.5 rounded-2xl border-[1.5px] p-3.5 transition-all ${
+                            method === m.id
+                              ? 'border-navy-700 bg-blue-soft ring-2 ring-navy-700/40 shadow-xs'
+                              : 'border-line-strong bg-white hover:border-navy-700'
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="pay-method"
+                            value={m.id}
+                            checked={method === m.id}
+                            onChange={() => setMethod(m.id)}
+                            className="sr-only"
+                          />
+                          <b className="text-[14.5px] font-bold text-navy-900">{m.label}</b>
+                          <span className="text-[12px] text-muted-2">{m.note}</span>
                         </label>
                       ))}
                     </div>
                   </fieldset>
-                </>
-              )}
 
-              {err && <p role="alert" className="order-3 text-sm font-semibold text-[#C0392B]">{err}</p>}
-            </div>
-
-            {/* footer: totals + main action */}
-            <div className="flex flex-col gap-3 border-t border-line bg-white px-5 py-4 sm:px-7">
-              <details className="group">
-                <summary className="flex cursor-pointer list-none items-center justify-between text-[15px]">
-                  <span className="text-muted">Total · {sum.sticks} {sum.sticks === 1 ? 'stick' : 'sticks'} <span className="text-xs underline">details</span></span>
-                  <b className="font-head text-xl">{formatINR(total)}</b>
-                </summary>
-                <PriceRows s={sum} className="mt-2" showDelivery={step === 2} />
-                {fee > 0 && step === 2 && <div className="mt-1.5 flex justify-between text-[14.5px] text-muted"><span>COD fee</span><span>{formatINR(fee)}</span></div>}
-
-                {/* Coupon Code Section with Celebration Trigger */}
-                <div className="mt-3 border-t border-line/70 pt-2.5">
-                  {applied ? (
-                    <div className="flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2 text-xs font-semibold text-emerald-800">
-                      <span className="flex items-center gap-1.5">
-                        <span className="rounded-full bg-emerald-600 px-1.5 py-0.5 text-[10px] text-white font-bold">COUPON</span>
-                        <span><b>{applied}</b> applied · Saved {formatINR(sum.couponOff || coupons[applied]?.off || 50)}</span>
-                      </span>
-                      <button type="button" onClick={removeCoupon} className="font-bold text-red-600 hover:underline cursor-pointer">
-                        Remove
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-1.5">
-                      <div className="flex items-center gap-2">
-                        <input
-                          value={code}
-                          onChange={(e) => setCode(e.target.value)}
-                          onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), apply())}
-                          placeholder="Coupon code (e.g. FIRST50)"
-                          className="min-h-10 flex-1 rounded-xl border border-line-strong bg-white px-3 text-xs uppercase outline-none focus:border-navy-700"
-                        />
-                        <button
-                          type="button"
-                          onClick={apply}
-                          disabled={!code.trim()}
-                          className="btn-navy min-h-10 px-4 text-xs font-bold disabled:opacity-50 cursor-pointer"
-                        >
-                          Apply
+                  {/* Coupon Code Section with Celebration Trigger */}
+                  <div className="rounded-2xl border border-line bg-page p-3.5">
+                    {applied ? (
+                      <div className="flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2 text-xs font-semibold text-emerald-800">
+                        <span className="flex items-center gap-1.5">
+                          <span className="rounded-full bg-emerald-600 px-1.5 py-0.5 text-[10px] text-white font-bold">COUPON</span>
+                          <span><b>{applied}</b> applied · Saved {formatINR(sum.couponOff || coupons[applied]?.off || 50)}</span>
+                        </span>
+                        <button type="button" onClick={removeCoupon} className="font-bold text-red-600 hover:underline cursor-pointer">
+                          Remove
                         </button>
                       </div>
-                      {codeMsg && <p className="text-[11.5px] font-medium text-brand">{codeMsg}</p>}
-                    </div>
-                  )}
-                </div>
-              </details>
+                    ) : (
+                      <div className="flex flex-col gap-1.5">
+                        <span className="text-xs font-bold text-navy-900">Have a coupon code?</span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            value={code}
+                            onChange={(e) => setCode(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), apply())}
+                            placeholder="Enter coupon (e.g. FIRST50)"
+                            className="min-h-10 flex-1 rounded-xl border border-line-strong bg-white px-3 text-xs uppercase outline-none focus:border-navy-700"
+                          />
+                          <button
+                            type="button"
+                            onClick={apply}
+                            disabled={!code.trim()}
+                            className="btn-navy min-h-10 px-4 text-xs font-bold disabled:opacity-50 cursor-pointer"
+                          >
+                            Apply
+                          </button>
+                        </div>
+                        {codeMsg && <p className="text-[11.5px] font-medium text-brand">{codeMsg}</p>}
+                      </div>
+                    )}
+                  </div>
 
+                  {/* SABSE LAST ME: Final Transparent Price & Delivery Fee Breakdown */}
+                  <div className="rounded-2xl border border-line-strong bg-white p-4 shadow-xs">
+                    <span className="block text-xs font-bold uppercase tracking-wider text-muted-2 mb-2.5">
+                      Order Summary & Delivery Fee
+                    </span>
+                    <div className="flex flex-col gap-1.5 text-[13.5px]">
+                      <div className="flex justify-between text-muted">
+                        <span>Items ({sum.sticks} {sum.sticks === 1 ? 'roll on' : 'roll ons'})</span>
+                        <span className="font-medium text-navy-900">{formatINR(sum.full)}</span>
+                      </div>
+                      {sum.comboSaving > 0 && (
+                        <div className="flex justify-between font-semibold text-[#166534]">
+                          <span>Combo Offer Discount</span>
+                          <span>− {formatINR(sum.comboSaving)}</span>
+                        </div>
+                      )}
+                      {sum.couponOff > 0 && (
+                        <div className="flex justify-between font-semibold text-[#166534]">
+                          <span>Coupon Discount ({applied})</span>
+                          <span>− {formatINR(sum.couponOff)}</span>
+                        </div>
+                      )}
+                      {/* Delivery Charge row: Admin dynamic value on single item, Free on 2+ items */}
+                      <div className="flex justify-between items-center py-1 border-t border-dashed border-line">
+                        <span className="font-semibold text-navy-900">Delivery Charge</span>
+                        {sum.delivery > 0 ? (
+                          <span className="font-bold text-navy-900">{formatINR(sum.delivery)}</span>
+                        ) : (
+                          <span className="font-bold text-[#166534]">FREE (Combo Unlocked)</span>
+                        )}
+                      </div>
+                      {fee > 0 && (
+                        <div className="flex justify-between text-muted">
+                          <span>COD Handling Fee</span>
+                          <span className="font-medium text-navy-900">{formatINR(fee)}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center pt-2.5 border-t border-line text-[16px] font-extrabold text-navy-900">
+                        <span>Total Payable Amount</span>
+                        <span className="text-[#166534] text-xl">{formatINR(total)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {err && <p role="alert" className="order-3 text-sm font-semibold text-[#C0392B] bg-red-50 p-3 rounded-xl border border-red-200">{err}</p>}
+            </div>
+
+            {/* footer: main action navigation */}
+            <div className="flex flex-col gap-3 border-t border-line bg-white px-5 py-4 sm:px-7">
               {step === 1 && (
                 authProvider === 'google' && !verified ? (
                   <button onClick={continueWithGooglePhone} disabled={!cart.length} className="btn-primary min-h-[52px] w-full text-base">
-                    Continue to Address
+                    Continue to Offers
                   </button>
                 ) : !otpSent ? (
                   <button onClick={sendOtp} disabled={!cart.length} className="btn-primary min-h-[52px] w-full text-base">
@@ -652,10 +920,37 @@ export default function CheckoutModal() {
               )}
 
               {step === 2 && (
-                <button onClick={pay} disabled={busy} className="btn-primary min-h-[52px] w-full text-base disabled:opacity-60">
-                  <Lock size={18} /> {busy ? 'Processing…' : method === 'cod' ? `Place order · ${formatINR(total)}` : `Pay ${formatINR(total)}`}
+                <button
+                  type="button"
+                  onClick={goToAddress}
+                  disabled={!cart.length}
+                  className="btn-primary min-h-[52px] w-full text-base font-bold shadow-md cursor-pointer"
+                >
+                  Continue to Delivery Address →
                 </button>
               )}
+
+              {step === 3 && (
+                <button
+                  type="button"
+                  onClick={goToPayment}
+                  className="btn-primary min-h-[52px] w-full text-base font-bold shadow-md cursor-pointer"
+                >
+                  Continue to Payment →
+                </button>
+              )}
+
+              {step === 4 && (
+                <button
+                  type="button"
+                  onClick={pay}
+                  disabled={busy}
+                  className="btn-primary min-h-[52px] w-full text-base font-bold shadow-lg disabled:opacity-60 cursor-pointer"
+                >
+                  <Lock size={18} /> {busy ? 'Processing…' : method === 'cod' ? `Confirm COD Order · ${formatINR(total)}` : `Pay ${formatINR(total)}`}
+                </button>
+              )}
+
               <span className="flex items-center justify-center gap-4 text-xs text-muted-2">
                 <span className="flex items-center gap-1.5"><Shield size={14} />Secure checkout</span>
                 <span className="flex items-center gap-1.5"><Truck size={16} />Ships in 1–2 days</span>

@@ -437,3 +437,14 @@ export function applyStoreConfig(cfg) {
     });
   }
 }
+
+// Auto-hydrate initial config from demo localStorage if present
+try {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    const savedDemo = JSON.parse(window.localStorage.getItem('drifton_admin_demo') || 'null');
+    if (savedDemo?.offers) {
+      applyStoreConfig({ offers: savedDemo.offers, products: savedDemo.products, coupons: savedDemo.coupons });
+    }
+  }
+} catch {}
+

@@ -119,7 +119,7 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
 
       {/* ---------- OFFER 2: 3rd Roll On for ₹300 ---------- */}
       {step === 2 ? (
-        /* Offer 2 Unlocked State (count = 2) */
+        /* Offer 2 Unlocked State (count = 2) - appears only after 2nd product is added */
         <div className="flex flex-col gap-3 rounded-2xl bg-[linear-gradient(135deg,#0A1E4A_0%,#153A7A_100%)] p-4 text-white shadow-xl ring-2 ring-mint/60 animate-fade-up">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
@@ -159,21 +159,7 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
           <CheckCircle size={20} className="shrink-0 text-mint" />
           <span>3rd roll on for {formatINR(THIRD_PRICE)} applied · Extra {formatINR(UNIT_PRICE - THIRD_PRICE)} saved!</span>
         </div>
-      ) : (
-        /* Offer 2 Locked Preview State (count = 1) */
-        <div className="flex items-center justify-between rounded-2xl border border-line-strong bg-page p-3.5 opacity-85">
-          <div className="min-w-0">
-            <span className="block text-[11px] font-bold uppercase tracking-wider text-muted-2">
-              🔒 Offer 2 · 3rd Roll On
-            </span>
-            <b className="font-head text-[13.5px] font-semibold text-navy-900">
-              Unlocks after your 2nd roll on
-            </b>
-            <span className="block text-[12px] text-muted-2">Get your 3rd roll on for just {formatINR(THIRD_PRICE)}</span>
-          </div>
-          <span className="shrink-0 font-serif text-2xl font-bold text-muted-2">{formatINR(THIRD_PRICE)}</span>
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }
@@ -260,6 +246,34 @@ export default function CartDrawer() {
 
         {/* Cart Items & Offers */}
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-5 sm:px-6">
+          {/* Smart Free Delivery Progress Banner */}
+          {cart.length > 0 && (
+            <div className="rounded-2xl border border-line bg-gradient-to-r from-[#F0FDF4] to-[#ECFDF5] p-3 text-xs shadow-xs">
+              {count === 1 ? (
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between font-bold text-[#166534]">
+                    <span className="flex items-center gap-1.5">
+                      <span>🚚</span>
+                      <span>Add 2nd product to get FREE Delivery!</span>
+                    </span>
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-800">1 of 2</span>
+                  </div>
+                  <div className="h-1.5 w-full rounded-full bg-emerald-200 overflow-hidden">
+                    <div className="h-full w-1/2 rounded-full bg-emerald-600 transition-all duration-300" />
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between font-bold text-[#166534]">
+                  <span className="flex items-center gap-1.5">
+                    <span>🎉</span>
+                    <span>FREE Delivery Unlocked on this order!</span>
+                  </span>
+                  <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[10.5px] text-white">✓ Free Delivery</span>
+                </div>
+              )}
+            </div>
+          )}
+
           {cart.length === 0 ? (
             <div className="flex flex-col items-center gap-4 py-16 text-center text-muted-2">
               <Bag size={40} />
@@ -298,13 +312,13 @@ export default function CartDrawer() {
           )}
         </div>
 
-        {/* Footer: Price summary & Checkout CTA */}
+        {/* Footer: Price summary & Checkout CTA (Delivery fee hidden in cart, shown only in final checkout step) */}
         {cart.length > 0 && (
           <div className="flex flex-col gap-3 border-t border-line bg-white px-5 py-4 sm:px-6">
-            <PriceRows s={summary} />
+            <PriceRows s={summary} showDelivery={false} />
             <div className="flex justify-between border-t border-line pt-2.5 text-[17px] font-bold text-navy-900">
               <span>Total</span>
-              <span>{formatINR(summary.total)}</span>
+              <span>{formatINR(summary.items - summary.couponOff)}</span>
             </div>
             <TaxNote className="text-[12.5px]" />
             <button

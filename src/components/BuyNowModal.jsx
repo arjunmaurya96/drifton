@@ -125,8 +125,13 @@ export default function BuyNowModal() {
       return setErr('Customer login is required before making payment. Please sign in or create an account.');
     }
 
-    if (!d.name.trim() || !d.email.trim() || !/^[6-9]\d{9}$/.test(d.phone) || !d.address.trim() || !/^\d{6}$/.test(d.pin)) {
-      return setErr('Please enter your full name, valid email, 10-digit mobile number, address, and 6-digit pincode.');
+    const cleanPhone = (d.phone || '').replace(/\D/g, '');
+    if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+      return setErr('Please enter a valid 10-digit mobile number (e.g. 9876543210). Mobile number is mandatory for courier delivery and payment.');
+    }
+
+    if (!d.name.trim() || !d.email.trim() || !d.address.trim() || !/^\d{6}$/.test(d.pin)) {
+      return setErr('Please enter your full name, valid email, complete address, and 6-digit pincode.');
     }
 
     setBusy(true);
