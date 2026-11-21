@@ -3,7 +3,7 @@ import { Close } from './Icons.jsx';
 
 const COLORS = ['#F59E0B', '#EC4899', '#3B82F6', '#10B981', '#8B5CF6', '#EF4444', '#06B6D4', '#F97316'];
 
-export default function ConfettiBoom({ show, code = '', savings = 0, onClose }) {
+export default function ConfettiBoom({ show, code = '', savings = 0, title = 'Hurray!', message = '', subtext = '', onClose }) {
   useEffect(() => {
     if (!show) return;
     const timer = setTimeout(() => {
@@ -100,16 +100,28 @@ export default function ConfettiBoom({ show, code = '', savings = 0, onClose }) 
 
         {/* Hurray Message */}
         <h3 className="font-head text-[24px] font-extrabold tracking-tight text-navy-900">
-          Hurray!
+          {title || 'Hurray!'}
         </h3>
         <p className="mt-1 text-[15px] font-medium text-slate-700">
-          <b className="font-bold text-brand uppercase">{code}</b> applied successfully.
+          {message ? (
+            <span>{message}</span>
+          ) : code ? (
+            <span><b className="font-bold text-brand uppercase">{code}</b> applied successfully.</span>
+          ) : (
+            <span>Offer applied successfully!</span>
+          )}
         </p>
 
         {/* Savings Text */}
-        <p className="mt-1.5 text-[16px] font-bold text-navy-900">
-          You saved <span className="text-brand font-extrabold">₹{savings}</span> with this coupon.
-        </p>
+        {(subtext || savings > 0) && (
+          <p className="mt-1.5 text-[16px] font-bold text-navy-900">
+            {subtext ? (
+              <span>{subtext}</span>
+            ) : (
+              <span>You saved <span className="text-brand font-extrabold">₹{savings}</span> with this offer!</span>
+            )}
+          </p>
+        )}
 
         {/* Action Link Button */}
         <button
