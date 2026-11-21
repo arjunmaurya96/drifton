@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
-import { products, formatINR, summarize, coupons, UNIT_PRICE, COMBO_PRICE } from '../data/products.js';
+import { products, formatINR, summarize, coupons, UNIT_PRICE, COMBO_PRICE, THIRD_PRICE } from '../data/products.js';
 import { createPayment } from '../lib/payment.js';
 import { saveOrder } from '../lib/api.js';
 import { firebaseReady } from '../lib/firebaseReady.js';
@@ -77,7 +77,7 @@ function OtpBoxes({ value, onChange }) {
 }
 
 export default function CheckoutModal() {
-  const { checkoutOpen, closeCheckout, cart, updateQty, addToCart, clearCart, user, userProfile, recordUserOrder, loginWithGoogle, openAuth, loginWithOtp } = useStore();
+  const { checkoutOpen, closeCheckout, cart, count, updateQty, addToCart, clearCart, user, userProfile, recordUserOrder, loginWithGoogle, openAuth, loginWithOtp } = useStore();
   const [step, setStep] = useState(1);
   const [code, setCode] = useState('');
   const [applied, setApplied] = useState('');
@@ -93,7 +93,7 @@ export default function CheckoutModal() {
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
   const [order, setOrder] = useState(null);
-  const [boom, setBoom] = useState({ show: false, code: '', savings: 0 });
+  const [boom, setBoom] = useState({ show: false, code: '', title: '', message: '', subtext: '', savings: 0 });
 
   const closeRef = useRef(closeCheckout);
   closeRef.current = closeCheckout;
@@ -143,13 +143,48 @@ export default function CheckoutModal() {
   const total = sum.total + fee;
   const qtyOf = (id) => cart.filter((l) => l.id === id).reduce((s, l) => s + l.qty * (l.sticks || 1), 0);
 
+  const handleAddWithCelebration = (product, offerType) => {
+    addToCart(product);
+    if (offerType === 'combo2') {
+      const isNatural = product.id === 'natural' || cart.some((c) => c.id === 'natural');
+      const saving = isNatural ? 200 : 150;
+      setBoom({
+        show: true,
+        code: '',
+        title: 'Hurray! Combo Unlocked 🎉',
+        message: `${product.name} added! 2 Roll Ons Combo Applied.`,
+        subtext: `You saved ₹${saving} + FREE Delivery!`,
+        savings: saving,
+      });
+    } else if (offerType === 'combo3') {
+      const saving = UNIT_PRICE - THIRD_PRICE; // 175
+      setBoom({
+        show: true,
+        code: '',
+        title: 'Super Savings Unlocked! 🚀',
+        message: `${product.name} added for just ₹${THIRD_PRICE}!`,
+        subtext: `You saved ₹${saving} extra on your 3rd roll on!`,
+        savings: saving,
+      });
+    } else {
+      addToCart(product);
+    }
+  };
+
   const apply = () => {
     const c = code.trim().toUpperCase();
     if (coupons[c]) {
       const discount = coupons[c].off;
       setApplied(c);
       setCodeMsg(`${c} applied — ${coupons[c].note}`);
-      setBoom({ show: true, code: c, savings: discount });
+      setBoom({
+        show: true,
+        code: c,
+        title: 'Hurray! 🎉',
+        message: `${c} coupon applied successfully!`,
+        subtext: `You saved ₹${discount} with this coupon!`,
+        savings: discount,
+      });
     } else {
       setApplied('');
       setCodeMsg('This coupon code is not valid.');
@@ -478,6 +513,44 @@ export default function CheckoutModal() {
                     </div>
                     <button type="button" onClick={() => { setStep(1); setOtpSent(false); setVerified(false); }} className="text-xs font-semibold text-navy-900 underline">Change</button>
                   </div>
+
+                  {/* Cart Items Summary */}
+                  {cart.length > 0 && (
+                    <div className="flex flex-col gap-2.5 rounded-2xl border border-line bg-page/40 p-3.5 sm:p-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[12.5px] font-bold uppercase tracking-wider text-navy-900">
+                          Items in your order ({sum.sticks} {sum.sticks === 1 ? 'stick' : 'sticks'})
+                        </span>
+                        <span className="text-xs font-semibold text-brand">Auto-Combo Savings</span>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        {cart.map((l) => (
+                          <div key={l.key} className="flex items-center gap-3 rounded-xl border border-line bg-white p-2.5 shadow-xs">
+                            <span className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-page p-1">
+                              <img src={l.image} alt="" className="h-full w-auto object-contain" />
+                            </span>
+                            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                              <b className="truncate font-head text-[14px] font-semibold text-navy-900">{l.name}</b>
+                              <small className="text-xs text-muted-2">{l.pack} · {formatINR(l.unitPrice)}</small>
+                              <div className="self-start mt-0.5">
+                                <QtyStepper size="sm" value={l.qty} onChange={(q) => updateQty(l.key, q)} />
+                              </div>
+                            </div>
+                            <b className="font-head text-[14px] text-navy-900">{formatINR(l.qty * l.unitPrice)}</b>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Interactive Cart Offers with celebration right inside Checkout */}
+                  {cart.length > 0 && (
+                    <CartOffers
+                      cart={cart}
+                      count={count}
+                      onAddWithCelebration={handleAddWithCelebration}
+                    />
+                  )}
                   <fieldset className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <legend className="mb-2.5 text-sm font-bold">Delivery address</legend>
                     <input className={field} placeholder="Full name" aria-label="Full name" autoComplete="name" value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} />
@@ -579,12 +652,15 @@ export default function CheckoutModal() {
         )}
       </div>
 
-      {/* Confetti Explosion Celebration Modal on Offer/Coupon Apply */}
+      {/* Confetti Explosion Celebration (Non-blocking directly in UI) */}
       <ConfettiBoom
         show={boom.show}
         code={boom.code}
+        title={boom.title}
+        message={boom.message}
+        subtext={boom.subtext}
         savings={boom.savings}
-        onClose={() => setBoom({ show: false, code: '', savings: 0 })}
+        onClose={() => setBoom({ show: false, code: '', title: '', message: '', subtext: '', savings: 0 })}
       />
     </div>
   );
