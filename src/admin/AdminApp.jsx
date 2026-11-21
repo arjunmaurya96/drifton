@@ -225,6 +225,7 @@ function Shell({ onLogout }) {
             <Route path="products" element={<Products />} />
             <Route path="offers" element={<Offers />} />
             <Route path="customers" element={<Customers />} />
+            <Route path="customers/:id" element={<Customers />} />
             <Route path="enquiries" element={<Enquiries />} />
             <Route path="reviews" element={<Reviews />} />
             <Route path="settings" element={<Settings />} />
