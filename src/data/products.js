@@ -63,14 +63,17 @@ export let STORE_OFFERS = {
   },
 };
 
-// Unified slot-assignment algorithm: single source of truth for line items & order totals
+// Unified chronological pricing algorithm:
+// • 1st stick: ₹475
+// • 2nd stick: ₹300 (if Natural in pair) or ₹325 (if other in pair)
+// • From 3rd stick onwards (3rd, 4th, 5th, etc.):
+//   - Any Natural stick added = ₹250
+//   - Any other variant added (Palash, Charcoal, Rose) = ₹275
+//   - Previous item prices remain untouched!
+// • Free delivery on 3+ sticks!
 export function assignStickPrices(flatSticks) {
   const N = flatSticks.length;
-  const setsOf3 = Math.floor(N / 3);
-  const remainder = N % 3;
-
-  const numThirdSlots = setsOf3;
-  const numPairSlots = setsOf3 + (remainder === 2 ? 1 : 0);
+  if (N === 0) return flatSticks;
 
   // Reset roles and prices
   flatSticks.forEach((s) => {
@@ -78,58 +81,51 @@ export function assignStickPrices(flatSticks) {
     s.price = UNIT_PRICE; // default 475
   });
 
-  // 1. Assign 3rd slots (highest discount: Natural ₹250, other variants ₹275)
-  let thirdAllocated = 0;
-  // Natural sticks get ₹250 3rd-slot first for maximum customer savings
-  flatSticks.forEach((s) => {
-    if (s.id === 'natural' && thirdAllocated < numThirdSlots) {
+  if (N === 1) {
+    flatSticks[0].role = 'regular';
+    flatSticks[0].price = UNIT_PRICE; // 475
+    return flatSticks;
+  }
+
+  // First 2 sticks (Pair):
+  const pairHasNatural = flatSticks[0].id === 'natural' || flatSticks[1].id === 'natural';
+  if (pairHasNatural) {
+    if (flatSticks[1].id === 'natural') {
+      flatSticks[0].role = 'regular';
+      flatSticks[0].price = UNIT_PRICE; // 475
+      flatSticks[1].role = 'pair-natural';
+      flatSticks[1].price = PAIR_NATURAL_PRICE; // 300
+    } else {
+      flatSticks[0].role = 'pair-natural';
+      flatSticks[0].price = PAIR_NATURAL_PRICE; // 300
+      flatSticks[1].role = 'regular';
+      flatSticks[1].price = UNIT_PRICE; // 475
+    }
+  } else {
+    flatSticks[0].role = 'regular';
+    flatSticks[0].price = UNIT_PRICE; // 475
+    flatSticks[1].role = 'pair-regular';
+    flatSticks[1].price = PAIR_REGULAR_PRICE; // 325
+  }
+
+  // All sticks from 3rd onwards (index 2, 3, 4, ...):
+  for (let i = 2; i < N; i++) {
+    const s = flatSticks[i];
+    if (s.id === 'natural') {
       s.role = 'third-natural';
       s.price = THIRD_NATURAL_PRICE; // 250
-      thirdAllocated++;
-    }
-  });
-  // Remaining 3rd slots assigned to other sticks (from the end)
-  for (let i = flatSticks.length - 1; i >= 0 && thirdAllocated < numThirdSlots; i--) {
-    const s = flatSticks[i];
-    if (!s.role) {
+    } else {
       s.role = 'third-regular';
       s.price = THIRD_REGULAR_PRICE; // 275
-      thirdAllocated++;
     }
   }
-
-  // 2. Assign 2nd slots (Natural ₹300, other variants ₹325)
-  let pairAllocated = 0;
-  flatSticks.forEach((s) => {
-    if (!s.role && s.id === 'natural' && pairAllocated < numPairSlots) {
-      s.role = 'pair-natural';
-      s.price = PAIR_NATURAL_PRICE; // 300
-      pairAllocated++;
-    }
-  });
-  for (let i = flatSticks.length - 1; i >= 0 && pairAllocated < numPairSlots; i--) {
-    const s = flatSticks[i];
-    if (!s.role) {
-      s.role = 'pair-regular';
-      s.price = PAIR_REGULAR_PRICE; // 325
-      pairAllocated++;
-    }
-  }
-
-  // 3. All remaining sticks are 1st slots (Regular full price: ₹475)
-  flatSticks.forEach((s) => {
-    if (!s.role) {
-      s.role = 'regular';
-      s.price = UNIT_PRICE; // 475
-    }
-  });
 
   return flatSticks;
 }
 
 // Computes transparent individual line item pricing:
 // • 2nd roll on: gets ₹300 (Natural) or ₹325 (Other)
-// • 3rd roll on: gets ₹250 (Natural) or ₹275 (Other)
+// • From 3rd roll on onwards: gets ₹250 (Natural) or ₹275 (Other)
 // • Free delivery is unlocked when total sticks >= 3
 export function computeCartLinePrices(cart) {
   // Flatten all individual sticks with their line key and product id
@@ -163,17 +159,28 @@ export function computeCartLinePrices(cart) {
 
 export const priceFor = (n, naturals = 0) => {
   if (n <= 0) return 0;
-  const flatSticks = [];
-  for (let i = 0; i < naturals && i < n; i++) {
-    flatSticks.push({ id: 'natural' });
-  }
-  while (flatSticks.length < n) {
-    flatSticks.push({ id: 'other' });
+  if (n === 1) return UNIT_PRICE; // 475
+
+  let total = 0;
+  let remNaturals = naturals;
+
+  // First 2 sticks:
+  if (remNaturals > 0) {
+    total += UNIT_PRICE + PAIR_NATURAL_PRICE; // 475 + 300 = 775
+    remNaturals--;
+  } else {
+    total += UNIT_PRICE + PAIR_REGULAR_PRICE; // 475 + 325 = 800
   }
 
-  assignStickPrices(flatSticks);
+  // All sticks from 3rd onwards:
+  const extraSticks = n - 2;
+  if (extraSticks > 0) {
+    const extraNaturals = Math.min(extraSticks, remNaturals);
+    const extraOthers = extraSticks - extraNaturals;
+    total += extraNaturals * THIRD_NATURAL_PRICE + extraOthers * THIRD_REGULAR_PRICE;
+  }
 
-  return flatSticks.reduce((sum, s) => sum + s.price, 0);
+  return total;
 };
 
 // Coupons — DUMMY codes, confirm with the client
@@ -510,11 +517,21 @@ export function getCouponStatus(coupon) {
 }
 
 // Order summary with the automatic combo price, delivery and coupon
-export const summarize = (lines, couponCode = '') => {
-  const sticks = lines.reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
+export const summarize = (lines = [], couponCode = '') => {
+  const flatSticks = [];
+  (lines || []).forEach((l) => {
+    const count = (l.sticks || 1) * (l.qty || 1);
+    for (let i = 0; i < count; i++) {
+      flatSticks.push({ key: l.key, id: l.id });
+    }
+  });
+
+  assignStickPrices(flatSticks);
+
+  const sticks = flatSticks.length;
   const full = sticks * UNIT_PRICE;
-  const naturals = lines.filter((l) => l.id === 'natural').reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
-  const items = priceFor(sticks, naturals);
+  const naturals = flatSticks.filter((s) => s.id === 'natural').length;
+  const items = flatSticks.reduce((sum, s) => sum + s.price, 0);
   const comboSaving = full - items;
   // Free delivery unlocked only when 3 or more items are ordered
   const delivery = sticks === 0 || sticks >= 3 || !OFFERS_ON.delivery ? 0 : DELIVERY_FEE;
