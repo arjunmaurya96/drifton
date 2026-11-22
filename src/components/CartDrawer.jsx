@@ -41,15 +41,18 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
 
   return (
     <div className="mt-2 flex flex-col gap-3.5 border-t border-dashed border-line-strong pt-5">
+      {/* Big Attractive Blinking 'Offers for you' Header */}
       <div className="flex items-center justify-between">
-        <span className="flex items-center gap-2 text-[15px] font-head font-bold uppercase tracking-wider text-navy-900">
-          <Sparkle size={18} className="text-brand" /> Offers for you
-        </span>
-        {count > 1 && (
-          <span className="text-[12px] font-semibold text-brand">
-            {count === 2 ? '🔥 ₹300 Offer Unlocked' : '✓ Maximum Savings Unlocked'}
+        <div className="inline-flex items-center gap-2.5 rounded-2xl bg-gradient-to-r from-brand/15 via-brand/5 to-transparent px-3.5 py-1.5 border border-brand/25 shadow-xs">
+          <Sparkle size={22} className="text-brand shrink-0 animate-spin" style={{ animationDuration: '6s' }} />
+          <span className="font-head text-[19px] sm:text-[21px] font-black tracking-wide text-brand-dark animate-pulse">
+            Offers for you
           </span>
-        )}
+          <span className="relative flex size-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-75"></span>
+            <span className="relative inline-flex rounded-full size-2.5 bg-brand"></span>
+          </span>
+        </div>
       </div>
 
       {/* ---------- OFFER 1: 2nd Roll On (Pair for ₹750 / ₹800) ---------- */}
@@ -119,10 +122,7 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
         <div className="flex flex-col gap-3 rounded-2xl bg-[linear-gradient(135deg,#0A1E4A_0%,#153A7A_100%)] p-4 text-white shadow-xl ring-2 ring-mint/60 animate-fade-up">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <span className="inline-flex items-center gap-1 rounded-full bg-mint/20 px-2 py-0.5 text-[10.5px] font-extrabold uppercase tracking-wide text-mint">
-                🔥 Mega Offer 2 · Unlocked!
-              </span>
-              <b className="mt-1 block font-head text-[15.5px] font-bold text-white">
+              <b className="block font-head text-[16px] sm:text-[17px] font-bold text-white">
                 Add any 3rd roll on for just {formatINR(THIRD_PRICE)}!
               </b>
               <span className="text-[12px] text-white/80">Regular price {formatINR(UNIT_PRICE)} · You save {formatINR(UNIT_PRICE - THIRD_PRICE)}</span>
