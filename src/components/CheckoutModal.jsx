@@ -696,6 +696,49 @@ export default function CheckoutModal() {
                       onAddWithCelebration={handleAddWithCelebration}
                     />
                   )}
+
+                  {/* Order Summary & Total Price Card on Step 2 */}
+                  <div className="rounded-2xl border border-line-strong bg-white p-4 shadow-xs">
+                    <div className="flex items-center justify-between border-b border-line pb-2 mb-2.5">
+                      <span className="text-xs font-bold uppercase tracking-wider text-navy-900">
+                        Order Summary ({sum.sticks} {sum.sticks === 1 ? 'item' : 'items'})
+                      </span>
+                      <span className="text-xs font-bold text-navy-700">Subtotal</span>
+                    </div>
+                    <div className="flex flex-col gap-1.5 text-[13.5px]">
+                      <div className="flex justify-between text-muted">
+                        <span>Items ({sum.sticks} {sum.sticks === 1 ? 'roll on' : 'roll ons'})</span>
+                        <span className="font-medium text-navy-900">{formatINR(sum.full)}</span>
+                      </div>
+                      {sum.comboSaving > 0 && (
+                        <div className="flex justify-between font-semibold text-[#166534]">
+                          <span>Offer Discount</span>
+                          <span>− {formatINR(sum.comboSaving)}</span>
+                        </div>
+                      )}
+                      {sum.couponOff > 0 && (
+                        <div className="flex justify-between font-semibold text-[#166534]">
+                          <span>Coupon Discount</span>
+                          <span>− {formatINR(sum.couponOff)}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center py-1 border-t border-dashed border-line">
+                        <span className="font-semibold text-navy-900">Delivery Charge</span>
+                        {sum.delivery > 0 ? (
+                          <div className="text-right">
+                            <span className="font-bold text-navy-900">{formatINR(sum.delivery)}</span>
+                            <span className="block text-[11px] font-semibold text-brand">Add 3rd roll on for FREE delivery</span>
+                          </div>
+                        ) : (
+                          <span className="font-bold text-[#166534]">FREE (3+ items unlocked)</span>
+                        )}
+                      </div>
+                      <div className="flex justify-between items-center pt-2.5 border-t border-line text-[16px] font-extrabold text-navy-900">
+                        <span>Total Payable</span>
+                        <span className="text-[#166534] text-xl">{formatINR(sum.total)}</span>
+                      </div>
+                    </div>
+                  </div>
                 </>
               )}
 
@@ -947,24 +990,60 @@ export default function CheckoutModal() {
               )}
 
               {step === 2 && (
-                <button
-                  type="button"
-                  onClick={goToAddress}
-                  disabled={!cart.length}
-                  className="btn-primary min-h-[52px] w-full text-base font-bold shadow-md cursor-pointer"
-                >
-                  Continue to Delivery Address →
-                </button>
+                <div className="flex flex-col gap-2.5">
+                  <div className="flex items-center justify-between text-[14.5px] font-bold text-navy-900">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-muted-2 font-semibold">Total ({sum.sticks} {sum.sticks === 1 ? 'item' : 'items'}):</span>
+                      <span className="text-xl font-black text-[#166534]">{formatINR(sum.total)}</span>
+                    </div>
+                    {sum.delivery > 0 ? (
+                      <span className="rounded-md bg-amber-50 border border-amber-200 px-2 py-0.5 text-xs font-semibold text-amber-800">
+                        + {formatINR(sum.delivery)} Delivery
+                      </span>
+                    ) : (
+                      <span className="rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-xs font-bold text-[#166534]">
+                        ✓ FREE Delivery
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={goToAddress}
+                    disabled={!cart.length}
+                    className="btn-primary min-h-[52px] w-full text-base font-bold shadow-md cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <span>Continue to Delivery Address</span>
+                    <span>→</span>
+                  </button>
+                </div>
               )}
 
               {step === 3 && (
-                <button
-                  type="button"
-                  onClick={goToPayment}
-                  className="btn-primary min-h-[52px] w-full text-base font-bold shadow-md cursor-pointer"
-                >
-                  Continue to Payment →
-                </button>
+                <div className="flex flex-col gap-2.5">
+                  <div className="flex items-center justify-between text-[14.5px] font-bold text-navy-900">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-muted-2 font-semibold">Total ({sum.sticks} {sum.sticks === 1 ? 'item' : 'items'}):</span>
+                      <span className="text-xl font-black text-[#166534]">{formatINR(sum.total)}</span>
+                    </div>
+                    {sum.delivery > 0 ? (
+                      <span className="rounded-md bg-amber-50 border border-amber-200 px-2 py-0.5 text-xs font-semibold text-amber-800">
+                        + {formatINR(sum.delivery)} Delivery
+                      </span>
+                    ) : (
+                      <span className="rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-xs font-bold text-[#166534]">
+                        ✓ FREE Delivery
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={goToPayment}
+                    className="btn-primary min-h-[52px] w-full text-base font-bold shadow-md cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <span>Continue to Payment</span>
+                    <span>→</span>
+                  </button>
+                </div>
               )}
 
               {step === 4 && (
