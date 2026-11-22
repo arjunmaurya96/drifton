@@ -186,29 +186,33 @@ export default function CheckoutModal() {
         setBoom({
           show: true,
           code: '',
-          title: 'Hurray! Natural Offer Applied 🎉',
+          title: '🎉 You Unlocked a Wonderful Offer!',
           message: `${product.name} added! Natural Roll On for ₹300.`,
-          subtext: `You saved ₹175!`,
+          subtext: `Natural Roll On for ₹300 · You saved ₹175!`,
           savings: 175,
         });
       } else {
         setBoom({
           show: true,
           code: '',
-          title: 'Product Added! 🎉',
-          message: `${product.name} added to cart!`,
-          subtext: `Add 3rd roll on for ₹300 + FREE Delivery!`,
-          savings: 0,
+          title: '🎉 You Unlocked a Wonderful Offer!',
+          message: `${product.name} added for ₹325!`,
+          subtext: `2nd Roll On for ₹325 · You saved ₹150!`,
+          savings: 150,
         });
       }
     } else if (offerType === 'combo3') {
-      const saving = (UNIT_PRICE - THIRD_PRICE) + DELIVERY_FEE; // 175 + 50 = 225
+      const isNat = product.id === 'natural';
+      const pPrice = isNat ? 250 : 275;
+      const saving = (UNIT_PRICE - pPrice) + 50;
       setBoom({
         show: true,
         code: '',
-        title: 'Super Deal Unlocked! 🚀',
-        message: `${product.name} added for just ₹${THIRD_PRICE}!`,
-        subtext: `You saved ₹175 on 3rd roll on + FREE Delivery (Saved ₹50)!`,
+        title: '3rd Deal Unlocked! 🚀',
+        message: `${product.name} added for just ₹${pPrice}!`,
+        subtext: isNat
+          ? `Natural Roll On for ₹250 + FREE Delivery (Saved ₹275 total)!`
+          : `3rd Roll On for ₹275 + FREE Delivery (Saved ₹250 total)!`,
         savings: saving,
       });
     } else {

@@ -10,6 +10,8 @@ import CartDrawer from './components/CartDrawer.jsx';
 import Toast from './components/Toast.jsx';
 import Home from './pages/Home.jsx';
 import CheckoutModal from './components/CheckoutModal.jsx';
+import ConfettiBoom from './components/ConfettiBoom.jsx';
+import { useStore } from './context/StoreContext.jsx';
 
 // Lazy loading: other pages are downloaded only when someone opens them (faster first load)
 const ProductDetail = lazy(() => import('./pages/ProductDetail.jsx'));
@@ -83,6 +85,7 @@ function useStoreConfig() {
 
 export default function App() {
   const { pathname } = useLocation();
+  const { boomCelebration, setBoomCelebration } = useStore();
   useStoreConfig();
   if (pathname.startsWith('/admin')) {
     return (
@@ -117,6 +120,14 @@ export default function App() {
       <AuthModal />
       <CartDrawer />
       <CheckoutModal />
+      <ConfettiBoom
+        show={boomCelebration.show}
+        title={boomCelebration.title}
+        message={boomCelebration.message}
+        subtext={boomCelebration.subtext}
+        savings={boomCelebration.savings}
+        onClose={() => setBoomCelebration({ show: false, title: '', message: '', subtext: '', savings: 0 })}
+      />
       <Toast />
     </>
   );

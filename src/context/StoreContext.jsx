@@ -44,7 +44,9 @@ export function StoreProvider({ children }) {
   );
 
   const [wishlist, setWishlist] = useState(() => load('drifton_wish', []));
-  const [authMode, setAuthMode] = useState(null); // 'login' | 'signup' | null
+  const [authMode, setAuthMode] = useState(null); // 'login' | 'signup' | 'otp' | null
+  const [authModalReason, setAuthModalReason] = useState(''); // '' | 'combo'
+  const [boomCelebration, setBoomCelebration] = useState({ show: false, title: '', message: '', subtext: '', savings: 0 });
   const [cartOpen, setCartOpen] = useState(false);
   const [toast, setToast] = useState('');
   const [buy, setBuy] = useState(null); // { lines, fromCart } for the Buy now modal
@@ -57,6 +59,7 @@ export function StoreProvider({ children }) {
   const [userOrders, setUserOrders] = useState(() => load('drifton_user_orders_cache', []));
   const [authLoading, setAuthLoading] = useState(true);
   const afterAuthCallback = useRef(null);
+  const pendingActionRef = useRef(null);
 
   // Sync cart & wishlist
   useEffect(() => {
@@ -133,6 +136,35 @@ export function StoreProvider({ children }) {
     }
   }, []);
 
+  // Helper to handle pending 2nd product add & offer celebration after login
+  const handlePostAuthSuccess = useCallback(() => {
+    if (pendingActionRef.current) {
+      const pending = pendingActionRef.current;
+      pendingActionRef.current = null;
+      if (pending.type === 'add') {
+        const key = `${pending.product.id}-${pending.pack.multiplier}`;
+        const unitPrice = UNIT_PRICE * pending.pack.multiplier;
+        setCart((c) => {
+          const found = c.find((l) => l.key === key);
+          if (found) return c.map((l) => (l.key === key ? { ...l, qty: l.qty + pending.qty } : l));
+          return [...c, { key, id: pending.product.id, name: pending.product.name, image: pending.product.image, pack: pending.pack.label, sticks: pending.pack.multiplier, unitPrice, qty: pending.qty }];
+        });
+      } else if (pending.type === 'qty') {
+        setCart((c) => (pending.qty <= 0 ? c.filter((l) => l.key !== pending.key) : c.map((l) => (l.key === pending.key ? { ...l, qty: pending.qty } : l))));
+      }
+
+      setBoomCelebration({
+        show: true,
+        title: '🎉 You Unlocked a Wonderful Offer!',
+        message: 'Combo Discount Unlocked in Cart!',
+        subtext: 'Your 2nd Roll On offer is active starting ₹300 onwards!',
+        savings: pending.product?.id === 'natural' ? 175 : 150,
+      });
+      setCartOpen(true);
+    }
+    setAuthModalReason('');
+  }, []);
+
   // Watch Firebase Auth
   useEffect(() => {
     if (!firebaseReady || !auth) {
@@ -145,6 +177,7 @@ export function StoreProvider({ children }) {
       setAuthLoading(false);
       if (currUser) {
         await loadUserData(currUser);
+        handlePostAuthSuccess();
         if (afterAuthCallback.current) {
           const fn = afterAuthCallback.current;
           afterAuthCallback.current = null;
@@ -154,7 +187,7 @@ export function StoreProvider({ children }) {
     });
 
     return () => unsub();
-  }, [loadUserData]);
+  }, [loadUserData, handlePostAuthSuccess]);
 
   // Auth Functions
   const loginWithGoogle = useCallback(async () => {
@@ -170,6 +203,7 @@ export function StoreProvider({ children }) {
       localStorage.setItem('drifton_user_demo', JSON.stringify(demoUser));
       notify('Signed in with Google (Demo)');
       setAuthMode(null);
+      handlePostAuthSuccess();
       if (afterAuthCallback.current) {
         const fn = afterAuthCallback.current;
         afterAuthCallback.current = null;
@@ -191,6 +225,7 @@ export function StoreProvider({ children }) {
 
       notify(`Welcome, ${res.user.displayName || 'Customer'}!`);
       setAuthMode(null);
+      handlePostAuthSuccess();
       return { ok: true, user: res.user };
     } catch (err) {
       console.error('Google login error:', err);
@@ -208,7 +243,7 @@ export function StoreProvider({ children }) {
       }
       return { ok: false, error: msg };
     }
-  }, [notify]);
+  }, [notify, handlePostAuthSuccess]);
 
   const loginWithEmail = useCallback(async (email, password) => {
     if (!firebaseReady || !auth) {
@@ -221,6 +256,7 @@ export function StoreProvider({ children }) {
       localStorage.setItem('drifton_user_demo', JSON.stringify(demoUser));
       notify('Logged in successfully (Demo)');
       setAuthMode(null);
+      handlePostAuthSuccess();
       if (afterAuthCallback.current) {
         const fn = afterAuthCallback.current;
         afterAuthCallback.current = null;
@@ -233,11 +269,12 @@ export function StoreProvider({ children }) {
       const res = await signInWithEmailAndPassword(auth, email.trim(), password);
       notify(`Welcome back, ${res.user.displayName || 'Customer'}!`);
       setAuthMode(null);
+      handlePostAuthSuccess();
       return { ok: true, user: res.user };
     } catch (err) {
       return { ok: false, error: err.message.replace('Firebase:', '').trim() };
     }
-  }, [notify]);
+  }, [notify, handlePostAuthSuccess]);
 
   const loginWithOtp = useCallback((email, phone, name = '') => {
     const cleanEmail = (email || '').trim().toLowerCase();
@@ -251,13 +288,14 @@ export function StoreProvider({ children }) {
     localStorage.setItem('drifton_user_demo', JSON.stringify(demoUser));
     notify(`Logged in as ${demoUser.displayName}!`);
     setAuthMode(null);
+    handlePostAuthSuccess();
     if (afterAuthCallback.current) {
       const fn = afterAuthCallback.current;
       afterAuthCallback.current = null;
       fn();
     }
     return { ok: true, user: demoUser };
-  }, [notify]);
+  }, [notify, handlePostAuthSuccess]);
 
   const signupWithEmail = useCallback(async (email, password, name, phone) => {
     if (!firebaseReady || !auth) {
@@ -271,6 +309,7 @@ export function StoreProvider({ children }) {
       localStorage.setItem('drifton_user_demo', JSON.stringify(demoUser));
       notify('Account created successfully (Demo)');
       setAuthMode(null);
+      handlePostAuthSuccess();
       if (afterAuthCallback.current) {
         const fn = afterAuthCallback.current;
         afterAuthCallback.current = null;
@@ -297,11 +336,12 @@ export function StoreProvider({ children }) {
       }
       notify(`Welcome to DriftOn, ${name || 'Customer'}!`);
       setAuthMode(null);
+      handlePostAuthSuccess();
       return { ok: true, user: res.user };
     } catch (err) {
       return { ok: false, error: err.message.replace('Firebase:', '').trim() };
     }
-  }, [notify]);
+  }, [notify, handlePostAuthSuccess]);
 
   const logout = useCallback(async () => {
     if (firebaseReady && auth) {
@@ -358,18 +398,72 @@ export function StoreProvider({ children }) {
   const addToCart = useCallback((product, qty = 1, pack = { id: 1, label: 'Single', multiplier: 1 }, silent = false) => {
     const key = `${product.id}-${pack.multiplier}`;
     const unitPrice = UNIT_PRICE * pack.multiplier;
+
+    // Check count for 2nd product login requirement
+    const currentCount = cart.reduce((s, l) => s + l.qty * (l.sticks || 1), 0);
+    const incomingSticks = qty * (pack.multiplier || 1);
+    const nextCount = currentCount + incomingSticks;
+
+    // If not logged in and adding 2nd product (or adding 2 products at once), require OTP verification
+    if (!user && nextCount >= 2) {
+      pendingActionRef.current = { type: 'add', product, qty, pack, silent };
+      setAuthModalReason('combo');
+      setAuthMode('otp');
+      setCartOpen(false);
+      notify('Please verify your mobile/email to unlock the wonderful offer!');
+      return;
+    }
+
     setCart((c) => {
       const found = c.find((l) => l.key === key);
       if (found) return c.map((l) => (l.key === key ? { ...l, qty: l.qty + qty } : l));
       return [...c, { key, id: product.id, name: product.name, image: product.image, pack: pack.label, sticks: pack.multiplier, unitPrice, qty }];
     });
+
+    if (user && currentCount < 2 && nextCount >= 2) {
+      setBoomCelebration({
+        show: true,
+        title: '🎉 You Unlocked a Wonderful Offer!',
+        message: `${product.name} added! Combo discount unlocked!`,
+        subtext: product.id === 'natural' ? 'Natural Roll On for ₹300 · You saved ₹175!' : '2nd Roll On for ₹325 · You saved ₹150!',
+        savings: product.id === 'natural' ? 175 : 150,
+      });
+    }
+
     if (!silent) notify(`${product.name} added to cart`);
-  }, [notify]);
+  }, [cart, user, notify]);
 
   const clearCart = useCallback(() => setCart([]), []);
 
-  const updateQty = (key, qty) =>
+  const updateQty = useCallback((key, qty) => {
+    const line = cart.find((l) => l.key === key);
+    const lineSticks = line?.sticks || 1;
+    const currentCount = cart.reduce((s, l) => s + l.qty * (l.sticks || 1), 0);
+    const diff = (qty - (line?.qty || 0)) * lineSticks;
+    const nextCount = currentCount + diff;
+
+    // If not logged in and stepping up to 2nd product, require OTP verification
+    if (!user && nextCount >= 2 && diff > 0) {
+      pendingActionRef.current = { type: 'qty', key, qty };
+      setAuthModalReason('combo');
+      setAuthMode('otp');
+      setCartOpen(false);
+      notify('Please verify your mobile/email to unlock the wonderful offer!');
+      return;
+    }
+
     setCart((c) => (qty <= 0 ? c.filter((l) => l.key !== key) : c.map((l) => (l.key === key ? { ...l, qty } : l))));
+
+    if (user && currentCount < 2 && nextCount >= 2 && diff > 0) {
+      setBoomCelebration({
+        show: true,
+        title: '🎉 You Unlocked a Wonderful Offer!',
+        message: 'Combo discount unlocked in your cart!',
+        subtext: 'Your 2nd Roll On is now discounted!',
+        savings: 150,
+      });
+    }
+  }, [cart, user, notify]);
 
   const toggleWish = useCallback((id) => {
     const has = wishlist.includes(id);
@@ -384,7 +478,9 @@ export function StoreProvider({ children }) {
     return {
       cart, count, subtotal, summary, addToCart, updateQty, clearCart,
       wishlist, toggleWish,
-      authMode, openAuth: setAuthMode, closeAuth: () => setAuthMode(null),
+      authMode, openAuth: setAuthMode, closeAuth: () => { setAuthMode(null); setAuthModalReason(''); pendingActionRef.current = null; },
+      authModalReason,
+      boomCelebration, setBoomCelebration,
       cartOpen, openCart: () => setCartOpen(true), closeCart: () => setCartOpen(false),
       toast, notify,
       buy,
@@ -411,7 +507,7 @@ export function StoreProvider({ children }) {
       updateUserProfile, recordUserOrder, requireAuth,
     };
   }, [
-    cart, wishlist, authMode, cartOpen, toast, addToCart, toggleWish, notify, clearCart, buy, checkoutOpen,
+    cart, wishlist, authMode, authModalReason, boomCelebration, cartOpen, toast, addToCart, updateQty, toggleWish, notify, clearCart, buy, checkoutOpen,
     user, userProfile, userOrders, authLoading,
     loginWithGoogle, loginWithEmail, signupWithEmail, loginWithOtp, logout,
     updateUserProfile, recordUserOrder, requireAuth,

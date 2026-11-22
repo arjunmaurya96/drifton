@@ -15,13 +15,18 @@ export let COMBO_SAVING = UNIT_PRICE * 2 - COMBO_PRICE; // ₹150 per pair
 
 // Price for n sticks with the combo applied to every pair
 // Cart offers (client):
-//  • Offer 1 — add a Natural Alum Roll On as the 2nd roll on: the pair costs ₹750 (any other pair: ₹800).
-//  • Offer 2 — after 2 roll ons, the 3rd roll on (any variant) costs just ₹300.
-//  Works in sets of 3: [pair + ₹300 third]. A leftover pair = pair price, a leftover single = ₹475.
+//  • Offer 1 — 2nd roll on: Natural is ₹300, any other variant is ₹325 (Pair = ₹775 with Natural, ₹800 regular).
+//  • Offer 2 — 3rd roll on deal at Checkout: Natural is ₹250, any other variant is ₹275 + FREE Delivery!
+//  Works in sets of 3: [1st @ ₹475 + 2nd @ ₹300/₹325 + 3rd @ ₹250/₹275 + Free Delivery].
 export let NATURAL_PAIR_PRICE = 775;
+export let PAIR_NATURAL_PRICE = 300;
+export let PAIR_REGULAR_PRICE = 325;
+export let THIRD_NATURAL_PRICE = 250;
+export let THIRD_REGULAR_PRICE = 275;
+export let THIRD_PRICE = 250; // default minimum for 3rd deal
+
 // which offers are switched on (admin panel → Offers & coupons)
 export const OFFERS_ON = { naturalPair: true, anyPair: false, third: true, delivery: true };
-export let THIRD_PRICE = 300;
 
 export let STORE_OFFERS = {
   'natural-pair': {
@@ -43,8 +48,8 @@ export let STORE_OFFERS = {
   third: {
     id: 'third',
     title: '3rd roll on deal',
-    desc: 'Add any 3rd roll on for just ₹300 + FREE Delivery!',
-    value: 300,
+    desc: 'Add 3rd roll on starting ₹250 (Natural ₹250 / Other ₹275) + FREE Delivery!',
+    value: 250,
     unit: '₹ for 3rd',
     active: true,
   },
@@ -59,20 +64,18 @@ export let STORE_OFFERS = {
 };
 
 // Computes transparent individual line item pricing:
-// • Natural roll on: gets ₹300 (saving ₹175) when paired
-// • 3rd roll on: gets ₹300 (saving ₹175) for 3rd stick
+// • 2nd roll on: gets ₹300 (Natural) or ₹325 (Other)
+// • 3rd roll on: gets ₹250 (Natural) or ₹275 (Other)
 // • Free delivery is unlocked when total sticks >= 3
 export function computeCartLinePrices(cart) {
   const totalSticks = cart.reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
-  const totalNaturals = cart.filter((l) => l.id === 'natural').reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
 
   const setsOf3 = Math.floor(totalSticks / 3);
   const remainder = totalSticks % 3;
-  const maxPairs = setsOf3 + (remainder === 2 ? 1 : 0);
-  const maxNaturalDiscounts = OFFERS_ON.naturalPair ? Math.min(maxPairs, totalNaturals) : 0;
-  const maxThirdDiscounts = OFFERS_ON.third ? setsOf3 : 0;
+  const numThirdSlots = OFFERS_ON.third ? setsOf3 : 0;
+  const numPairSlots = setsOf3 + (remainder === 2 ? 1 : 0);
 
-  // Flatten all sticks with their line key and product id
+  // Flatten all individual sticks with their line key and product id
   const flatSticks = [];
   cart.forEach((l) => {
     const count = (l.sticks || 1) * l.qty;
@@ -81,28 +84,45 @@ export function computeCartLinePrices(cart) {
     }
   });
 
-  // 1. Assign natural discounts (₹300) to natural items up to maxNaturalDiscounts
-  let naturalAllocated = 0;
+  // 1. Assign 3rd item slots (highest discount: Natural ₹250, regular ₹275)
+  let thirdAllocated = 0;
+  // Natural sticks get ₹250 slot first for maximum savings
   flatSticks.forEach((s) => {
-    if (s.id === 'natural' && naturalAllocated < maxNaturalDiscounts) {
-      s.role = 'natural';
-      s.price = 300;
-      naturalAllocated++;
+    if (s.id === 'natural' && thirdAllocated < numThirdSlots) {
+      s.role = 'third-natural';
+      s.price = THIRD_NATURAL_PRICE; // 250
+      thirdAllocated++;
     }
   });
-
-  // 2. Assign 3rd item discounts (₹300) to remaining sticks (starting from later added sticks)
-  let thirdAllocated = 0;
-  for (let i = flatSticks.length - 1; i >= 0; i--) {
+  // Remaining 3rd slots assigned to other sticks from the end
+  for (let i = flatSticks.length - 1; i >= 0 && thirdAllocated < numThirdSlots; i--) {
     const s = flatSticks[i];
-    if (!s.role && thirdAllocated < maxThirdDiscounts) {
-      s.role = 'third';
-      s.price = THIRD_PRICE; // 300
+    if (!s.role) {
+      s.role = 'third-regular';
+      s.price = THIRD_REGULAR_PRICE; // 275
       thirdAllocated++;
     }
   }
 
-  // 3. All remaining sticks are regular price (₹475)
+  // 2. Assign 2nd (pair) slots: Natural ₹300, other ₹325
+  let pairAllocated = 0;
+  flatSticks.forEach((s) => {
+    if (!s.role && s.id === 'natural' && pairAllocated < numPairSlots) {
+      s.role = 'pair-natural';
+      s.price = PAIR_NATURAL_PRICE; // 300
+      pairAllocated++;
+    }
+  });
+  for (let i = flatSticks.length - 1; i >= 0 && pairAllocated < numPairSlots; i--) {
+    const s = flatSticks[i];
+    if (!s.role) {
+      s.role = 'pair-regular';
+      s.price = PAIR_REGULAR_PRICE; // 325
+      pairAllocated++;
+    }
+  }
+
+  // 3. All remaining sticks are 1st (regular full price: ₹475)
   flatSticks.forEach((s) => {
     if (!s.role) {
       s.role = 'regular';
@@ -132,32 +152,35 @@ export const priceFor = (n, naturals = 0) => {
   const setsOf3 = Math.floor(n / 3);
   const remainder = n % 3;
 
+  const num3rd = OFFERS_ON.third ? setsOf3 : 0;
+  const num2nd = setsOf3 + (remainder === 2 ? 1 : 0);
+  const num1st = setsOf3 + (remainder >= 1 ? 1 : 0);
+
+  let remNat = naturals;
   let total = 0;
-  let remainingNaturals = naturals;
 
-  for (let s = 0; s < setsOf3; s++) {
-    total += UNIT_PRICE; // 1st stick of set: 475
-    if (OFFERS_ON.naturalPair && remainingNaturals > 0) {
-      total += 300; // 2nd stick (Natural offer): 300
-      remainingNaturals--;
+  // 3rd item slots (Natural ₹250, regular ₹275)
+  for (let i = 0; i < num3rd; i++) {
+    if (remNat > 0) {
+      total += THIRD_NATURAL_PRICE; // 250
+      remNat--;
     } else {
-      total += UNIT_PRICE; // 2nd stick regular: 475
-    }
-    // 3rd stick of set: 300
-    total += (OFFERS_ON.third ? THIRD_PRICE : UNIT_PRICE);
-  }
-
-  if (remainder === 1) {
-    total += UNIT_PRICE; // 475
-  } else if (remainder === 2) {
-    total += UNIT_PRICE; // 475
-    if (OFFERS_ON.naturalPair && remainingNaturals > 0) {
-      total += 300; // 300
-      remainingNaturals--;
-    } else {
-      total += UNIT_PRICE; // 475
+      total += THIRD_REGULAR_PRICE; // 275
     }
   }
+
+  // 2nd item slots (Natural ₹300, regular ₹325)
+  for (let i = 0; i < num2nd; i++) {
+    if (remNat > 0) {
+      total += PAIR_NATURAL_PRICE; // 300
+      remNat--;
+    } else {
+      total += PAIR_REGULAR_PRICE; // 325
+    }
+  }
+
+  // 1st item slots (Regular ₹475)
+  total += num1st * UNIT_PRICE;
 
   return total;
 };

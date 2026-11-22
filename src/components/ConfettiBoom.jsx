@@ -11,17 +11,17 @@ export default function ConfettiBoom({ show, code = '', savings = 0, title = 'Hu
     return () => clearTimeout(timer);
   }, [show, onClose]);
 
-  // Generate 75 randomized confetti pieces
+  // Generate 140 randomized confetti pieces with high festive density
   const pieces = useMemo(() => {
     if (!show) return [];
-    return Array.from({ length: 75 }).map((_, i) => ({
+    return Array.from({ length: 140 }).map((_, i) => ({
       id: i,
       left: Math.random() * 100, // 0 - 100%
-      top: -15 - Math.random() * 25, // start above view
-      size: 7 + Math.random() * 9,
+      top: -10 - Math.random() * 30, // start above view
+      size: 8 + Math.random() * 12,
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      delay: Math.random() * 0.7,
-      duration: 2.2 + Math.random() * 1.8,
+      delay: Math.random() * 0.9,
+      duration: 2.2 + Math.random() * 2.2,
       rotation: Math.random() * 360,
       shape: Math.random() > 0.4 ? 'rect' : Math.random() > 0.5 ? 'circle' : 'ribbon',
     }));

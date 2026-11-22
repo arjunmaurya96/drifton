@@ -40,7 +40,7 @@ function OtpBoxes({ value, onChange }) {
 }
 
 export default function AuthModal() {
-  const { authMode, openAuth, closeAuth, loginWithGoogle, loginWithEmail, signupWithEmail, loginWithOtp } = useStore();
+  const { authMode, authModalReason, openAuth, closeAuth, loginWithGoogle, loginWithEmail, signupWithEmail, loginWithOtp } = useStore();
   const [tab, setTab] = useState('otp'); // 'otp' | 'password' | 'signup'
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -178,14 +178,28 @@ export default function AuthModal() {
         <div className="flex flex-col items-center text-center">
           <img src="/assets/images/logo.webp" alt="Drifton" className="h-9 w-auto" />
           <h2 className="mt-2.5 font-head text-[22px] font-bold text-navy-900">
-            {tab === 'signup' ? 'Create Your Account' : 'Welcome to DriftOn'}
+            {authModalReason === 'combo' ? 'Verify to Unlock Offer' : tab === 'signup' ? 'Create Your Account' : 'Welcome to DriftOn'}
           </h2>
           <p className="mt-0.5 text-[13px] text-muted-2">
-            {tab === 'signup'
+            {authModalReason === 'combo'
+              ? 'Quick 1-click verification to activate your combo discounts & deals.'
+              : tab === 'signup'
               ? 'Sign up to track live orders, download invoices, and save your address.'
               : 'Sign in with Google, 4-Digit OTP, or Password.'}
           </p>
         </div>
+
+        {authModalReason === 'combo' && (
+          <div className="flex flex-col gap-1 rounded-2xl bg-gradient-to-r from-brand/15 via-blue-50 to-brand/10 border border-brand/30 p-3.5 text-center animate-fade-down shadow-xs">
+            <span className="font-head text-[15px] font-extrabold text-brand-dark flex items-center justify-center gap-1.5">
+              <span>🎁</span>
+              <span>You're 1 Step Away From Combo Savings!</span>
+            </span>
+            <p className="text-[12.5px] text-navy-900 font-medium leading-snug">
+              Verify with 4-Digit OTP or Google to get your 2nd roll on starting <b>₹300 onwards</b>!
+            </p>
+          </div>
+        )}
 
         {/* 1-Click Google Sign In */}
         <div className="flex flex-col gap-1.5">
