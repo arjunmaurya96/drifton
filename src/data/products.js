@@ -18,7 +18,7 @@ export let COMBO_SAVING = UNIT_PRICE * 2 - COMBO_PRICE; // ₹150 per pair
 //  • Offer 1 — add a Natural Alum Roll On as the 2nd roll on: the pair costs ₹750 (any other pair: ₹800).
 //  • Offer 2 — after 2 roll ons, the 3rd roll on (any variant) costs just ₹300.
 //  Works in sets of 3: [pair + ₹300 third]. A leftover pair = pair price, a leftover single = ₹475.
-export let NATURAL_PAIR_PRICE = 800;
+export let NATURAL_PAIR_PRICE = 775;
 // which offers are switched on (admin panel → Offers & coupons)
 export const OFFERS_ON = { naturalPair: true, anyPair: false, third: true, delivery: true };
 export let THIRD_PRICE = 300;
@@ -27,8 +27,8 @@ export let STORE_OFFERS = {
   'natural-pair': {
     id: 'natural-pair',
     title: '⚡ Offer 1 · 2 Roll Ons',
-    desc: 'Add another Natural fresh rollon starting ₹325 onwards',
-    value: 800,
+    desc: 'Add another Natural fresh rollon starting ₹300 onwards',
+    value: 775,
     unit: '₹ for 2',
     active: true,
   },
@@ -59,7 +59,7 @@ export let STORE_OFFERS = {
 };
 
 // Computes transparent individual line item pricing:
-// • Natural roll on: gets ₹325 (saving ₹150) when paired
+// • Natural roll on: gets ₹300 (saving ₹175) when paired
 // • 3rd roll on: gets ₹300 (saving ₹175) for 3rd stick
 // • Free delivery is unlocked when total sticks >= 3
 export function computeCartLinePrices(cart) {
@@ -81,12 +81,12 @@ export function computeCartLinePrices(cart) {
     }
   });
 
-  // 1. Assign natural discounts (₹325) to natural items up to maxNaturalDiscounts
+  // 1. Assign natural discounts (₹300) to natural items up to maxNaturalDiscounts
   let naturalAllocated = 0;
   flatSticks.forEach((s) => {
     if (s.id === 'natural' && naturalAllocated < maxNaturalDiscounts) {
       s.role = 'natural';
-      s.price = 325;
+      s.price = 300;
       naturalAllocated++;
     }
   });
@@ -138,7 +138,7 @@ export const priceFor = (n, naturals = 0) => {
   for (let s = 0; s < setsOf3; s++) {
     total += UNIT_PRICE; // 1st stick of set: 475
     if (OFFERS_ON.naturalPair && remainingNaturals > 0) {
-      total += 325; // 2nd stick (Natural offer): 325
+      total += 300; // 2nd stick (Natural offer): 300
       remainingNaturals--;
     } else {
       total += UNIT_PRICE; // 2nd stick regular: 475
@@ -152,7 +152,7 @@ export const priceFor = (n, naturals = 0) => {
   } else if (remainder === 2) {
     total += UNIT_PRICE; // 475
     if (OFFERS_ON.naturalPair && remainingNaturals > 0) {
-      total += 325; // 325
+      total += 300; // 300
       remainingNaturals--;
     } else {
       total += UNIT_PRICE; // 475

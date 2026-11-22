@@ -121,7 +121,7 @@ export const initialData = {
     price: p.price, stock: [120, 64, 92, 18][i], active: true, ingredients: p.ingredients,
   })),
   offers: [
-    { id: 'natural-pair', title: '⚡ Offer 1 · 2 Roll Ons', desc: 'Add another Natural fresh rollon starting ₹325 onwards', value: 800, unit: '₹ for 2', active: true },
+    { id: 'natural-pair', title: '⚡ Offer 1 · 2 Roll Ons', desc: 'Add another Natural fresh rollon starting ₹300 onwards', value: 775, unit: '₹ for 2', active: true },
     { id: 'any-pair', title: 'Any 2 roll ons', desc: 'Pair price without a Natural roll on.', value: 800, unit: '₹ for 2', active: false },
     { id: 'third', title: '3rd roll on deal', desc: 'Add any 3rd roll on for just ₹300 + FREE Delivery!', value: 300, unit: '₹ for 3rd', active: true },
     { id: 'delivery', title: 'Delivery charge', desc: 'On 1 or 2 roll on orders. FREE on 3 or more.', value: 50, unit: '₹', active: true },

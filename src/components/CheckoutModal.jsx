@@ -187,9 +187,9 @@ export default function CheckoutModal() {
           show: true,
           code: '',
           title: 'Hurray! Natural Offer Applied 🎉',
-          message: `${product.name} added! Natural Roll On for ₹325.`,
-          subtext: `You saved ₹150!`,
-          savings: 150,
+          message: `${product.name} added! Natural Roll On for ₹300.`,
+          subtext: `You saved ₹175!`,
+          savings: 175,
         });
       } else {
         setBoom({
@@ -706,23 +706,7 @@ export default function CheckoutModal() {
                       <span className="text-xs font-bold text-navy-700">Subtotal</span>
                     </div>
                     <div className="flex flex-col gap-1.5 text-[13.5px]">
-                      <div className="flex justify-between text-muted">
-                        <span>Items ({sum.sticks} {sum.sticks === 1 ? 'roll on' : 'roll ons'})</span>
-                        <span className="font-medium text-navy-900">{formatINR(sum.full)}</span>
-                      </div>
-                      {sum.comboSaving > 0 && (
-                        <div className="flex justify-between font-semibold text-[#166534]">
-                          <span>Offer Discount</span>
-                          <span>− {formatINR(sum.comboSaving)}</span>
-                        </div>
-                      )}
-                      {sum.couponOff > 0 && (
-                        <div className="flex justify-between font-semibold text-[#166534]">
-                          <span>Coupon Discount</span>
-                          <span>− {formatINR(sum.couponOff)}</span>
-                        </div>
-                      )}
-                      <div className="flex justify-between items-center py-1 border-t border-dashed border-line">
+                      <div className="flex justify-between items-center py-1">
                         <span className="font-semibold text-navy-900">Delivery Charge</span>
                         {sum.delivery > 0 ? (
                           <div className="text-right">
@@ -925,24 +909,8 @@ export default function CheckoutModal() {
                       Order Summary & Delivery Fee
                     </span>
                     <div className="flex flex-col gap-1.5 text-[13.5px]">
-                      <div className="flex justify-between text-muted">
-                        <span>Items ({sum.sticks} {sum.sticks === 1 ? 'roll on' : 'roll ons'})</span>
-                        <span className="font-medium text-navy-900">{formatINR(sum.full)}</span>
-                      </div>
-                      {sum.comboSaving > 0 && (
-                        <div className="flex justify-between font-semibold text-[#166534]">
-                          <span>Combo Offer Discount</span>
-                          <span>− {formatINR(sum.comboSaving)}</span>
-                        </div>
-                      )}
-                      {sum.couponOff > 0 && (
-                        <div className="flex justify-between font-semibold text-[#166534]">
-                          <span>Coupon Discount ({applied})</span>
-                          <span>− {formatINR(sum.couponOff)}</span>
-                        </div>
-                      )}
                       {/* Delivery Charge row: ₹50 on 1 or 2 items, Free on 3+ items */}
-                      <div className="flex justify-between items-center py-1 border-t border-dashed border-line">
+                      <div className="flex justify-between items-center py-1">
                         <span className="font-semibold text-navy-900">Delivery Charge</span>
                         {sum.delivery > 0 ? (
                           <div className="text-right">
@@ -953,6 +921,12 @@ export default function CheckoutModal() {
                           <span className="font-bold text-[#166534]">FREE (3+ items unlocked)</span>
                         )}
                       </div>
+                      {sum.couponOff > 0 && (
+                        <div className="flex justify-between font-semibold text-[#166534]">
+                          <span>Coupon Discount ({applied})</span>
+                          <span>− {formatINR(sum.couponOff)}</span>
+                        </div>
+                      )}
                       {fee > 0 && (
                         <div className="flex justify-between text-muted">
                           <span>COD Handling Fee</span>

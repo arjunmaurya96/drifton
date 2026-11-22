@@ -23,7 +23,7 @@ export function QtyStepper({ value, onChange, size = 'md' }) {
 
 // =====================================================================
 //  Interactive Cart Offers:
-//  • Step 1 (count < 2): Show Offer 1 (Natural pair for ₹800, 2nd for ₹325) + 4 mini product cards.
+//  • Step 1 (count < 2): Show Offer 1 (Natural pair for ₹775, 2nd for ₹300) + 4 mini product cards.
 //    Adding any product triggers the booming confetti celebration!
 //  • Step 2 (count >= 2): Combo applied with Free delivery.
 // =====================================================================
@@ -33,7 +33,7 @@ export function CartOffers({ cart, count, onAddWithCelebration, isCheckout = fal
 
   const offer1Config = STORE_OFFERS['natural-pair'] || {
     title: '⚡ Offer 1 · 2 Roll Ons',
-    desc: 'Add another Natural fresh rollon starting ₹325 onwards',
+    desc: 'Add another Natural fresh rollon starting ₹300 onwards',
   };
 
   return (
@@ -67,7 +67,7 @@ export function CartOffers({ cart, count, onAddWithCelebration, isCheckout = fal
               Add DriftOn™ Natural Alum Roll On
             </b>
             <p className="text-[12.5px] font-medium text-muted-2 leading-tight">
-              Add another Natural fresh rollon starting ₹325 onwards
+              Add another Natural fresh rollon starting ₹300 onwards
             </p>
           </div>
           <button
@@ -119,7 +119,7 @@ export function CartOffers({ cart, count, onAddWithCelebration, isCheckout = fal
         <div className="flex flex-col gap-1 rounded-2xl bg-[#EEF4FF] p-3.5 border border-brand/20 text-navy-900">
           <div className="flex items-center gap-2 text-[13.5px] font-bold">
             <CheckCircle size={18} className="text-brand shrink-0" />
-            <span>{cart.some((l) => l.id === 'natural') ? 'Natural roll on offer applied (₹325)!' : '2 roll ons added.'}</span>
+            <span>{cart.some((l) => l.id === 'natural') ? 'Natural roll on offer applied (₹300)!' : '2 roll ons added.'}</span>
           </div>
           <p className="text-[12px] text-muted-2 pl-6">
             👉 Proceed to <b>Checkout</b> to unlock any 3rd roll on for <b>₹300 + FREE Delivery</b>!
@@ -207,8 +207,8 @@ export default function CartDrawer() {
           show: true,
           title: 'Hurray! Natural Offer Applied 🎉',
           message: `${product.name} added to cart!`,
-          subtext: `Natural Roll On for ₹325 · You saved ₹150!`,
-          savings: 150,
+          subtext: `Natural Roll On for ₹300 · You saved ₹175!`,
+          savings: 175,
         });
       } else {
         setBoom({
@@ -333,10 +333,9 @@ export default function CartDrawer() {
         {/* Footer: Price summary & Checkout CTA (Delivery fee hidden in cart, shown only in final checkout step) */}
         {cart.length > 0 && (
           <div className="flex flex-col gap-3 border-t border-line bg-white px-5 py-4 sm:px-6">
-            <PriceRows s={summary} showDelivery={false} />
-            <div className="flex justify-between border-t border-line pt-2.5 text-[17px] font-bold text-navy-900">
+            <div className="flex items-center justify-between text-[18px] font-bold text-navy-900">
               <span>Total</span>
-              <span>{formatINR(summary.items - summary.couponOff)}</span>
+              <span className="text-2xl font-black text-[#166534]">{formatINR(summary.items - summary.couponOff)}</span>
             </div>
             <TaxNote className="text-[12.5px]" />
             <button

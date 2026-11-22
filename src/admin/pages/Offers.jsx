@@ -570,7 +570,7 @@ export default function Offers() {
                 value={o.desc || ''}
                 onChange={(e) => update('offers', o.id, { desc: e.target.value })}
                 onBlur={() => update('offers', o.id, {}, 'Description saved')}
-                placeholder="e.g. Add another Natural fresh rollon starting ₹325 onwards"
+                placeholder="e.g. Add another Natural fresh rollon starting ₹300 onwards"
               />
             </div>
 
