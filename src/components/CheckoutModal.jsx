@@ -188,7 +188,7 @@ export default function CheckoutModal() {
           code: '',
           title: 'Hurray! Natural Offer Applied 🎉',
           message: `${product.name} added! Natural Roll On for ₹325.`,
-          subtext: `You saved ₹150 + FREE Delivery!`,
+          subtext: `You saved ₹150!`,
           savings: 150,
         });
       } else {
@@ -197,10 +197,20 @@ export default function CheckoutModal() {
           code: '',
           title: 'Product Added! 🎉',
           message: `${product.name} added to cart!`,
-          subtext: `Free Delivery unlocked on 2 items!`,
-          savings: 50,
+          subtext: `Add 3rd roll on for ₹300 + FREE Delivery!`,
+          savings: 0,
         });
       }
+    } else if (offerType === 'combo3') {
+      const saving = (UNIT_PRICE - THIRD_PRICE) + DELIVERY_FEE; // 175 + 50 = 225
+      setBoom({
+        show: true,
+        code: '',
+        title: 'Super Deal Unlocked! 🚀',
+        message: `${product.name} added for just ₹${THIRD_PRICE}!`,
+        subtext: `You saved ₹175 on 3rd roll on + FREE Delivery (Saved ₹50)!`,
+        savings: saving,
+      });
     } else {
       setBoom({
         show: true,
@@ -682,6 +692,7 @@ export default function CheckoutModal() {
                     <CartOffers
                       cart={cart}
                       count={count}
+                      isCheckout={true}
                       onAddWithCelebration={handleAddWithCelebration}
                     />
                   )}
@@ -887,13 +898,16 @@ export default function CheckoutModal() {
                           <span>− {formatINR(sum.couponOff)}</span>
                         </div>
                       )}
-                      {/* Delivery Charge row: Admin dynamic value on single item, Free on 2+ items */}
+                      {/* Delivery Charge row: ₹50 on 1 or 2 items, Free on 3+ items */}
                       <div className="flex justify-between items-center py-1 border-t border-dashed border-line">
                         <span className="font-semibold text-navy-900">Delivery Charge</span>
                         {sum.delivery > 0 ? (
-                          <span className="font-bold text-navy-900">{formatINR(sum.delivery)}</span>
+                          <div className="text-right">
+                            <span className="font-bold text-navy-900">{formatINR(sum.delivery)}</span>
+                            <span className="block text-[11px] font-semibold text-brand">Add 3rd roll on for FREE delivery</span>
+                          </div>
                         ) : (
-                          <span className="font-bold text-[#166534]">FREE (Combo Unlocked)</span>
+                          <span className="font-bold text-[#166534]">FREE (3+ items unlocked)</span>
                         )}
                       </div>
                       {fee > 0 && (

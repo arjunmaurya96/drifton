@@ -27,7 +27,7 @@ export function QtyStepper({ value, onChange, size = 'md' }) {
 //    Adding any product triggers the booming confetti celebration!
 //  • Step 2 (count >= 2): Combo applied with Free delivery.
 // =====================================================================
-export function CartOffers({ cart, count, onAddWithCelebration }) {
+export function CartOffers({ cart, count, onAddWithCelebration, isCheckout = false }) {
   const allProducts = products.filter((p) => !p.hidden);
   const naturalProduct = products.find((p) => p.id === 'natural') || allProducts[0];
 
@@ -52,7 +52,7 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
         </div>
       </div>
 
-      {/* ---------- OFFER 1: Featured Natural Roll On Card (when count < 2) OR Success Banner (when count >= 2) ---------- */}
+      {/* ---------- OFFER 1: Featured Natural Roll On Card (when count < 2) ---------- */}
       {count < 2 ? (
         /* Featured Natural Pair Card with exact requested content */
         <div
@@ -78,14 +78,57 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
             + Add
           </button>
         </div>
+      ) : count === 2 && isCheckout ? (
+        /* ---------- OFFER 2: 3rd Roll On Deal in Checkout for ₹300 + FREE Delivery ---------- */
+        <div className="flex flex-col gap-3 rounded-2xl bg-[linear-gradient(135deg,#0A1E4A_0%,#153A7A_100%)] p-4 text-white shadow-xl ring-2 ring-mint/60 animate-fade-up">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <span className="inline-flex items-center gap-1 rounded-full bg-mint/20 px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-mint mb-1">
+                🔥 Exclusive Checkout Deal · 3rd Roll On
+              </span>
+              <b className="block font-head text-[16px] sm:text-[17px] font-bold text-white">
+                Add 3rd roll on for ₹300 + FREE Delivery!
+              </b>
+              <span className="text-[12px] text-white/80">
+                Any variant for just ₹300 (Save ₹175) + Free Delivery (Save ₹50 extra)
+              </span>
+            </div>
+            <span className="shrink-0 font-serif text-3xl font-extrabold text-mint">₹300</span>
+          </div>
+
+          {/* 4 Choices to pick as the 3rd roll on */}
+          <div className="grid grid-cols-4 gap-2 pt-1">
+            {allProducts.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => onAddWithCelebration(p, 'combo3')}
+                aria-label={`Add ${p.name} for ₹300 + Free Delivery`}
+                className="group flex flex-col items-center gap-1 rounded-xl bg-white/10 p-2 text-[11px] font-semibold text-white hover:bg-white/20 transition-all hover:scale-105 cursor-pointer border border-white/15"
+              >
+                <img src={p.image} alt="" className="h-11 w-auto object-contain transition-transform group-hover:scale-110 drop-shadow" />
+                <span className="truncate w-full text-center">{p.short || p.name}</span>
+                <span className="w-full rounded-md bg-mint py-0.5 text-[10.5px] font-bold text-navy-900 group-hover:bg-white transition-colors">
+                  + Add ₹300
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : count === 2 && !isCheckout ? (
+        <div className="flex flex-col gap-1 rounded-2xl bg-[#EEF4FF] p-3.5 border border-brand/20 text-navy-900">
+          <div className="flex items-center gap-2 text-[13.5px] font-bold">
+            <CheckCircle size={18} className="text-brand shrink-0" />
+            <span>{cart.some((l) => l.id === 'natural') ? 'Natural roll on offer applied (₹325)!' : '2 roll ons added.'}</span>
+          </div>
+          <p className="text-[12px] text-muted-2 pl-6">
+            👉 Proceed to <b>Checkout</b> to unlock any 3rd roll on for <b>₹300 + FREE Delivery</b>!
+          </p>
+        </div>
       ) : (
         <div className="flex items-center gap-2.5 rounded-2xl bg-mint-soft px-4 py-3 text-[13.5px] font-semibold text-brand-dark border border-brand/20">
           <CheckCircle size={20} className="shrink-0 text-brand" />
-          {cart.some((l) => l.id === 'natural') ? (
-            <span>Natural roll on offer applied · Saved ₹150 + Free delivery!</span>
-          ) : (
-            <span>2 roll ons added · Free delivery applied!</span>
-          )}
+          <span>3rd roll on for ₹300 applied · FREE Delivery unlocked!</span>
         </div>
       )}
 
@@ -100,7 +143,7 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
               <button
                 key={p.id}
                 type="button"
-                onClick={() => onAddWithCelebration(p, count < 2 ? 'combo2' : 'more')}
+                onClick={() => onAddWithCelebration(p, count < 2 ? 'combo2' : count === 2 ? 'combo3' : 'more')}
                 aria-label={`Add ${p.name}`}
                 className="group flex flex-col items-center gap-1.5 rounded-xl border border-line-strong bg-white p-2 text-center transition hover:border-navy-700 hover:shadow-md cursor-pointer"
               >
@@ -164,7 +207,7 @@ export default function CartDrawer() {
           show: true,
           title: 'Hurray! Natural Offer Applied 🎉',
           message: `${product.name} added to cart!`,
-          subtext: `Natural Roll On for ₹325 · You saved ₹150 + FREE Delivery!`,
+          subtext: `Natural Roll On for ₹325 · You saved ₹150!`,
           savings: 150,
         });
       } else {
@@ -172,10 +215,19 @@ export default function CartDrawer() {
           show: true,
           title: 'Product Added! 🎉',
           message: `${product.name} added to cart!`,
-          subtext: `Free Delivery unlocked on 2 items!`,
-          savings: 50,
+          subtext: `Proceed to checkout for 3rd roll on @ ₹300 + FREE Delivery!`,
+          savings: 0,
         });
       }
+    } else if (offerType === 'combo3') {
+      const saving = (UNIT_PRICE - THIRD_PRICE) + DELIVERY_FEE; // 175 + 50 = 225
+      setBoom({
+        show: true,
+        title: 'Super Deal Unlocked! 🚀',
+        message: `${product.name} added for just ₹${THIRD_PRICE}!`,
+        subtext: `You saved ₹175 on 3rd roll on + FREE Delivery (Saved ₹50)!`,
+        savings: saving,
+      });
     } else {
       setBoom({
         show: true,

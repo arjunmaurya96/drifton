@@ -20,7 +20,7 @@ export let COMBO_SAVING = UNIT_PRICE * 2 - COMBO_PRICE; // ₹150 per pair
 //  Works in sets of 3: [pair + ₹300 third]. A leftover pair = pair price, a leftover single = ₹475.
 export let NATURAL_PAIR_PRICE = 800;
 // which offers are switched on (admin panel → Offers & coupons)
-export const OFFERS_ON = { naturalPair: true, anyPair: true, third: false, delivery: true };
+export const OFFERS_ON = { naturalPair: true, anyPair: false, third: true, delivery: true };
 export let THIRD_PRICE = 300;
 
 export let STORE_OFFERS = {
@@ -38,20 +38,20 @@ export let STORE_OFFERS = {
     desc: 'Pair price without a Natural roll on.',
     value: 800,
     unit: '₹ for 2',
-    active: true,
+    active: false,
   },
   third: {
     id: 'third',
     title: '3rd roll on deal',
-    desc: 'Add any 3rd roll on for just ₹300!',
+    desc: 'Add any 3rd roll on for just ₹300 + FREE Delivery!',
     value: 300,
     unit: '₹ for 3rd',
-    active: false,
+    active: true,
   },
   delivery: {
     id: 'delivery',
     title: 'Delivery charge',
-    desc: 'On single roll on orders. Free on 2 or more.',
+    desc: 'On 1 or 2 roll on orders. FREE on 3 or more.',
     value: 50,
     unit: '₹',
     active: true,
@@ -59,39 +59,63 @@ export let STORE_OFFERS = {
 };
 
 // Computes transparent individual line item pricing:
-// ONLY Natural Alum Roll On gets the discounted ₹325 price when 2 or more items are in cart.
-// All other products stay at their regular unit price (₹475).
+// • Natural roll on: gets ₹325 (saving ₹150) when paired
+// • 3rd roll on: gets ₹300 (saving ₹175) for 3rd stick
+// • Free delivery is unlocked when total sticks >= 3
 export function computeCartLinePrices(cart) {
   const totalSticks = cart.reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
   const totalNaturals = cart.filter((l) => l.id === 'natural').reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
-  const maxDiscounts = totalSticks >= 2 && OFFERS_ON.naturalPair ? Math.min(Math.floor(totalSticks / 2), totalNaturals) : 0;
 
-  let discountsAssigned = 0;
-  const result = {};
+  const setsOf3 = Math.floor(totalSticks / 3);
+  const remainder = totalSticks % 3;
+  const maxPairs = setsOf3 + (remainder === 2 ? 1 : 0);
+  const maxNaturalDiscounts = OFFERS_ON.naturalPair ? Math.min(maxPairs, totalNaturals) : 0;
+  const maxThirdDiscounts = OFFERS_ON.third ? setsOf3 : 0;
 
+  // Flatten all sticks with their line key and product id
+  const flatSticks = [];
   cart.forEach((l) => {
-    const isNatural = l.id === 'natural';
-    const totalItemSticks = (l.sticks || 1) * l.qty;
-    let lineTotal = 0;
-    let regularTotal = totalItemSticks * UNIT_PRICE;
-    let hasOffer = false;
-
-    if (!isNatural) {
-      // Non-natural products are ALWAYS regular price (₹475)
-      lineTotal = regularTotal;
-      hasOffer = false;
-    } else {
-      // Natural products get discounted to ₹325 up to maxDiscounts
-      for (let i = 0; i < totalItemSticks; i++) {
-        if (discountsAssigned < maxDiscounts) {
-          lineTotal += 325;
-          discountsAssigned++;
-          hasOffer = true;
-        } else {
-          lineTotal += UNIT_PRICE;
-        }
-      }
+    const count = (l.sticks || 1) * l.qty;
+    for (let i = 0; i < count; i++) {
+      flatSticks.push({ key: l.key, id: l.id });
     }
+  });
+
+  // 1. Assign natural discounts (₹325) to natural items up to maxNaturalDiscounts
+  let naturalAllocated = 0;
+  flatSticks.forEach((s) => {
+    if (s.id === 'natural' && naturalAllocated < maxNaturalDiscounts) {
+      s.role = 'natural';
+      s.price = 325;
+      naturalAllocated++;
+    }
+  });
+
+  // 2. Assign 3rd item discounts (₹300) to remaining sticks (starting from later added sticks)
+  let thirdAllocated = 0;
+  for (let i = flatSticks.length - 1; i >= 0; i--) {
+    const s = flatSticks[i];
+    if (!s.role && thirdAllocated < maxThirdDiscounts) {
+      s.role = 'third';
+      s.price = THIRD_PRICE; // 300
+      thirdAllocated++;
+    }
+  }
+
+  // 3. All remaining sticks are regular price (₹475)
+  flatSticks.forEach((s) => {
+    if (!s.role) {
+      s.role = 'regular';
+      s.price = UNIT_PRICE; // 475
+    }
+  });
+
+  const result = {};
+  cart.forEach((l) => {
+    const sticksForLine = flatSticks.filter((s) => s.key === l.key);
+    const lineTotal = sticksForLine.reduce((sum, s) => sum + s.price, 0);
+    const regularTotal = sticksForLine.length * UNIT_PRICE;
+    const hasOffer = lineTotal < regularTotal;
 
     result[l.key] = {
       lineTotal,
@@ -105,14 +129,37 @@ export function computeCartLinePrices(cart) {
 }
 
 export const priceFor = (n, naturals = 0) => {
-  const full = n * UNIT_PRICE;
-  if (!OFFERS_ON.naturalPair || n < 2 || naturals < 1) {
-    return full;
+  const setsOf3 = Math.floor(n / 3);
+  const remainder = n % 3;
+
+  let total = 0;
+  let remainingNaturals = naturals;
+
+  for (let s = 0; s < setsOf3; s++) {
+    total += UNIT_PRICE; // 1st stick of set: 475
+    if (OFFERS_ON.naturalPair && remainingNaturals > 0) {
+      total += 325; // 2nd stick (Natural offer): 325
+      remainingNaturals--;
+    } else {
+      total += UNIT_PRICE; // 2nd stick regular: 475
+    }
+    // 3rd stick of set: 300
+    total += (OFFERS_ON.third ? THIRD_PRICE : UNIT_PRICE);
   }
-  const maxDiscountPairs = Math.floor(n / 2);
-  const naturalDiscounts = Math.min(maxDiscountPairs, naturals);
-  const discountPerNatural = UNIT_PRICE - 325; // 475 - 325 = 150
-  return full - naturalDiscounts * discountPerNatural;
+
+  if (remainder === 1) {
+    total += UNIT_PRICE; // 475
+  } else if (remainder === 2) {
+    total += UNIT_PRICE; // 475
+    if (OFFERS_ON.naturalPair && remainingNaturals > 0) {
+      total += 325; // 325
+      remainingNaturals--;
+    } else {
+      total += UNIT_PRICE; // 475
+    }
+  }
+
+  return total;
 };
 
 // Coupons — DUMMY codes, confirm with the client
@@ -455,7 +502,8 @@ export const summarize = (lines, couponCode = '') => {
   const naturals = lines.filter((l) => l.id === 'natural').reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
   const items = priceFor(sticks, naturals);
   const comboSaving = full - items;
-  const delivery = sticks === 0 || sticks >= 2 || !OFFERS_ON.delivery ? 0 : DELIVERY_FEE;
+  // Free delivery unlocked only when 3 or more items are ordered
+  const delivery = sticks === 0 || sticks >= 3 || !OFFERS_ON.delivery ? 0 : DELIVERY_FEE;
 
   // Case-insensitive match, supporting special characters like @, #, -, _, !, etc.
   const cleanCode = (couponCode || '').trim();
