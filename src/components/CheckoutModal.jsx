@@ -609,32 +609,6 @@ export default function CheckoutModal() {
                     )}
                   </div>
 
-                  {/* Free Delivery Progress Banner */}
-                  <div className="rounded-2xl border border-line bg-gradient-to-r from-[#F0FDF4] to-[#ECFDF5] p-3.5 text-xs shadow-xs">
-                    {sum.sticks === 1 ? (
-                      <div className="flex flex-col gap-1.5">
-                        <div className="flex items-center justify-between font-bold text-[#166534]">
-                          <span className="flex items-center gap-1.5">
-                            <span>🚚</span>
-                            <span>Add 2nd product to get FREE Delivery!</span>
-                          </span>
-                          <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-800">1 of 2</span>
-                        </div>
-                        <div className="h-1.5 w-full rounded-full bg-emerald-200 overflow-hidden">
-                          <div className="h-full w-1/2 rounded-full bg-emerald-600 transition-all duration-300" />
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-between font-bold text-[#166534]">
-                        <span className="flex items-center gap-1.5">
-                          <span>🎉</span>
-                          <span>FREE Delivery Unlocked on this order!</span>
-                        </span>
-                        <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[10.5px] text-white">✓ Free Delivery</span>
-                      </div>
-                    )}
-                  </div>
-
                   {/* Cart Items Summary */}
                   {cart.length > 0 && (
                     <div className="flex flex-col gap-2.5 rounded-2xl border border-line bg-page/40 p-3.5 sm:p-4">

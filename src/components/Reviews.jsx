@@ -81,7 +81,7 @@ export default function Reviews() {
   };
 
   return (
-    <section id="reviews" className="relative overflow-hidden bg-[#FAFCFF] py-10 sm:py-14 border-t border-slate-200/70">
+    <section id="reviews" className="relative overflow-hidden bg-[#FAFCFF] py-10 sm:py-5 border-t border-slate-200/70">
       {/* Background ambient glow */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -left-[8%] top-0 h-[450px] w-[500px] rounded-full bg-brand/5 blur-3xl" />
@@ -103,7 +103,7 @@ export default function Reviews() {
                 />
               </span>
             </h2>
-            <p className="max-w-[560px] text-[15px] font-medium text-muted sm:text-base">
+            <p className="max-w-[760px] text-[15px] font-medium text-muted sm:text-base">
               Latest Google reviews from real customers who made the healthy switch to DriftOn Alum Roll On.
             </p>
           </div>

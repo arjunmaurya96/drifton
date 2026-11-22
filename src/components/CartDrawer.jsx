@@ -42,32 +42,31 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
   return (
     <div className="mt-2 flex flex-col gap-3.5 border-t border-dashed border-line-strong pt-5">
       <div className="flex items-center justify-between">
-        <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-muted-2">
-          <Sparkle size={15} /> Offers for you
+        <span className="flex items-center gap-2 text-[15px] font-head font-bold uppercase tracking-wider text-navy-900">
+          <Sparkle size={18} className="text-brand" /> Offers for you
         </span>
-        <span className="text-[11.5px] font-semibold text-brand">
-          {count === 1 ? '1 step away from Combo' : count === 2 ? '🔥 ₹300 Offer Unlocked' : '✓ Maximum Savings Unlocked'}
-        </span>
+        {count > 1 && (
+          <span className="text-[12px] font-semibold text-brand">
+            {count === 2 ? '🔥 ₹300 Offer Unlocked' : '✓ Maximum Savings Unlocked'}
+          </span>
+        )}
       </div>
 
       {/* ---------- OFFER 1: 2nd Roll On (Pair for ₹750 / ₹800) ---------- */}
       {step === 1 ? (
         <div className="flex flex-col gap-3">
-          {/* Featured Natural Pair Card */}
+          {/* Featured Natural Pair Card (no product image, only name and custom subtitle) */}
           <div
-            className="flex items-center gap-3.5 rounded-2xl p-3.5 ring-2 ring-brand/50 shadow-sm transition-all"
+            className="flex items-center justify-between gap-3 rounded-2xl p-4 ring-2 ring-brand/50 shadow-sm transition-all"
             style={{ background: `linear-gradient(115deg, ${second.bg || '#D9ECFA'} 0%, #FFFFFF 85%)` }}
           >
-            <span className="flex h-20 w-14 shrink-0 items-center justify-center">
-              <img src={second.image} alt={second.name} className="h-full w-auto object-contain drop-shadow-sm" />
-            </span>
-            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-              <span className="inline-flex items-center gap-1 self-start rounded-full bg-brand/15 px-2 py-0.5 text-[10.5px] font-extrabold uppercase tracking-wide text-brand-dark">
-                ⚡ Offer 1 · 2 Roll Ons for {formatINR(pairPrice)}
+            <div className="flex min-w-0 flex-1 flex-col gap-1">
+              <span className="inline-flex items-center gap-1 self-start rounded-full bg-brand/15 px-2.5 py-0.5 text-[10.5px] font-extrabold uppercase tracking-wide text-brand-dark">
+                ⚡ Offer 1 · 2 Roll Ons
               </span>
-              <b className="truncate font-head text-[15px] font-bold text-navy-900">Add {second.name}</b>
-              <p className="text-[12.5px] text-muted-2 leading-tight">
-                Pay only <b className="text-navy-900">{formatINR(pairPrice - UNIT_PRICE)}</b> for it · save <b className="text-brand-dark">{formatINR(pairSaving)}</b> + free delivery
+              <b className="truncate font-head text-[16px] font-bold text-navy-900">Add {second.name}</b>
+              <p className="text-[12.5px] font-medium text-muted-2 leading-tight">
+                Add another Natural fresh rollon starting 325 onwards
               </p>
             </div>
             <button
@@ -79,28 +78,25 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
             </button>
           </div>
 
-          {/* 4 Compact Products Mini-Grid */}
+          {/* 4 Compact Products Mini-Grid without price display */}
           <div className="flex flex-col gap-2 rounded-2xl bg-page/80 p-3 border border-line">
             <span className="text-[12px] font-bold text-navy-900">
-              Or pick any variant to pair (Save {formatINR(pairSaving)}):
+              Or pick any variant to pair:
             </span>
             <div className="grid grid-cols-4 gap-2">
               {allProducts.map((p) => {
-                const isNat = p.id === 'natural';
-                const extraPay = isNat ? (NATURAL_PAIR_PRICE - UNIT_PRICE) : (COMBO_PRICE - UNIT_PRICE);
                 return (
                   <button
                     key={p.id}
                     type="button"
                     onClick={() => onAddWithCelebration(p, 'combo2')}
                     aria-label={`Add ${p.name}`}
-                    className="group flex flex-col items-center gap-1 rounded-xl border border-line-strong bg-white p-2 text-center transition hover:border-navy-700 hover:shadow-md cursor-pointer"
+                    className="group flex flex-col items-center gap-1.5 rounded-xl border border-line-strong bg-white p-2 text-center transition hover:border-navy-700 hover:shadow-md cursor-pointer"
                   >
                     <span className="flex h-11 w-full items-center justify-center">
                       <img src={p.image} alt="" className="h-full w-auto object-contain transition-transform group-hover:scale-110" />
                     </span>
                     <span className="truncate w-full text-[11px] font-bold text-navy-900">{p.short || p.name}</span>
-                    <span className="text-[10px] font-semibold text-brand-dark">+{formatINR(extraPay)}</span>
                     <span className="w-full rounded-md bg-navy-900 py-0.5 text-[10.5px] font-bold text-white group-hover:bg-brand transition-colors">
                       + Add
                     </span>
@@ -246,34 +242,6 @@ export default function CartDrawer() {
 
         {/* Cart Items & Offers */}
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-5 sm:px-6">
-          {/* Smart Free Delivery Progress Banner */}
-          {cart.length > 0 && (
-            <div className="rounded-2xl border border-line bg-gradient-to-r from-[#F0FDF4] to-[#ECFDF5] p-3 text-xs shadow-xs">
-              {count === 1 ? (
-                <div className="flex flex-col gap-1.5">
-                  <div className="flex items-center justify-between font-bold text-[#166534]">
-                    <span className="flex items-center gap-1.5">
-                      <span>🚚</span>
-                      <span>Add 2nd product to get FREE Delivery!</span>
-                    </span>
-                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-800">1 of 2</span>
-                  </div>
-                  <div className="h-1.5 w-full rounded-full bg-emerald-200 overflow-hidden">
-                    <div className="h-full w-1/2 rounded-full bg-emerald-600 transition-all duration-300" />
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center justify-between font-bold text-[#166534]">
-                  <span className="flex items-center gap-1.5">
-                    <span>🎉</span>
-                    <span>FREE Delivery Unlocked on this order!</span>
-                  </span>
-                  <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[10.5px] text-white">✓ Free Delivery</span>
-                </div>
-              )}
-            </div>
-          )}
-
           {cart.length === 0 ? (
             <div className="flex flex-col items-center gap-4 py-16 text-center text-muted-2">
               <Bag size={40} />
