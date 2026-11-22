@@ -58,11 +58,21 @@ const orders = Array.from({ length: 64 }, (_, i) => {
   const pr = priceOf(items);
   let status = daysAgo > 6 ? 'Delivered' : daysAgo > 3 ? pick(['Shipped', 'Delivered']) : daysAgo > 1 ? pick(['Packed', 'Shipped']) : pick(['New', 'New', 'Packed']);
   if (rnd() < 0.05) status = 'Cancelled';
+
+  // Realistic coupon usage across various days and customers
+  const assignedCoupon = i % 2 === 0 ? (i % 4 === 0 ? 'FIRST50' : 'WELCOME50') : (i % 7 === 0 ? 'INSTA@50' : i % 11 === 0 ? 'DRIFTON100' : '');
+  const couponOff = assignedCoupon === 'DRIFTON100' ? 100 : (assignedCoupon ? 50 : 0);
+  const total = Math.max(0, pr.total - couponOff);
+
   return {
     id: formatOrderId(FIRST_ORDER_NO + 63 - i),
     customerId: c.id, customer: c.name, phone: c.phone, city: c.city,
+    email: `${c.name.split(' ')[0].toLowerCase()}@example.com`,
     address: `${Math.floor(rnd() * 200) + 1}, Sector ${Math.floor(rnd() * 60) + 1}, ${c.city}`,
     items, ...pr,
+    total,
+    coupon: assignedCoupon,
+    couponOff,
     payment: pick(PAYMENT),
     status,
     tracking: ['Shipped', 'Delivered'].includes(status) ? `EK${Math.floor(1e9 + rnd() * 9e9)}` : '',

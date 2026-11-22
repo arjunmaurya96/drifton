@@ -137,7 +137,15 @@ export function AdminStore({ children }) {
   }, [saveConfig]);
 
   const data = useMemo(() => {
-    if (!LIVE) return demo;
+    if (!LIVE) {
+      const uses = {};
+      demo.orders.forEach((o) => { if (o.coupon) uses[o.coupon] = (uses[o.coupon] || 0) + 1; });
+      return {
+        ...demo,
+        customers: customersFrom(demo.orders),
+        coupons: demo.coupons.map((c) => ({ ...c, uses: (uses[c.code] != null ? uses[c.code] : c.uses) || 0 })),
+      };
+    }
     const uses = {};
     live.orders.forEach((o) => { if (o.coupon) uses[o.coupon] = (uses[o.coupon] || 0) + 1; });
     return { ...live, customers: customersFrom(live.orders), coupons: live.coupons.map((c) => ({ ...c, uses: uses[c.code] || 0 })) };
