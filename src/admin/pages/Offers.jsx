@@ -74,30 +74,57 @@ export default function Offers() {
         Coupons now support <b>special characters</b> (e.g. <code>SPECIAL@50</code>, <code>DRIFT#100</code>) and <b>exact date & time validity</b>. Turn a switch <b>off</b> to pause any offer or coupon.
       </Help>
 
-      <h2 className="mb-3 font-head text-[17px] font-bold">Cart offers</h2>
+      <div className="mb-3 flex items-center justify-between">
+        <div>
+          <h2 className="font-head text-[17px] font-bold">Cart offers</h2>
+          <p className="text-[13px] text-muted-2">Customize offer titles, subtitle promo text, and discount pricing shown live in cart.</p>
+        </div>
+      </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {data.offers.map((o) => (
-          <Card key={o.id} className="flex flex-col gap-4 p-5">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <b className="block font-head text-[16px]">{o.title}</b>
-                <span className="text-[13px] text-muted-2">{o.desc}</span>
-              </div>
-              <Toggle checked={o.active} onChange={(v) => update('offers', o.id, { active: v }, `${o.title} ${v ? 'on' : 'off'}`)} label={o.title} />
+          <Card key={o.id} className="flex flex-col gap-3.5 p-5 shadow-xs">
+            <div className="flex items-center justify-between gap-3 border-b border-line pb-3">
+              <span className="font-mono text-xs font-bold text-brand uppercase tracking-wider">{o.id}</span>
+              <Toggle checked={o.active} onChange={(v) => update('offers', o.id, { active: v }, `${o.title || o.id} ${v ? 'on' : 'off'}`)} label={o.title || o.id} />
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[13px] font-semibold text-muted-2">Value</span>
-              <span className="relative">
-                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[14px] font-semibold text-muted-2">₹</span>
-                <input
-                  inputMode="numeric"
-                  value={o.value}
-                  onChange={(e) => update('offers', o.id, { value: Number(e.target.value.replace(/\D/g, '')) || 0 })}
-                  onBlur={() => update('offers', o.id, {}, 'Offer saved')}
-                  className={`${inputCls} w-[130px] pl-7 font-semibold`}
-                />
-              </span>
-              <span className="text-[13px] text-muted-2">{o.unit.replace('₹', '').trim()}</span>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-navy-900">Offer Title / Badge</label>
+              <input
+                className={inputCls}
+                value={o.title || ''}
+                onChange={(e) => update('offers', o.id, { title: e.target.value })}
+                onBlur={() => update('offers', o.id, {}, 'Title saved')}
+                placeholder="e.g. ⚡ Offer 1 · 2 Roll Ons"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-bold text-navy-900">Offer Subtitle / Promo Text</label>
+              <input
+                className={inputCls}
+                value={o.desc || ''}
+                onChange={(e) => update('offers', o.id, { desc: e.target.value })}
+                onBlur={() => update('offers', o.id, {}, 'Description saved')}
+                placeholder="e.g. Add another Natural fresh rollon starting ₹325 onwards"
+              />
+            </div>
+
+            <div className="flex items-center justify-between pt-1">
+              <div className="flex items-center gap-2">
+                <span className="text-[13px] font-semibold text-muted-2">Price</span>
+                <span className="relative">
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[14px] font-semibold text-muted-2">₹</span>
+                  <input
+                    inputMode="numeric"
+                    value={o.value}
+                    onChange={(e) => update('offers', o.id, { value: Number(e.target.value.replace(/\D/g, '')) || 0 })}
+                    onBlur={() => update('offers', o.id, {}, 'Offer saved')}
+                    className={`${inputCls} w-[120px] pl-7 font-semibold`}
+                  />
+                </span>
+                <span className="text-[12px] text-muted-2">{o.unit ? o.unit.replace('₹', '').trim() : ''}</span>
+              </div>
             </div>
           </Card>
         ))}

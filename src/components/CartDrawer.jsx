@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
 import { TaxNote } from './InfoNote.jsx';
-import { formatINR, products, UNIT_PRICE, COMBO_PRICE, NATURAL_PAIR_PRICE, THIRD_PRICE } from '../data/products.js';
+import { formatINR, products, UNIT_PRICE, COMBO_PRICE, NATURAL_PAIR_PRICE, THIRD_PRICE, STORE_OFFERS, computeCartLinePrices } from '../data/products.js';
 import { Close, Minus, Plus, Bag, CheckCircle, Sparkle } from './Icons.jsx';
 import ConfettiBoom from './ConfettiBoom.jsx';
 
@@ -39,6 +39,15 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
   const pairPrice = naturals > 0 ? NATURAL_PAIR_PRICE : COMBO_PRICE;
   const pairSaving = (UNIT_PRICE * 2) - pairPrice;
 
+  const offer1Config = STORE_OFFERS['natural-pair'] || {
+    title: '⚡ Offer 1 · 2 Roll Ons',
+    desc: 'Add another Natural fresh rollon starting ₹325 onwards',
+  };
+  const offer2Config = STORE_OFFERS['third'] || {
+    title: '3rd roll on deal',
+    desc: `Add any 3rd roll on for just ${formatINR(THIRD_PRICE)}!`,
+  };
+
   return (
     <div className="mt-2 flex flex-col gap-3.5 border-t border-dashed border-line-strong pt-5">
       {/* Big Attractive Blinking 'Offers for you' Header */}
@@ -65,11 +74,11 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
           >
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <span className="inline-flex items-center gap-1 self-start rounded-full bg-brand/15 px-2.5 py-0.5 text-[10.5px] font-extrabold uppercase tracking-wide text-brand-dark">
-                ⚡ Offer 1 · 2 Roll Ons
+                {offer1Config.title || '⚡ Offer 1 · 2 Roll Ons'}
               </span>
               <b className="truncate font-head text-[16px] font-bold text-navy-900">Add {second.name}</b>
               <p className="text-[12.5px] font-medium text-muted-2 leading-tight">
-                Add another Natural fresh rollon starting 325 onwards
+                {offer1Config.desc || 'Add another Natural fresh rollon starting ₹325 onwards'}
               </p>
             </div>
             <button
@@ -123,7 +132,7 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
               <b className="block font-head text-[16px] sm:text-[17px] font-bold text-white">
-                Add any 3rd roll on for just {formatINR(THIRD_PRICE)}!
+                {offer2Config.desc || `Add any 3rd roll on for just ${formatINR(THIRD_PRICE)}!`}
               </b>
               <span className="text-[12px] text-white/80">Regular price {formatINR(UNIT_PRICE)} · You save {formatINR(UNIT_PRICE - THIRD_PRICE)}</span>
             </div>
@@ -251,23 +260,55 @@ export default function CartDrawer() {
               </Link>
             </div>
           ) : (
-            cart.map((l) => (
-              <div key={l.key} className="flex items-center gap-3.5 rounded-2xl border border-line bg-white p-3 shadow-xs">
-                <span className="flex size-[68px] shrink-0 items-center justify-center rounded-xl bg-page p-1">
-                  <img src={l.image} alt="" className="h-full w-auto object-contain" />
-                </span>
-                <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <b className="truncate font-head text-[15px] font-semibold text-navy-900">{l.name}</b>
-                  <small className="text-[13px] text-muted-2">
-                    {l.pack} · {formatINR(l.unitPrice)}
-                  </small>
-                  <div className="self-start">
-                    <QtyStepper size="sm" value={l.qty} onChange={(q) => updateQty(l.key, q)} />
+            (() => {
+              const linePrices = computeCartLinePrices(cart);
+              return cart.map((l) => {
+                const lp = linePrices[l.key] || { lineTotal: l.qty * l.unitPrice, hasOffer: false, regularTotal: l.qty * l.unitPrice, unitPrice: l.unitPrice };
+                return (
+                  <div key={l.key} className="flex items-center gap-3.5 rounded-2xl border border-line bg-white p-3 shadow-xs">
+                    <span className="flex size-[68px] shrink-0 items-center justify-center rounded-xl bg-page p-1">
+                      <img src={l.image} alt="" className="h-full w-auto object-contain" />
+                    </span>
+                    <div className="flex min-w-0 flex-1 flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <b className="truncate font-head text-[15px] font-semibold text-navy-900">{l.name}</b>
+                        {lp.hasOffer && (
+                          <span className="rounded-md bg-emerald-100 px-1.5 py-0.5 text-[9.5px] font-extrabold text-emerald-800 uppercase tracking-wide">
+                            Offer Applied
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5 text-[13px]">
+                        {lp.hasOffer ? (
+                          <>
+                            <span className="text-muted-2 line-through">{formatINR(l.unitPrice)}</span>
+                            <b className="font-bold text-[#166534]">{formatINR(lp.unitPrice)}</b>
+                            <span className="text-xs text-muted-2">({l.pack})</span>
+                          </>
+                        ) : (
+                          <small className="text-[13px] text-muted-2">
+                            {l.pack} · {formatINR(l.unitPrice)}
+                          </small>
+                        )}
+                      </div>
+                      <div className="self-start mt-0.5">
+                        <QtyStepper size="sm" value={l.qty} onChange={(q) => updateQty(l.key, q)} />
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      {lp.hasOffer ? (
+                        <div className="flex flex-col items-end">
+                          <span className="text-xs text-muted-2 line-through">{formatINR(lp.regularTotal)}</span>
+                          <b className="font-head text-[15px] font-bold text-[#166534]">{formatINR(lp.lineTotal)}</b>
+                        </div>
+                      ) : (
+                        <b className="font-head text-[15px] text-navy-900">{formatINR(lp.lineTotal)}</b>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <b className="font-head text-[15px] text-navy-900">{formatINR(l.qty * l.unitPrice)}</b>
-              </div>
-            ))
+                );
+              });
+            })()
           )}
 
           {/* Interactive Offers Flow */}

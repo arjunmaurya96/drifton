@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../context/StoreContext.jsx';
-import { products, formatINR, summarize, coupons, getCouponStatus, UNIT_PRICE, COMBO_PRICE, THIRD_PRICE } from '../data/products.js';
+import { products, formatINR, summarize, coupons, getCouponStatus, UNIT_PRICE, COMBO_PRICE, THIRD_PRICE, computeCartLinePrices } from '../data/products.js';
 import { createPayment } from '../lib/payment.js';
 import { saveOrder } from '../lib/api.js';
 import { firebaseReady } from '../lib/firebaseReady.js';
@@ -619,21 +619,53 @@ export default function CheckoutModal() {
                         <span className="text-xs font-semibold text-brand">Auto-Combo Savings</span>
                       </div>
                       <div className="flex flex-col gap-2">
-                        {cart.map((l) => (
-                          <div key={l.key} className="flex items-center gap-3 rounded-xl border border-line bg-white p-2.5 shadow-xs">
-                            <span className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-page p-1">
-                              <img src={l.image} alt="" className="h-full w-auto object-contain" />
-                            </span>
-                            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                              <b className="truncate font-head text-[14px] font-semibold text-navy-900">{l.name}</b>
-                              <small className="text-xs text-muted-2">{l.pack} · {formatINR(l.unitPrice)}</small>
-                              <div className="self-start mt-0.5">
-                                <QtyStepper size="sm" value={l.qty} onChange={(q) => updateQty(l.key, q)} />
+                        {(() => {
+                          const linePrices = computeCartLinePrices(cart);
+                          return cart.map((l) => {
+                            const lp = linePrices[l.key] || { lineTotal: l.qty * l.unitPrice, hasOffer: false, regularTotal: l.qty * l.unitPrice, unitPrice: l.unitPrice };
+                            return (
+                              <div key={l.key} className="flex items-center gap-3 rounded-xl border border-line bg-white p-2.5 shadow-xs">
+                                <span className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-page p-1">
+                                  <img src={l.image} alt="" className="h-full w-auto object-contain" />
+                                </span>
+                                <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                                  <div className="flex items-center gap-1.5">
+                                    <b className="truncate font-head text-[14px] font-semibold text-navy-900">{l.name}</b>
+                                    {lp.hasOffer && (
+                                      <span className="rounded-md bg-emerald-100 px-1.5 py-0.2 text-[9px] font-extrabold text-emerald-800 uppercase tracking-wide">
+                                        Offer Applied
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className="flex items-center gap-1 text-xs">
+                                    {lp.hasOffer ? (
+                                      <>
+                                        <span className="text-muted-2 line-through">{formatINR(l.unitPrice)}</span>
+                                        <b className="font-bold text-[#166534]">{formatINR(lp.unitPrice)}</b>
+                                        <span className="text-[11px] text-muted-2">({l.pack})</span>
+                                      </>
+                                    ) : (
+                                      <small className="text-xs text-muted-2">{l.pack} · {formatINR(l.unitPrice)}</small>
+                                    )}
+                                  </div>
+                                  <div className="self-start mt-0.5">
+                                    <QtyStepper size="sm" value={l.qty} onChange={(q) => updateQty(l.key, q)} />
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  {lp.hasOffer ? (
+                                    <div className="flex flex-col items-end">
+                                      <span className="text-[11px] text-muted-2 line-through">{formatINR(lp.regularTotal)}</span>
+                                      <b className="font-head text-[14px] font-bold text-[#166534]">{formatINR(lp.lineTotal)}</b>
+                                    </div>
+                                  ) : (
+                                    <b className="font-head text-[14px] text-navy-900">{formatINR(lp.lineTotal)}</b>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                            <b className="font-head text-[14px] text-navy-900">{formatINR(l.qty * l.unitPrice)}</b>
-                          </div>
-                        ))}
+                            );
+                          });
+                        })()}
                       </div>
                     </div>
                   )}

@@ -22,6 +22,87 @@ export let NATURAL_PAIR_PRICE = 750;
 // which offers are switched on (admin panel → Offers & coupons)
 export const OFFERS_ON = { naturalPair: true, anyPair: true, third: true, delivery: true };
 export let THIRD_PRICE = 300;
+
+export let STORE_OFFERS = {
+  'natural-pair': {
+    id: 'natural-pair',
+    title: '⚡ Offer 1 · 2 Roll Ons',
+    desc: 'Add another Natural fresh rollon starting ₹325 onwards',
+    value: 750,
+    unit: '₹ for 2',
+    active: true,
+  },
+  'any-pair': {
+    id: 'any-pair',
+    title: 'Any 2 roll ons',
+    desc: 'Pair price without a Natural roll on.',
+    value: 800,
+    unit: '₹ for 2',
+    active: true,
+  },
+  third: {
+    id: 'third',
+    title: '3rd roll on deal',
+    desc: 'Add any 3rd roll on for just ₹300!',
+    value: 300,
+    unit: '₹ for 3rd',
+    active: true,
+  },
+  delivery: {
+    id: 'delivery',
+    title: 'Delivery charge',
+    desc: 'On single roll on orders. Free on 2 or more.',
+    value: 50,
+    unit: '₹',
+    active: true,
+  },
+};
+
+// Computes transparent individual line item pricing with combo discounts applied to each item
+export function computeCartLinePrices(cart) {
+  let stickIndex = 0;
+  const result = {};
+
+  cart.forEach((l) => {
+    const totalSticks = (l.sticks || 1) * l.qty;
+    let lineTotal = 0;
+    let regularTotal = totalSticks * UNIT_PRICE;
+    let hasOffer = false;
+
+    for (let i = 0; i < totalSticks; i++) {
+      stickIndex++;
+      const pos = stickIndex % 3;
+      if (pos === 1) {
+        // 1st stick of 3: base unit price (₹475)
+        lineTotal += UNIT_PRICE;
+      } else if (pos === 2) {
+        // 2nd stick: Combo offer price
+        // If pair is natural: NATURAL_PAIR_PRICE - UNIT_PRICE (e.g. 750 - 475 = 275)
+        // If pair is any other: COMBO_PRICE - UNIT_PRICE (e.g. 800 - 475 = 325)
+        const isNaturalPair = l.id === 'natural' || cart.some((x) => x.id === 'natural');
+        const secondPrice = isNaturalPair
+          ? (NATURAL_PAIR_PRICE - UNIT_PRICE)
+          : (COMBO_PRICE - UNIT_PRICE);
+        lineTotal += secondPrice;
+        hasOffer = true;
+      } else if (pos === 0) {
+        // 3rd stick: 3rd roll on special price (₹300)
+        lineTotal += THIRD_PRICE;
+        hasOffer = true;
+      }
+    }
+
+    result[l.key] = {
+      lineTotal,
+      regularTotal,
+      hasOffer,
+      unitPrice: Math.round(lineTotal / l.qty),
+    };
+  });
+
+  return result;
+}
+
 export const priceFor = (n, naturals = 0) => {
   const sets = Math.floor(n / 3), rest = n % 3;
   const pairs = sets + (rest === 2 ? 1 : 0);
@@ -404,6 +485,13 @@ export const summarize = (lines, couponCode = '') => {
 // =====================================================================
 export function applyStoreConfig(cfg) {
   if (!cfg) return;
+  if (cfg.offers && Array.isArray(cfg.offers)) {
+    cfg.offers.forEach((co) => {
+      if (co && co.id) {
+        STORE_OFFERS[co.id] = { ...(STORE_OFFERS[co.id] || {}), ...co };
+      }
+    });
+  }
   const o = Object.fromEntries((cfg.offers || []).map((x) => [x.id, x]));
   if (o['natural-pair']) { NATURAL_PAIR_PRICE = Number(o['natural-pair'].value) || NATURAL_PAIR_PRICE; OFFERS_ON.naturalPair = o['natural-pair'].active !== false; }
   if (o['any-pair']) { COMBO_PRICE = Number(o['any-pair'].value) || COMBO_PRICE; OFFERS_ON.anyPair = o['any-pair'].active !== false; }
