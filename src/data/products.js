@@ -63,30 +63,24 @@ export let STORE_OFFERS = {
   },
 };
 
-// Computes transparent individual line item pricing:
-// • 2nd roll on: gets ₹300 (Natural) or ₹325 (Other)
-// • 3rd roll on: gets ₹250 (Natural) or ₹275 (Other)
-// • Free delivery is unlocked when total sticks >= 3
-export function computeCartLinePrices(cart) {
-  const totalSticks = cart.reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
+// Unified slot-assignment algorithm: single source of truth for line items & order totals
+export function assignStickPrices(flatSticks) {
+  const N = flatSticks.length;
+  const setsOf3 = Math.floor(N / 3);
+  const remainder = N % 3;
 
-  const setsOf3 = Math.floor(totalSticks / 3);
-  const remainder = totalSticks % 3;
-  const numThirdSlots = OFFERS_ON.third ? setsOf3 : 0;
+  const numThirdSlots = setsOf3;
   const numPairSlots = setsOf3 + (remainder === 2 ? 1 : 0);
 
-  // Flatten all individual sticks with their line key and product id
-  const flatSticks = [];
-  cart.forEach((l) => {
-    const count = (l.sticks || 1) * l.qty;
-    for (let i = 0; i < count; i++) {
-      flatSticks.push({ key: l.key, id: l.id });
-    }
+  // Reset roles and prices
+  flatSticks.forEach((s) => {
+    s.role = null;
+    s.price = UNIT_PRICE; // default 475
   });
 
-  // 1. Assign 3rd item slots (highest discount: Natural ₹250, regular ₹275)
+  // 1. Assign 3rd slots (highest discount: Natural ₹250, other variants ₹275)
   let thirdAllocated = 0;
-  // Natural sticks get ₹250 slot first for maximum savings
+  // Natural sticks get ₹250 3rd-slot first for maximum customer savings
   flatSticks.forEach((s) => {
     if (s.id === 'natural' && thirdAllocated < numThirdSlots) {
       s.role = 'third-natural';
@@ -94,7 +88,7 @@ export function computeCartLinePrices(cart) {
       thirdAllocated++;
     }
   });
-  // Remaining 3rd slots assigned to other sticks from the end
+  // Remaining 3rd slots assigned to other sticks (from the end)
   for (let i = flatSticks.length - 1; i >= 0 && thirdAllocated < numThirdSlots; i--) {
     const s = flatSticks[i];
     if (!s.role) {
@@ -104,7 +98,7 @@ export function computeCartLinePrices(cart) {
     }
   }
 
-  // 2. Assign 2nd (pair) slots: Natural ₹300, other ₹325
+  // 2. Assign 2nd slots (Natural ₹300, other variants ₹325)
   let pairAllocated = 0;
   flatSticks.forEach((s) => {
     if (!s.role && s.id === 'natural' && pairAllocated < numPairSlots) {
@@ -122,13 +116,32 @@ export function computeCartLinePrices(cart) {
     }
   }
 
-  // 3. All remaining sticks are 1st (regular full price: ₹475)
+  // 3. All remaining sticks are 1st slots (Regular full price: ₹475)
   flatSticks.forEach((s) => {
     if (!s.role) {
       s.role = 'regular';
       s.price = UNIT_PRICE; // 475
     }
   });
+
+  return flatSticks;
+}
+
+// Computes transparent individual line item pricing:
+// • 2nd roll on: gets ₹300 (Natural) or ₹325 (Other)
+// • 3rd roll on: gets ₹250 (Natural) or ₹275 (Other)
+// • Free delivery is unlocked when total sticks >= 3
+export function computeCartLinePrices(cart) {
+  // Flatten all individual sticks with their line key and product id
+  const flatSticks = [];
+  cart.forEach((l) => {
+    const count = (l.sticks || 1) * l.qty;
+    for (let i = 0; i < count; i++) {
+      flatSticks.push({ key: l.key, id: l.id });
+    }
+  });
+
+  assignStickPrices(flatSticks);
 
   const result = {};
   cart.forEach((l) => {
@@ -149,40 +162,18 @@ export function computeCartLinePrices(cart) {
 }
 
 export const priceFor = (n, naturals = 0) => {
-  const setsOf3 = Math.floor(n / 3);
-  const remainder = n % 3;
-
-  const num3rd = OFFERS_ON.third ? setsOf3 : 0;
-  const num2nd = setsOf3 + (remainder === 2 ? 1 : 0);
-  const num1st = setsOf3 + (remainder >= 1 ? 1 : 0);
-
-  let remNat = naturals;
-  let total = 0;
-
-  // 3rd item slots (Natural ₹250, regular ₹275)
-  for (let i = 0; i < num3rd; i++) {
-    if (remNat > 0) {
-      total += THIRD_NATURAL_PRICE; // 250
-      remNat--;
-    } else {
-      total += THIRD_REGULAR_PRICE; // 275
-    }
+  if (n <= 0) return 0;
+  const flatSticks = [];
+  for (let i = 0; i < naturals && i < n; i++) {
+    flatSticks.push({ id: 'natural' });
+  }
+  while (flatSticks.length < n) {
+    flatSticks.push({ id: 'other' });
   }
 
-  // 2nd item slots (Natural ₹300, regular ₹325)
-  for (let i = 0; i < num2nd; i++) {
-    if (remNat > 0) {
-      total += PAIR_NATURAL_PRICE; // 300
-      remNat--;
-    } else {
-      total += PAIR_REGULAR_PRICE; // 325
-    }
-  }
+  assignStickPrices(flatSticks);
 
-  // 1st item slots (Regular ₹475)
-  total += num1st * UNIT_PRICE;
-
-  return total;
+  return flatSticks.reduce((sum, s) => sum + s.price, 0);
 };
 
 // Coupons — DUMMY codes, confirm with the client
@@ -569,12 +560,24 @@ export function applyStoreConfig(cfg) {
   const o = Object.fromEntries((cfg.offers || []).map((x) => [x.id, x]));
   if (o['natural-pair']) {
     const val = Number(o['natural-pair'].value);
-    NATURAL_PAIR_PRICE = (val && val !== 750) ? val : 800;
+    if (val) NATURAL_PAIR_PRICE = val;
     OFFERS_ON.naturalPair = o['natural-pair'].active !== false;
   }
-  if (o['any-pair']) { COMBO_PRICE = Number(o['any-pair'].value) || COMBO_PRICE; OFFERS_ON.anyPair = o['any-pair'].active !== false; }
-  if (o.third) { THIRD_PRICE = Number(o.third.value) || THIRD_PRICE; OFFERS_ON.third = o.third.active === true; }
-  if (o.delivery) { DELIVERY_FEE = Number(o.delivery.value) || 0; OFFERS_ON.delivery = o.delivery.active !== false; }
+  if (o['any-pair']) {
+    COMBO_PRICE = Number(o['any-pair'].value) || COMBO_PRICE;
+    OFFERS_ON.anyPair = o['any-pair'].active !== false;
+  }
+  if (o.third) {
+    const val = Number(o.third.value);
+    if (val) THIRD_PRICE = val;
+    OFFERS_ON.third = o.third.active !== false;
+  } else {
+    OFFERS_ON.third = true;
+  }
+  if (o.delivery) {
+    DELIVERY_FEE = Number(o.delivery.value) || 0;
+    OFFERS_ON.delivery = o.delivery.active !== false;
+  }
   if (cfg.products) {
     const first = cfg.products.find((p) => Number(p.price));
     if (first) UNIT_PRICE = Number(first.price);
@@ -604,13 +607,5 @@ export function applyStoreConfig(cfg) {
   }
 }
 
-// Auto-hydrate initial config from demo localStorage if present
-try {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    const savedDemo = JSON.parse(window.localStorage.getItem('drifton_admin_demo') || 'null');
-    if (savedDemo?.offers) {
-      applyStoreConfig({ offers: savedDemo.offers, products: savedDemo.products, coupons: savedDemo.coupons });
-    }
-  }
-} catch {}
+
 
