@@ -181,8 +181,7 @@ export default function CheckoutModal() {
   const handleAddWithCelebration = (product, offerType) => {
     addToCart(product);
     if (offerType === 'combo2') {
-      const isNatural = product.id === 'natural' || cart.some((c) => c.id === 'natural');
-      const saving = isNatural ? 200 : 150;
+      const saving = 150;
       setBoom({
         show: true,
         code: '',

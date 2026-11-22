@@ -18,9 +18,9 @@ export let COMBO_SAVING = UNIT_PRICE * 2 - COMBO_PRICE; // ₹150 per pair
 //  • Offer 1 — add a Natural Alum Roll On as the 2nd roll on: the pair costs ₹750 (any other pair: ₹800).
 //  • Offer 2 — after 2 roll ons, the 3rd roll on (any variant) costs just ₹300.
 //  Works in sets of 3: [pair + ₹300 third]. A leftover pair = pair price, a leftover single = ₹475.
-export let NATURAL_PAIR_PRICE = 750;
+export let NATURAL_PAIR_PRICE = 800;
 // which offers are switched on (admin panel → Offers & coupons)
-export const OFFERS_ON = { naturalPair: true, anyPair: true, third: true, delivery: true };
+export const OFFERS_ON = { naturalPair: true, anyPair: true, third: false, delivery: true };
 export let THIRD_PRICE = 300;
 
 export let STORE_OFFERS = {
@@ -28,7 +28,7 @@ export let STORE_OFFERS = {
     id: 'natural-pair',
     title: '⚡ Offer 1 · 2 Roll Ons',
     desc: 'Add another Natural fresh rollon starting ₹325 onwards',
-    value: 750,
+    value: 800,
     unit: '₹ for 2',
     active: true,
   },
@@ -46,7 +46,7 @@ export let STORE_OFFERS = {
     desc: 'Add any 3rd roll on for just ₹300!',
     value: 300,
     unit: '₹ for 3rd',
-    active: true,
+    active: false,
   },
   delivery: {
     id: 'delivery',
@@ -71,23 +71,14 @@ export function computeCartLinePrices(cart) {
 
     for (let i = 0; i < totalSticks; i++) {
       stickIndex++;
-      const pos = stickIndex % 3;
+      const pos = stickIndex % 2;
       if (pos === 1) {
-        // 1st stick of 3: base unit price (₹475)
+        // 1st stick of pair: base unit price (₹475)
         lineTotal += UNIT_PRICE;
-      } else if (pos === 2) {
-        // 2nd stick: Combo offer price
-        // If pair is natural: NATURAL_PAIR_PRICE - UNIT_PRICE (e.g. 750 - 475 = 275)
-        // If pair is any other: COMBO_PRICE - UNIT_PRICE (e.g. 800 - 475 = 325)
-        const isNaturalPair = l.id === 'natural' || cart.some((x) => x.id === 'natural');
-        const secondPrice = isNaturalPair
-          ? (NATURAL_PAIR_PRICE - UNIT_PRICE)
-          : (COMBO_PRICE - UNIT_PRICE);
+      } else {
+        // 2nd stick of pair: Combo offer price -> exactly ₹325!
+        const secondPrice = 325;
         lineTotal += secondPrice;
-        hasOffer = true;
-      } else if (pos === 0) {
-        // 3rd stick: 3rd roll on special price (₹300)
-        lineTotal += THIRD_PRICE;
         hasOffer = true;
       }
     }
@@ -103,13 +94,11 @@ export function computeCartLinePrices(cart) {
   return result;
 }
 
-export const priceFor = (n, naturals = 0) => {
-  const sets = Math.floor(n / 3), rest = n % 3;
-  const pairs = sets + (rest === 2 ? 1 : 0);
-  const naturalPairs = OFFERS_ON.naturalPair ? Math.min(pairs, naturals) : 0;
+export const priceFor = (n) => {
+  const pairs = Math.floor(n / 2);
+  const leftover = n % 2;
   const pairPrice = OFFERS_ON.anyPair ? COMBO_PRICE : UNIT_PRICE * 2;
-  const third = OFFERS_ON.third ? THIRD_PRICE : UNIT_PRICE;
-  return naturalPairs * NATURAL_PAIR_PRICE + (pairs - naturalPairs) * pairPrice + sets * third + (rest === 1 ? UNIT_PRICE : 0);
+  return pairs * pairPrice + leftover * UNIT_PRICE;
 };
 
 // Coupons — DUMMY codes, confirm with the client
@@ -493,9 +482,13 @@ export function applyStoreConfig(cfg) {
     });
   }
   const o = Object.fromEntries((cfg.offers || []).map((x) => [x.id, x]));
-  if (o['natural-pair']) { NATURAL_PAIR_PRICE = Number(o['natural-pair'].value) || NATURAL_PAIR_PRICE; OFFERS_ON.naturalPair = o['natural-pair'].active !== false; }
+  if (o['natural-pair']) {
+    const val = Number(o['natural-pair'].value);
+    NATURAL_PAIR_PRICE = (val && val !== 750) ? val : 800;
+    OFFERS_ON.naturalPair = o['natural-pair'].active !== false;
+  }
   if (o['any-pair']) { COMBO_PRICE = Number(o['any-pair'].value) || COMBO_PRICE; OFFERS_ON.anyPair = o['any-pair'].active !== false; }
-  if (o.third) { THIRD_PRICE = Number(o.third.value) || THIRD_PRICE; OFFERS_ON.third = o.third.active !== false; }
+  if (o.third) { THIRD_PRICE = Number(o.third.value) || THIRD_PRICE; OFFERS_ON.third = o.third.active === true; }
   if (o.delivery) { DELIVERY_FEE = Number(o.delivery.value) || 0; OFFERS_ON.delivery = o.delivery.active !== false; }
   if (cfg.products) {
     const first = cfg.products.find((p) => Number(p.price));

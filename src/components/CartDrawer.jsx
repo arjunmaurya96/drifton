@@ -23,29 +23,17 @@ export function QtyStepper({ value, onChange, size = 'md' }) {
 
 // =====================================================================
 //  Interactive Cart Offers:
-//  • Step 1 (count = 1): Show Offer 1 (Natural pair for ₹750) + 4 mini product cards + locked Offer 2.
+//  • Step 1 (count < 2): Show Offer 1 (Natural pair for ₹800, 2nd for ₹325) + 4 mini product cards.
 //    Adding any product triggers the booming confetti celebration!
-//  • Step 2 (count = 2): Offer 1 is checked, Offer 2 unlocks (3rd for ₹300) with 4 product cards.
-//    Adding the 3rd roll on triggers another booming celebration!
-//  • Step 3 (count >= 3): Both offers unlocked and completed with maximum savings note.
+//  • Step 2 (count >= 2): Combo applied with Free delivery.
 // =====================================================================
 export function CartOffers({ cart, count, onAddWithCelebration }) {
   const allProducts = products.filter((p) => !p.hidden);
-  const natural = products.find((p) => p.id === 'natural') || allProducts[0];
-  const onlyNatural = cart.length > 0 && cart.every((l) => l.id === 'natural');
-  const second = onlyNatural ? (products.find((p) => p.id !== 'natural') || natural) : natural;
-  const naturals = cart.filter((l) => l.id === 'natural').reduce((s, l) => s + l.qty * (l.sticks || 1), 0);
-  const step = count % 3; // 1 = needs 2nd, 2 = needs 3rd, 0 = complete set
-  const pairPrice = naturals > 0 ? NATURAL_PAIR_PRICE : COMBO_PRICE;
-  const pairSaving = (UNIT_PRICE * 2) - pairPrice;
+  const naturalProduct = products.find((p) => p.id === 'natural') || allProducts[0];
 
   const offer1Config = STORE_OFFERS['natural-pair'] || {
     title: '⚡ Offer 1 · 2 Roll Ons',
     desc: 'Add another Natural fresh rollon starting ₹325 onwards',
-  };
-  const offer2Config = STORE_OFFERS['third'] || {
-    title: '3rd roll on deal',
-    desc: `Add any 3rd roll on for just ${formatINR(THIRD_PRICE)}!`,
   };
 
   return (
@@ -64,26 +52,28 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
         </div>
       </div>
 
-      {/* ---------- OFFER 1: 2nd Roll On (Pair for ₹750 / ₹800) ---------- */}
-      {step === 1 ? (
+      {/* ---------- OFFER 1: 2nd Roll On (shown when count < 2) ---------- */}
+      {count < 2 ? (
         <div className="flex flex-col gap-3">
-          {/* Featured Natural Pair Card (no product image, only name and custom subtitle) */}
+          {/* Featured Natural Pair Card with exact requested content */}
           <div
             className="flex items-center justify-between gap-3 rounded-2xl p-4 ring-2 ring-brand/50 shadow-sm transition-all"
-            style={{ background: `linear-gradient(115deg, ${second.bg || '#D9ECFA'} 0%, #FFFFFF 85%)` }}
+            style={{ background: `linear-gradient(115deg, ${naturalProduct?.bg || '#D9ECFA'} 0%, #FFFFFF 85%)` }}
           >
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <span className="inline-flex items-center gap-1 self-start rounded-full bg-brand/15 px-2.5 py-0.5 text-[10.5px] font-extrabold uppercase tracking-wide text-brand-dark">
                 {offer1Config.title || '⚡ Offer 1 · 2 Roll Ons'}
               </span>
-              <b className="truncate font-head text-[16px] font-bold text-navy-900">Add {second.name}</b>
+              <b className="truncate font-head text-[16px] font-bold text-navy-900">
+                Add DriftOn™ Natural Alum Roll On
+              </b>
               <p className="text-[12.5px] font-medium text-muted-2 leading-tight">
                 {offer1Config.desc || 'Add another Natural fresh rollon starting ₹325 onwards'}
               </p>
             </div>
             <button
               type="button"
-              onClick={() => onAddWithCelebration(second, 'combo2')}
+              onClick={() => onAddWithCelebration(naturalProduct, 'combo2')}
               className="btn-primary min-h-[40px] shrink-0 px-4 text-[13px] font-bold shadow-md cursor-pointer hover:scale-105 active:scale-95 transition-transform"
             >
               + Add
@@ -121,50 +111,9 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
       ) : (
         <div className="flex items-center gap-2.5 rounded-2xl bg-mint-soft px-4 py-3 text-[13.5px] font-semibold text-brand-dark border border-brand/20">
           <CheckCircle size={20} className="shrink-0 text-brand" />
-          <span>2 roll ons combo applied · Saved {formatINR(pairSaving)} + Free delivery!</span>
+          <span>2 roll ons combo applied · Saved ₹150 + Free delivery!</span>
         </div>
       )}
-
-      {/* ---------- OFFER 2: 3rd Roll On for ₹300 ---------- */}
-      {step === 2 ? (
-        /* Offer 2 Unlocked State (count = 2) - appears only after 2nd product is added */
-        <div className="flex flex-col gap-3 rounded-2xl bg-[linear-gradient(135deg,#0A1E4A_0%,#153A7A_100%)] p-4 text-white shadow-xl ring-2 ring-mint/60 animate-fade-up">
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <b className="block font-head text-[16px] sm:text-[17px] font-bold text-white">
-                {offer2Config.desc || `Add any 3rd roll on for just ${formatINR(THIRD_PRICE)}!`}
-              </b>
-              <span className="text-[12px] text-white/80">Regular price {formatINR(UNIT_PRICE)} · You save {formatINR(UNIT_PRICE - THIRD_PRICE)}</span>
-            </div>
-            <span className="shrink-0 font-serif text-3xl font-extrabold text-mint">{formatINR(THIRD_PRICE)}</span>
-          </div>
-
-          {/* 4 Choices to pick as the 3rd roll on */}
-          <div className="grid grid-cols-4 gap-2 pt-1">
-            {allProducts.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => onAddWithCelebration(p, 'combo3')}
-                aria-label={`Add ${p.name} for ${formatINR(THIRD_PRICE)}`}
-                className="group flex flex-col items-center gap-1 rounded-xl bg-white/10 p-2 text-[11px] font-semibold text-white hover:bg-white/20 transition-all hover:scale-105 cursor-pointer border border-white/15"
-              >
-                <img src={p.image} alt="" className="h-11 w-auto object-contain transition-transform group-hover:scale-110 drop-shadow" />
-                <span className="truncate w-full text-center">{p.short || p.name}</span>
-                <span className="w-full rounded-md bg-mint py-0.5 text-[10.5px] font-bold text-navy-900 group-hover:bg-white transition-colors">
-                  + Add ₹{THIRD_PRICE}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : step === 0 && count >= 3 ? (
-        /* Offer 2 Applied State (count >= 3) */
-        <div className="flex items-center gap-2.5 rounded-2xl bg-navy-900 px-4 py-3 text-[13.5px] font-semibold text-white shadow-sm">
-          <CheckCircle size={20} className="shrink-0 text-mint" />
-          <span>3rd roll on for {formatINR(THIRD_PRICE)} applied · Extra {formatINR(UNIT_PRICE - THIRD_PRICE)} saved!</span>
-        </div>
-      ) : null}
     </div>
   );
 }
@@ -207,8 +156,7 @@ export default function CartDrawer() {
   const handleAddWithCelebration = (product, offerType) => {
     addToCart(product);
     if (offerType === 'combo2') {
-      const isNatural = product.id === 'natural' || cart.some((c) => c.id === 'natural');
-      const saving = isNatural ? 200 : 150;
+      const saving = 150;
       setBoom({
         show: true,
         title: 'Hurray! Combo Unlocked 🎉',

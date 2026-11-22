@@ -111,10 +111,10 @@ export const initialData = {
     price: p.price, stock: [120, 64, 92, 18][i], active: true, ingredients: p.ingredients,
   })),
   offers: [
-    { id: 'natural-pair', title: '⚡ Offer 1 · 2 Roll Ons', desc: 'Add another Natural fresh rollon starting ₹325 onwards', value: NATURAL_PAIR_PRICE, unit: '₹ for 2', active: true },
-    { id: 'any-pair', title: 'Any 2 roll ons', desc: 'Pair price without a Natural roll on.', value: COMBO_PRICE, unit: '₹ for 2', active: true },
-    { id: 'third', title: '3rd roll on deal', desc: 'Add any 3rd roll on for just ₹300!', value: THIRD_PRICE, unit: '₹ for 3rd', active: true },
-    { id: 'delivery', title: 'Delivery charge', desc: 'On single roll on orders. Free on 2 or more.', value: DELIVERY_FEE, unit: '₹', active: true },
+    { id: 'natural-pair', title: '⚡ Offer 1 · 2 Roll Ons', desc: 'Add another Natural fresh rollon starting ₹325 onwards', value: 800, unit: '₹ for 2', active: true },
+    { id: 'any-pair', title: 'Any 2 roll ons', desc: 'Pair price without a Natural roll on.', value: 800, unit: '₹ for 2', active: true },
+    { id: 'third', title: '3rd roll on deal', desc: 'Add any 3rd roll on for just ₹300!', value: 300, unit: '₹ for 3rd', active: false },
+    { id: 'delivery', title: 'Delivery charge', desc: 'On single roll on orders. Free on 2 or more.', value: 50, unit: '₹', active: true },
   ],
   coupons: Object.entries(coupons).map(([code, c]) => ({ code, off: c.off, note: c.note, validFrom: c.validFrom || null, validUntil: c.validUntil || null, uses: 23, active: true }))
     .concat([
