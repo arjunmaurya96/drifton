@@ -201,18 +201,15 @@ export default function CheckoutModal() {
           savings: 50,
         });
       }
-    } else if (offerType === 'combo3') {
-      const saving = UNIT_PRICE - THIRD_PRICE; // 175
+    } else {
       setBoom({
         show: true,
         code: '',
-        title: 'Super Savings Unlocked! 🚀',
-        message: `${product.name} added for just ₹${THIRD_PRICE}!`,
-        subtext: `You saved ₹${saving} extra on your 3rd roll on!`,
-        savings: saving,
+        title: 'Item Added! 🎉',
+        message: `${product.name} added to cart!`,
+        subtext: product.id === 'natural' ? 'Natural roll on offer applied!' : 'Great choice!',
+        savings: product.id === 'natural' ? 150 : 0,
       });
-    } else {
-      addToCart(product);
     }
   };
 

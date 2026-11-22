@@ -52,61 +52,31 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
         </div>
       </div>
 
-      {/* ---------- OFFER 1: 2nd Roll On (shown when count < 2) ---------- */}
+      {/* ---------- OFFER 1: Featured Natural Roll On Card (when count < 2) OR Success Banner (when count >= 2) ---------- */}
       {count < 2 ? (
-        <div className="flex flex-col gap-3">
-          {/* Featured Natural Pair Card with exact requested content */}
-          <div
-            className="flex items-center justify-between gap-3 rounded-2xl p-4 ring-2 ring-brand/50 shadow-sm transition-all"
-            style={{ background: `linear-gradient(115deg, ${naturalProduct?.bg || '#D9ECFA'} 0%, #FFFFFF 85%)` }}
-          >
-            <div className="flex min-w-0 flex-1 flex-col gap-1">
-              <span className="inline-flex items-center gap-1 self-start rounded-full bg-brand/15 px-2.5 py-0.5 text-[10.5px] font-extrabold uppercase tracking-wide text-brand-dark">
-                {offer1Config.title || '⚡ Offer 1 · 2 Roll Ons'}
-              </span>
-              <b className="truncate font-head text-[16px] font-bold text-navy-900">
-                Add DriftOn™ Natural Alum Roll On
-              </b>
-              <p className="text-[12.5px] font-medium text-muted-2 leading-tight">
-                Add another Natural fresh rollon starting ₹325 onwards
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => onAddWithCelebration(naturalProduct, 'combo2')}
-              className="btn-primary min-h-[40px] shrink-0 px-4 text-[13px] font-bold shadow-md cursor-pointer hover:scale-105 active:scale-95 transition-transform"
-            >
-              + Add
-            </button>
-          </div>
-
-          {/* 4 Compact Products Mini-Grid without price display */}
-          <div className="flex flex-col gap-2 rounded-2xl bg-page/80 p-3 border border-line">
-            <span className="text-[12px] font-bold text-navy-900">
-              Or pick any variant to pair:
+        /* Featured Natural Pair Card with exact requested content */
+        <div
+          className="flex items-center justify-between gap-3 rounded-2xl p-4 ring-2 ring-brand/50 shadow-sm transition-all"
+          style={{ background: `linear-gradient(115deg, ${naturalProduct?.bg || '#D9ECFA'} 0%, #FFFFFF 85%)` }}
+        >
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <span className="inline-flex items-center gap-1 self-start rounded-full bg-brand/15 px-2.5 py-0.5 text-[10.5px] font-extrabold uppercase tracking-wide text-brand-dark">
+              {offer1Config.title || '⚡ Offer 1 · 2 Roll Ons'}
             </span>
-            <div className="grid grid-cols-4 gap-2">
-              {allProducts.map((p) => {
-                return (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => onAddWithCelebration(p, 'combo2')}
-                    aria-label={`Add ${p.name}`}
-                    className="group flex flex-col items-center gap-1.5 rounded-xl border border-line-strong bg-white p-2 text-center transition hover:border-navy-700 hover:shadow-md cursor-pointer"
-                  >
-                    <span className="flex h-11 w-full items-center justify-center">
-                      <img src={p.image} alt="" className="h-full w-auto object-contain transition-transform group-hover:scale-110" />
-                    </span>
-                    <span className="truncate w-full text-[11px] font-bold text-navy-900">{p.short || p.name}</span>
-                    <span className="w-full rounded-md bg-navy-900 py-0.5 text-[10.5px] font-bold text-white group-hover:bg-brand transition-colors">
-                      + Add
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+            <b className="truncate font-head text-[16px] font-bold text-navy-900">
+              Add DriftOn™ Natural Alum Roll On
+            </b>
+            <p className="text-[12.5px] font-medium text-muted-2 leading-tight">
+              Add another Natural fresh rollon starting ₹325 onwards
+            </p>
           </div>
+          <button
+            type="button"
+            onClick={() => onAddWithCelebration(naturalProduct, 'combo2')}
+            className="btn-primary min-h-[40px] shrink-0 px-4 text-[13px] font-bold shadow-md cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+          >
+            + Add
+          </button>
         </div>
       ) : (
         <div className="flex items-center gap-2.5 rounded-2xl bg-mint-soft px-4 py-3 text-[13.5px] font-semibold text-brand-dark border border-brand/20">
@@ -118,6 +88,34 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
           )}
         </div>
       )}
+
+      {/* 4 Compact Products Mini-Grid: ALWAYS VISIBLE even after 2nd product is added */}
+      <div className="flex flex-col gap-2 rounded-2xl bg-page/80 p-3 border border-line">
+        <span className="text-[12px] font-bold text-navy-900">
+          {count < 2 ? 'Or pick any variant to pair:' : 'Add more roll ons:'}
+        </span>
+        <div className="grid grid-cols-4 gap-2">
+          {allProducts.map((p) => {
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => onAddWithCelebration(p, count < 2 ? 'combo2' : 'more')}
+                aria-label={`Add ${p.name}`}
+                className="group flex flex-col items-center gap-1.5 rounded-xl border border-line-strong bg-white p-2 text-center transition hover:border-navy-700 hover:shadow-md cursor-pointer"
+              >
+                <span className="flex h-11 w-full items-center justify-center">
+                  <img src={p.image} alt="" className="h-full w-auto object-contain transition-transform group-hover:scale-110" />
+                </span>
+                <span className="truncate w-full text-[11px] font-bold text-navy-900">{p.short || p.name}</span>
+                <span className="w-full rounded-md bg-navy-900 py-0.5 text-[10.5px] font-bold text-white group-hover:bg-brand transition-colors">
+                  + Add
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
@@ -178,17 +176,14 @@ export default function CartDrawer() {
           savings: 50,
         });
       }
-    } else if (offerType === 'combo3') {
-      const saving = UNIT_PRICE - THIRD_PRICE; // 175
+    } else {
       setBoom({
         show: true,
-        title: 'Super Savings Unlocked! 🚀',
-        message: `${product.name} added for just ₹${THIRD_PRICE}!`,
-        subtext: `You saved ₹${saving} extra on your 3rd roll on!`,
-        savings: saving,
+        title: 'Item Added! 🎉',
+        message: `${product.name} added to your cart!`,
+        subtext: product.id === 'natural' ? 'Natural roll on offer applied!' : 'Great choice!',
+        savings: product.id === 'natural' ? 150 : 0,
       });
-    } else {
-      addToCart(product);
     }
   };
 
