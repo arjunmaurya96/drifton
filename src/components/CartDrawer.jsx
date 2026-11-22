@@ -68,7 +68,7 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
                 Add DriftOn™ Natural Alum Roll On
               </b>
               <p className="text-[12.5px] font-medium text-muted-2 leading-tight">
-                {offer1Config.desc || 'Add another Natural fresh rollon starting ₹325 onwards'}
+                Add another Natural fresh rollon starting ₹325 onwards
               </p>
             </div>
             <button
@@ -111,7 +111,11 @@ export function CartOffers({ cart, count, onAddWithCelebration }) {
       ) : (
         <div className="flex items-center gap-2.5 rounded-2xl bg-mint-soft px-4 py-3 text-[13.5px] font-semibold text-brand-dark border border-brand/20">
           <CheckCircle size={20} className="shrink-0 text-brand" />
-          <span>2 roll ons combo applied · Saved ₹150 + Free delivery!</span>
+          {cart.some((l) => l.id === 'natural') ? (
+            <span>Natural roll on offer applied · Saved ₹150 + Free delivery!</span>
+          ) : (
+            <span>2 roll ons added · Free delivery applied!</span>
+          )}
         </div>
       )}
     </div>
@@ -156,14 +160,24 @@ export default function CartDrawer() {
   const handleAddWithCelebration = (product, offerType) => {
     addToCart(product);
     if (offerType === 'combo2') {
-      const saving = 150;
-      setBoom({
-        show: true,
-        title: 'Hurray! Combo Unlocked 🎉',
-        message: `${product.name} added to cart!`,
-        subtext: `2 Roll Ons Combo Applied · You saved ₹${saving} + FREE Delivery!`,
-        savings: saving,
-      });
+      const willHaveNatural = product.id === 'natural' || cart.some((c) => c.id === 'natural');
+      if (willHaveNatural) {
+        setBoom({
+          show: true,
+          title: 'Hurray! Natural Offer Applied 🎉',
+          message: `${product.name} added to cart!`,
+          subtext: `Natural Roll On for ₹325 · You saved ₹150 + FREE Delivery!`,
+          savings: 150,
+        });
+      } else {
+        setBoom({
+          show: true,
+          title: 'Product Added! 🎉',
+          message: `${product.name} added to cart!`,
+          subtext: `Free Delivery unlocked on 2 items!`,
+          savings: 50,
+        });
+      }
     } else if (offerType === 'combo3') {
       const saving = UNIT_PRICE - THIRD_PRICE; // 175
       setBoom({

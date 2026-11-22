@@ -181,15 +181,26 @@ export default function CheckoutModal() {
   const handleAddWithCelebration = (product, offerType) => {
     addToCart(product);
     if (offerType === 'combo2') {
-      const saving = 150;
-      setBoom({
-        show: true,
-        code: '',
-        title: 'Hurray! Combo Unlocked 🎉',
-        message: `${product.name} added! 2 Roll Ons Combo Applied.`,
-        subtext: `You saved ₹${saving} + FREE Delivery!`,
-        savings: saving,
-      });
+      const willHaveNatural = product.id === 'natural' || cart.some((c) => c.id === 'natural');
+      if (willHaveNatural) {
+        setBoom({
+          show: true,
+          code: '',
+          title: 'Hurray! Natural Offer Applied 🎉',
+          message: `${product.name} added! Natural Roll On for ₹325.`,
+          subtext: `You saved ₹150 + FREE Delivery!`,
+          savings: 150,
+        });
+      } else {
+        setBoom({
+          show: true,
+          code: '',
+          title: 'Product Added! 🎉',
+          message: `${product.name} added to cart!`,
+          subtext: `Free Delivery unlocked on 2 items!`,
+          savings: 50,
+        });
+      }
     } else if (offerType === 'combo3') {
       const saving = UNIT_PRICE - THIRD_PRICE; // 175
       setBoom({

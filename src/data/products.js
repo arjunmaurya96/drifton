@@ -58,28 +58,38 @@ export let STORE_OFFERS = {
   },
 };
 
-// Computes transparent individual line item pricing with combo discounts applied to each item
+// Computes transparent individual line item pricing:
+// ONLY Natural Alum Roll On gets the discounted ₹325 price when 2 or more items are in cart.
+// All other products stay at their regular unit price (₹475).
 export function computeCartLinePrices(cart) {
-  let stickIndex = 0;
+  const totalSticks = cart.reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
+  const totalNaturals = cart.filter((l) => l.id === 'natural').reduce((s, l) => s + (l.sticks || 1) * l.qty, 0);
+  const maxDiscounts = totalSticks >= 2 && OFFERS_ON.naturalPair ? Math.min(Math.floor(totalSticks / 2), totalNaturals) : 0;
+
+  let discountsAssigned = 0;
   const result = {};
 
   cart.forEach((l) => {
-    const totalSticks = (l.sticks || 1) * l.qty;
+    const isNatural = l.id === 'natural';
+    const totalItemSticks = (l.sticks || 1) * l.qty;
     let lineTotal = 0;
-    let regularTotal = totalSticks * UNIT_PRICE;
+    let regularTotal = totalItemSticks * UNIT_PRICE;
     let hasOffer = false;
 
-    for (let i = 0; i < totalSticks; i++) {
-      stickIndex++;
-      const pos = stickIndex % 2;
-      if (pos === 1) {
-        // 1st stick of pair: base unit price (₹475)
-        lineTotal += UNIT_PRICE;
-      } else {
-        // 2nd stick of pair: Combo offer price -> exactly ₹325!
-        const secondPrice = 325;
-        lineTotal += secondPrice;
-        hasOffer = true;
+    if (!isNatural) {
+      // Non-natural products are ALWAYS regular price (₹475)
+      lineTotal = regularTotal;
+      hasOffer = false;
+    } else {
+      // Natural products get discounted to ₹325 up to maxDiscounts
+      for (let i = 0; i < totalItemSticks; i++) {
+        if (discountsAssigned < maxDiscounts) {
+          lineTotal += 325;
+          discountsAssigned++;
+          hasOffer = true;
+        } else {
+          lineTotal += UNIT_PRICE;
+        }
       }
     }
 
@@ -94,11 +104,15 @@ export function computeCartLinePrices(cart) {
   return result;
 }
 
-export const priceFor = (n) => {
-  const pairs = Math.floor(n / 2);
-  const leftover = n % 2;
-  const pairPrice = OFFERS_ON.anyPair ? COMBO_PRICE : UNIT_PRICE * 2;
-  return pairs * pairPrice + leftover * UNIT_PRICE;
+export const priceFor = (n, naturals = 0) => {
+  const full = n * UNIT_PRICE;
+  if (!OFFERS_ON.naturalPair || n < 2 || naturals < 1) {
+    return full;
+  }
+  const maxDiscountPairs = Math.floor(n / 2);
+  const naturalDiscounts = Math.min(maxDiscountPairs, naturals);
+  const discountPerNatural = UNIT_PRICE - 325; // 475 - 325 = 150
+  return full - naturalDiscounts * discountPerNatural;
 };
 
 // Coupons — DUMMY codes, confirm with the client
