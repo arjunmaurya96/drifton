@@ -78,13 +78,13 @@ export function CartOffers({ cart, count, onAddWithCelebration, isCheckout = fal
             + Add
           </button>
         </div>
-      ) : count === 2 && isCheckout ? (
-        /* ---------- OFFER 2: 3rd Roll On Deal in Checkout (Natural ₹250 / Other ₹275) + FREE Delivery ---------- */
+      ) : count === 2 ? (
+        /* ---------- OFFER 2: 3rd Roll On Deal (Natural ₹250 / Other ₹275) + FREE Delivery ---------- */
         <div className="flex flex-col gap-3 rounded-2xl bg-[linear-gradient(135deg,#0A1E4A_0%,#153A7A_100%)] p-4 text-white shadow-xl ring-2 ring-mint/60 animate-fade-up">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
               <span className="inline-flex items-center gap-1 rounded-full bg-mint/20 px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-mint mb-1">
-                🔥 Exclusive Checkout Deal · 3rd Roll On
+                🔥 3rd Roll On Deal + FREE Delivery!
               </span>
               <b className="block font-head text-[16px] sm:text-[17px] font-bold text-white">
                 Add 3rd roll on starting ₹250 + FREE Delivery!
@@ -125,16 +125,6 @@ export function CartOffers({ cart, count, onAddWithCelebration, isCheckout = fal
               );
             })}
           </div>
-        </div>
-      ) : count === 2 && !isCheckout ? (
-        <div className="flex flex-col gap-1 rounded-2xl bg-[#EEF4FF] p-3.5 border border-brand/20 text-navy-900">
-          <div className="flex items-center gap-2 text-[13.5px] font-bold">
-            <CheckCircle size={18} className="text-brand shrink-0" />
-            <span>{cart.some((l) => l.id === 'natural') ? 'Natural roll on offer applied (₹300)!' : '2 roll ons combo applied (₹325)!'}</span>
-          </div>
-          <p className="text-[12px] text-muted-2 pl-6">
-            👉 Proceed to <b>Checkout</b> to unlock 3rd roll on starting <b>₹250 + FREE Delivery</b>!
-          </p>
         </div>
       ) : (
         <div className="flex items-center gap-2.5 rounded-2xl bg-mint-soft px-4 py-3 text-[13.5px] font-semibold text-brand-dark border border-brand/20">

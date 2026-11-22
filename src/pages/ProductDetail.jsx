@@ -31,7 +31,7 @@ export default function ProductDetail() {
   const { slug } = useParams();
   const product = getProductBySlug(slug);
   const navigate = useNavigate();
-  const { addToCart, cart, openCheckout } = useStore();
+  const { addToCart, cart, openCart } = useStore();
 
   const defaultPack = packs[0];
 
@@ -61,10 +61,13 @@ export default function ProductDetail() {
   const inCart = cart.filter((l) => l.id === product.id).reduce((s, l) => s + l.qty, 0);
   const related = products.filter((p) => p.id !== product.id);
 
-  const add = () => addToCart(product, 1, defaultPack);
+  const add = () => {
+    addToCart(product, 1, defaultPack);
+    openCart();
+  };
   const buy = () => {
-    addToCart(product, 1, defaultPack, true);
-    openCheckout();
+    addToCart(product, 1, defaultPack);
+    openCart();
   };
 
   return (

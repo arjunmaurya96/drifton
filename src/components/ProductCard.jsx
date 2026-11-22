@@ -8,23 +8,21 @@ import { Cart } from './Icons.jsx';
  * ingredient (palash flowers, rose, charcoal, crystals) and the name, price and
  * sleek cart + buy now buttons.
  */
-export default function ProductCard({ product, className = 'h-[500px] sm:h-[560px]', quickCheckout = false }) {
-  const { addToCart, cart, openCheckout, openCart } = useStore();
-  // quickCheckout (home page): add the stick and open the checkout popup straight away
+export default function ProductCard({ product, className = 'h-[500px] sm:h-[560px]' }) {
+  const { addToCart, cart, openCart } = useStore();
+  
+  // Both Buy Now and Add to Cart add the item and open the right-side cart drawer
   const onBuyNow = (e) => {
     e?.preventDefault?.();
-    if (quickCheckout) {
-      addToCart(product, 1, undefined, true);
-      openCheckout();
-    } else {
-      addToCart(product);
-    }
+    e?.stopPropagation?.();
+    addToCart(product, 1, undefined, false);
+    openCart();
   };
 
   const onAddToCart = (e) => {
     e?.preventDefault?.();
     e?.stopPropagation?.();
-    addToCart(product);
+    addToCart(product, 1, undefined, false);
     openCart();
   };
 
